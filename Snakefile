@@ -1,4 +1,22 @@
-"""Reproducible workflow for simulations, figures, and manuscript."""
+"""Reproduce learning-rule inference; retain the original figure workflows."""
+
+import json
+
+INFERENCE_CONFIG = json.load(open("configs/inference/confirmatory_v1.json"))
+INFERENCE_PROFILES = [p["name"] for p in INFERENCE_CONFIG["profiles"]]
+INFERENCE_SOURCES = [f"analysis/learning_rule_inference/{p}.py"
+                     for p in ("core", "operators", "campaign", "diagnostics", "provenance")]
+INFERENCE_REPORTS = [f"data/generated/inference/confirmatory-v1/{profile}-{split}-s{shard:02}.json"
+                    for profile in INFERENCE_PROFILES for split in ("calibration", "evaluation")
+                    for shard in range(10)]
+MEAN_REPORTS = [f"data/generated/inference/mean-v1/primary-{split}-s{shard:02}.json"
+                for split in ("calibration", "evaluation") for shard in range(10)]
+INFERENCE_FIGURE_NAMES = ["fig_inference_primary", "fig_inference_robustness",
+                          "fig_inference_mean", "fig_inference_diagnostics"]
+INFERENCE_FIGURES = [f"results/figures/{n}.{s}" for n in INFERENCE_FIGURE_NAMES for s in ("pdf", "png")]
+INFERENCE_TABLES = [f"results/tables/inference_{n}.tex" for n in ("primary", "numbers", "prediction")]
+INFERENCE_PAPER_FIGURES = [f"paper/generated/figures/{n}.pdf" for n in INFERENCE_FIGURE_NAMES]
+INFERENCE_PAPER_TABLES = [f"paper/generated/inference_{n}.tex" for n in ("primary", "numbers", "prediction")]
 
 MAIN_FIGURE_NAMES = [
     "fig_main_compact",
@@ -21,12 +39,19 @@ DROPOUT_FIGURES = [
 ]
 rule all:
     input:
+        INFERENCE_FIGURES,
+        INFERENCE_PAPER_FIGURES,
+        INFERENCE_PAPER_TABLES,
+        "paper/activity_dynamics.pdf",
+
+
+rule legacy_figures:
+    input:
         MAIN_FIGURES,
         DROPOUT_FIGURES,
         "data/generated/dropout_results.json",
         "results/data/dropout_summary.csv",
         PAPER_FIGURES,
-        "paper/activity_dynamics.pdf",
 
 
 rule generate_main_figures:
@@ -73,9 +98,177 @@ rule compile_paper:
         manuscript="paper/activity_dynamics.tex",
         references="paper/activity_dynamics.bib",
         latexmk_config="paper/latexmkrc",
-        figures=PAPER_FIGURES,
+        figures=INFERENCE_PAPER_FIGURES,
+        tables=INFERENCE_PAPER_TABLES,
+        builder="tools/build_paper.py",
         template=["paper/jmlr.cls", "paper/jmlrutils.sty"],
     output:
         "paper/activity_dynamics.pdf",
     shell:
-        "latexmk -pdf -interaction=nonstopmode -halt-on-error -cd {input.manuscript}"
+        "python tools/build_paper.py"
+
+
+rule inference_shard:
+    input:
+        configuration="configs/inference/confirmatory_v1.json",
+        sources=INFERENCE_SOURCES,
+        lockfile="uv.lock",
+    output:
+        report="data/generated/inference/confirmatory-v1/{profile}-{split}-s{shard}.json",
+        arrays="data/generated/inference/confirmatory-v1/{profile}-{split}-s{shard}.pt",
+    wildcard_constraints:
+        profile="|".join(INFERENCE_PROFILES),
+        split="calibration|evaluation",
+        shard="[0-9]{2}",
+    params:
+        index=lambda w: INFERENCE_PROFILES.index(w.profile),
+        shard=lambda w: int(w.shard),
+    threads: 1
+    resources:
+        mem_mb=5632,
+    shell:
+        "PYTHONPATH=. .venv/bin/python -P -m analysis.learning_rule_inference.campaign "
+        "--configuration {input.configuration:q} --profile {params.index} --split {wildcards.split} "
+        "--shard {params.shard} --device cpu --output {output.report:q}"
+
+
+rule inference_mean_shard:
+    input:
+        parent="data/generated/inference/confirmatory-v1/primary-{split}-s{shard}.json",
+        arrays="data/generated/inference/confirmatory-v1/primary-{split}-s{shard}.pt",
+        configuration="configs/inference/mean_v1.json",
+        source="analysis/learning_rule_inference/mean_response.py",
+        scientific_sources=INFERENCE_SOURCES,
+    output:
+        report="data/generated/inference/mean-v1/primary-{split}-s{shard}.json",
+        arrays="data/generated/inference/mean-v1/primary-{split}-s{shard}.pt",
+    wildcard_constraints:
+        split="calibration|evaluation",
+        shard="[0-9]{2}",
+    params:
+        task=lambda w:int(w.shard)+(0 if w.split=="calibration" else 10),
+    threads: 1
+    resources:
+        mem_mb=5632,
+    shell:
+        "PYTHONPATH=. .venv/bin/python -P -m analysis.learning_rule_inference.mean_response "
+        "--configuration {input.configuration:q} --task-index {params.task} "
+        "--input-dir data/generated/inference/confirmatory-v1 --output-dir data/generated/inference/mean-v1"
+
+
+rule inference_evaluation:
+    input:
+        reports=INFERENCE_REPORTS,
+        arrays=[p.replace('.json','.pt') for p in INFERENCE_REPORTS],
+        configuration="configs/inference/confirmatory_v1.json",
+        source="analysis/learning_rule_inference/evaluate.py",
+    output:
+        "results/data/inference_evaluation.csv",
+        "results/data/inference_paired_comparison.csv",
+        "results/data/inference_loss_matched_stages.csv",
+        "results/data/inference_evaluation.provenance.json",
+    shell:
+        "PYTHONPATH=. .venv/bin/python -P -m analysis.learning_rule_inference.evaluate "
+        "--configuration {input.configuration:q} --input-dir data/generated/inference/confirmatory-v1"
+
+
+rule inference_mean_evaluation:
+    input:
+        reports=MEAN_REPORTS,
+        arrays=[p.replace('.json','.pt') for p in MEAN_REPORTS],
+        source="analysis/learning_rule_inference/evaluate_mean.py",
+        configuration="configs/inference/mean_v1.json",
+        parent_configuration="configs/inference/confirmatory_v1.json",
+    output:
+        "results/data/inference_mean_evaluation.csv",
+        "results/data/inference_mean_accuracy.csv",
+        "results/data/inference_mean_evaluation.provenance.json",
+    shell:
+        "PYTHONPATH=. .venv/bin/python -P -m analysis.learning_rule_inference.evaluate_mean "
+        "--input-dir data/generated/inference/mean-v1"
+
+
+rule inference_original_baseline:
+    input:
+        source="analysis/learning_rule_inference/baseline.py",
+        original="analysis/generate_main_figures/run.py",
+        diagnostics="analysis/learning_rule_inference/diagnostics.py",
+    output:
+        "results/data/inference_original_baseline.csv",
+        "results/data/inference_original_baseline.provenance.json",
+    shell:
+        "PYTHONPATH=. .venv/bin/python -P -m analysis.learning_rule_inference.baseline "
+        "--output results/data/inference_original_baseline.csv"
+
+
+rule inference_development_checkpoint:
+    input:
+        configuration="configs/inference/development.json",
+        sources=INFERENCE_SOURCES,
+    output:
+        report="data/generated/inference/matched-development-p0.json",
+        arrays="data/generated/inference/matched-development-p0.pt",
+    shell:
+        "PYTHONPATH=. .venv/bin/python -P -m analysis.learning_rule_inference.campaign "
+        "--configuration {input.configuration:q} --profile 0 --split development --shard 0 "
+        "--device cpu --output {output.report:q}"
+
+
+rule inference_step_mechanism:
+    input:
+        source="analysis/learning_rule_inference/run.py",
+        sources=INFERENCE_SOURCES,
+    output:
+        "data/generated/inference/pilot-q8-trained.json",
+        "data/generated/inference/pilot-q8-trained.pt",
+    shell:
+        "PYTHONPATH=. .venv/bin/python -P -m analysis.learning_rule_inference.run pilot "
+        "--device cpu --outputs 8 --width 32 --depth 2 --networks 20 --seed-start 100000 "
+        "--train-steps 1000 --sigma .001 --output data/generated/inference/pilot-q8-trained.json"
+
+
+rule inference_shared_sensitivity:
+    input:
+        parent="data/generated/inference/matched-development-p0.json",
+        arrays="data/generated/inference/matched-development-p0.pt",
+        source="analysis/learning_rule_inference/sensitivity.py",
+    output:
+        "data/generated/inference/sensitivity-development.json",
+        "data/generated/inference/sensitivity-development.pt",
+    shell:
+        "PYTHONPATH=. .venv/bin/python -P -m analysis.learning_rule_inference.sensitivity"
+
+
+rule inference_publication:
+    input:
+        "results/data/inference_evaluation.csv",
+        "results/data/inference_evaluation.provenance.json",
+        "results/data/inference_paired_comparison.csv",
+        "results/data/inference_original_baseline.csv",
+        "results/data/inference_original_baseline.provenance.json",
+        "results/data/inference_mean_evaluation.csv",
+        "results/data/inference_mean_accuracy.csv",
+        "results/data/inference_mean_evaluation.provenance.json",
+        "data/generated/inference/pilot-q8-trained.json",
+        "data/generated/inference/sensitivity-development.json",
+        "analysis/learning_rule_inference/publication.py",
+    output:
+        INFERENCE_FIGURES,
+        INFERENCE_TABLES,
+        "results/data/inference_prediction_summary.csv",
+        "results/data/inference_layerwise_summary.csv",
+        "results/data/inference_publication.provenance.json",
+    shell:
+        "PYTHONPATH=. .venv/bin/python -P -m analysis.learning_rule_inference.publication"
+
+
+rule collect_inference_assets:
+    input:
+        figures=[f"results/figures/{n}.pdf" for n in INFERENCE_FIGURE_NAMES],
+        tables=INFERENCE_TABLES,
+    output:
+        INFERENCE_PAPER_FIGURES,
+        INFERENCE_PAPER_TABLES,
+    shell:
+        "mkdir -p paper/generated/figures && "
+        "cp {input.figures:q} paper/generated/figures/ && cp {input.tables:q} paper/generated/"

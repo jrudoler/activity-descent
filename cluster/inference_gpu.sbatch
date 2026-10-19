@@ -48,6 +48,7 @@ case "$mode" in
     replicate-primary)
         inference_python -m analysis.learning_rule_inference.validate --device cuda \
             --output "data/generated/inference/validation-cuda-replication-${SLURM_JOB_ID}.json"
+        inference_python -m analysis.learning_rule_inference.backend_check
         for shard in {0..9}; do
             inference_python -m analysis.learning_rule_inference.campaign --device cuda \
                 --configuration configs/inference/confirmatory_v1.json \
