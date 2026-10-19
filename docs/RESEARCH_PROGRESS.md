@@ -1,6 +1,7 @@
 # Learning rule inference research progress
 
-Updated 2026-10-19. The goal is active. The main CPU study, conditional-mean
+Updated 2026-10-19. The goal is incomplete and blocked on actual GPU allocation.
+The main CPU study, conditional-mean
 study, five publication figures, supporting tables, and revised compiled draft
 are complete. Actual B200 validation, benchmarking, and replication remain
 queued; they must succeed before the full goal can be completed. No permission
@@ -200,7 +201,16 @@ frozen-summary artifact rebuild. The nested paper still compiles independently
 using its tracked generated assets. The archive source and COSYNE files retain
 the handoff revision's hashes.
 
-## Remaining work for the active goal
+## Remaining work after GPU allocation
+
+The allocation blocker was revalidated across three consecutive goal turns.
+At the latest check, 9156748 and 9158857 are live pending jobs with reason
+Priority; 9160192 is live pending with the expected unfulfilled
+afterok:9158857 dependency. Slurm reports zero runtime and no start time for
+all three. No completed CUDA preflight reports, replication shards, backend
+validation CSV, or GPU evaluation CSV exist. The remaining work requires an
+external scheduler-state change. Existing jobs are retained, not canceled or
+restarted; marking the goal blocked does not alter their Slurm state.
 
 1. Observe successful actual B200 preflight: CUDA scientific checks, float64 and
    float32 benchmarks at batch sizes 1/20/64, hardware/driver/runtime/memory logs.

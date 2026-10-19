@@ -5,6 +5,14 @@ CPU-parallelism authorization, and the clarified limit of three concurrent GPU
 jobs. The goal is **not complete**: actual B200 execution remains unverified.
 A queued request is not evidence of a successful GPU experiment.
 
+The final queue recheck confirms live pending preflights 9156748 and 9158857
+(Priority) and replication 9160192 (expected afterok:9158857 dependency), all
+with zero runtime. CUDA report and replication output files remain absent.
+This same allocation blocker has persisted across three consecutive goal turns;
+after completing all independent CPU and manuscript work, further progress
+requires an external scheduler-state change. The goal is blocked while the
+existing jobs remain queued.
+
 The previous goal turn made concrete progress by completing the CPU study and
 compiled draft. This continuation identified and executed omitted development
 controls and fit sensitivity, rather than treating a plausible draft as proof
