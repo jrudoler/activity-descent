@@ -10,7 +10,7 @@ import numpy as np
 
 from .provenance import digest, save_json
 
-METHODS = ("operator", "cosine", "pearson", "downhill", "population", "reciprocity", "linearity")
+METHODS = ("operator", "cosine", "pearson", "downhill", "population", "reciprocity", "linearity", "single_direction")
 NULLS = ("gd", "preconditioned")
 SCIENCE_SOURCES = ("core.py", "operators.py", "campaign.py", "diagnostics.py")
 
@@ -87,9 +87,10 @@ def collect(paths, configuration_hash, configuration, verify_arrays=True):
             reference = {r["checkpoint_step"]: r for r in report["results"]
                          if r["rule"] == "gd" and r["response_noise"] == 0}
             stages = sorted(reference)
-            losses = np.asarray([reference[t]["loss"] for t in stages])
+            losses = np.asarray([reference[t]["loss"] for t in stages], dtype=float)
             target = configuration["loss_matching_target"]
-            choice = np.abs(np.log(losses.clip(1e-30)) - math.log(target)).argmin(axis=0)
+            distances = np.abs(np.log(losses.clip(1e-30)) - math.log(target))
+            choice = np.where(np.isfinite(distances), distances, np.inf).argmin(axis=0)
             chosen_loss = losses[choice, np.arange(len(report["seeds"]))]
             factor = configuration["loss_matching_factor"]
             eligible = (chosen_loss >= target / factor) & (chosen_loss <= target * factor)
@@ -153,18 +154,24 @@ def evaluate(groups, alpha=.05):
         profile, step, noise, rule, method = key
         if method != "operator" or rule not in ("feedback-0.1", "node-512"):
             continue
-        for baseline in ("cosine", "pearson", "downhill", "population"):
+        for baseline in ("cosine", "pearson", "downhill", "population", "single_direction"):
             other = decisions[(profile, step, noise, rule, baseline)]
             seeds = sorted(set(operator) & set(other))
             differences = np.asarray([int(operator[s]) - int(other[s]) for s in seeds])
             if not len(differences):
                 continue
             bootstrap = differences[rng.integers(len(seeds), size=(2000, len(seeds)))].mean(-1)
+            plus = int((differences == 1).sum())
+            minus = int((differences == -1).sum())
+            plus_interval = wilson(plus, len(seeds), z=2.241402727604947)
+            minus_interval = wilson(minus, len(seeds), z=2.241402727604947)
             comparisons.append({"profile": profile, "checkpoint_step": step, "response_noise": noise,
                 "rule": rule, "baseline": baseline, "paired_runs": len(seeds),
                 "power_difference": float(differences.mean()),
-                "ci_low": float(np.quantile(bootstrap, .025)),
-                "ci_high": float(np.quantile(bootstrap, .975))})
+                "ci_low": max(-1., plus_interval[0] - minus_interval[1]),
+                "ci_high": min(1., plus_interval[1] - minus_interval[0]),
+                "bootstrap_ci_low": float(np.quantile(bootstrap, .025)),
+                "bootstrap_ci_high": float(np.quantile(bootstrap, .975))})
     return rows, comparisons
 
 
@@ -186,6 +193,8 @@ def main():
     configuration = json.loads(args.configuration.read_text())
     if not configuration["locked"]:
         raise ValueError("Confirmatory summaries require a locked protocol")
+    if tuple(configuration["methods"]) != METHODS:
+        raise ValueError("Evaluator methods differ from the locked protocol")
     paths = sorted(args.input_dir.glob("*.json"))
     groups, manifests, sources, loss_selections = collect(paths, digest(args.configuration), configuration)
     rows, comparisons = evaluate(groups, configuration["alpha"])
@@ -196,8 +205,9 @@ def main():
     save_json(args.output.with_suffix(".provenance.json"), {
         "protocol": configuration, "configuration_sha256": digest(args.configuration),
         "science_sources": sources, "completed_shards": manifests,
+        "evaluator_sha256": digest(__file__),
         "confidence_intervals": "Wilson 95% intervals for independent held-out runs, conditional on calibrated cutoffs",
-        "paired_intervals": "2000 bootstrap resamples of paired independent-run decisions",
+        "paired_intervals": "Conservative bound from 97.5% Wilson intervals for the two paired discordance probabilities; 2000 paired bootstrap resamples as sensitivity analysis",
         "null_calibration": "Maximum of separate finite-sample split-conformal cutoffs for GD and fixed PSD-preconditioned GD",
     })
     print(f"Verified {len(paths)} completed shards; saved {len(rows)} held-out comparisons")

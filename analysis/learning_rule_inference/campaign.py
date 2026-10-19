@@ -55,7 +55,8 @@ def matched_observation(state, x, errors, norm_errors, rule, eta, repeats=1,
                                sigma, generator, shared_noise)
     reference_rms = direction_norm(reference).square().mean(-1).sqrt()
     measured_rms = direction_norm(measured).square().mean(-1).sqrt()
-    scale = torch.where(measured_rms > 1e-20,
+    informative = (measured_rms > 1e-20) & (reference_rms > 1e-20)
+    scale = torch.where(informative,
                         reference_rms / measured_rms.clamp_min(1e-30), 1.)
     del reference, measured
     # Independent random draws for scale estimation and the observed target bank.
@@ -64,12 +65,14 @@ def matched_observation(state, x, errors, norm_errors, rule, eta, repeats=1,
     updates = [u * scale[:, None, None, None] for u in updates]
     _, before, zs = core.forward(state, x)
     _, after, new_zs = core.forward(state, x, core.apply_step(state, updates, eta))
-    g = core.activity_gradients(state, errors, zs)[-1]
+    # The observed-layer gradient needs only the known decoder and output error.
+    g = core.matvec(state.decoder.transpose(-1, -2), errors)
     v = -(after[-1] - before[-1]) / eta
     gate_changes = sum(((old > 0) != (new > 0)).sum(-1)
                        for old, new in zip(zs, new_zs))
     return g, v, {"magnitude_scale": scale, "scale_reference_rms": reference_rms,
                   "scale_rule_rms": measured_rms,
+                  "magnitude_informative": informative,
                   "probe_direction_rms": direction_norm(updates).square().mean(-1).sqrt(),
                   "gate_changes": gate_changes.sum(-1)}
 
@@ -79,6 +82,12 @@ def score_observation(g, v, fit_count):
     compatibility = operators.compatibility(gm, vm)
     primary = torch.stack([compatibility[name]
                            for name in ("reciprocity", "negative_quadratic", "linearity")]).amax(0)
+    # Retaining only +/- one direction isolates the information in independent
+    # interventions while keeping the state, readout, and observations fixed.
+    indices = [0, fit_count // 2]
+    restricted = operators.compatibility(gm[..., indices], vm[..., indices])
+    single_direction = torch.stack([restricted[name]
+        for name in ("reciprocity", "negative_quadratic", "linearity")]).amax(0)
     alignment = diagnostics.alignment(g, v)
     reduced = {name: value.to(torch.float64).nanmedian(-1).values
                for name, value in alignment.items() if value.ndim == 2}
@@ -92,7 +101,7 @@ def score_observation(g, v, fit_count):
     }
     predictions = operators.prediction_errors(gm[..., :fit_count], vm[..., :fit_count],
                                                gm[..., fit_count:], vm[..., fit_count:])
-    return {"scores": {"operator": primary, **baseline, **compatibility},
+    return {"scores": {"operator": primary, "single_direction": single_direction, **baseline, **compatibility},
             "prediction": predictions, "alignment": reduced}
 
 
@@ -101,6 +110,17 @@ def tensor_state(state):
                   and value and isinstance(value[0], torch.Tensor)
                   else value.detach().cpu() if isinstance(value, torch.Tensor) else value)
             for key, value in asdict(state).items()}
+
+
+def mask_failed(value, valid):
+    if isinstance(value, dict):
+        return {key: mask_failed(item, valid) for key, item in value.items()}
+    if isinstance(value, torch.Tensor) and value.ndim and value.shape[0] == len(valid):
+        shape = (len(valid),) + (1,) * (value.ndim - 1)
+        if value.dtype == torch.bool:
+            return value & valid.reshape(shape)
+        return torch.where(valid.reshape(shape), value.to(torch.float64), torch.nan)
+    return value
 
 
 def rule_conditions(configuration):
@@ -151,17 +171,20 @@ def run(configuration, profile_index, split, shard, device, output):
             learning_curve.extend([{"step": previous_steps + t, "loss": values} for t, values in history])
         previous_steps = steps
         loss = .5 * (core.forward(current, data)[0] - targets).square().sum(-1).mean(-1)
-        if not bool(torch.isfinite(loss).all()):
-            raise RuntimeError("Nonfinite training loss; retain this failed run and adjust development settings")
+        valid = torch.isfinite(loss)
+        # Preserve failed checkpoints and seeds. Mask them from inference rather
+        # than sending NaNs into a batched eigensolver or silently dropping a run.
+        computational_state = replace(current, weights=[torch.where(valid[:, None, None], w, 0.)
+                                                         for w in current.weights])
         checkpoints.append({"step": steps, "state": tensor_state(current), "loss": loss.cpu()})
         reference_v = None
         for label, rule, repeats, shared, mixture in rule_conditions(configuration):
             if mixture is not None:
                 variant = feedback[mixture]
-                probe_state = replace(current, feedback=variant.feedback,
+                probe_state = replace(computational_state, feedback=variant.feedback,
                                       readout_feedback=variant.readout_feedback)
             else:
-                probe_state = current
+                probe_state = computational_state
             g, v, controls = matched_observation(
                 probe_state, x, errors, norms, rule, configuration["eta"], repeats,
                 configuration["sigma"], shared, seed=start_seed + shard * 10 + steps + 5000,
@@ -175,10 +198,13 @@ def run(configuration, profile_index, split, shard, device, output):
                     observed = v + noise * reference_v[:, None, None] * torch.randn(
                         v.shape, dtype=v.dtype, device=v.device, generator=generator)
                 result = score_observation(g, observed, fit_count)
+                result = mask_failed(result, valid)
                 common = {"checkpoint_step": steps, "rule": label, "response_noise": noise}
-                all_results.append({**common, **result, "controls": controls,
-                                    "loss": loss, "response_rms": v.square().mean(dim=(-2, -1)).sqrt()})
-                observations.append({**common, "g": g.cpu(), "v": observed.cpu()})
+                all_results.append({**common, **result, "controls": mask_failed(controls, valid),
+                                    "training_failed": ~valid,
+                                    "loss": loss, "response_rms": mask_failed(v.square().mean(dim=(-2, -1)).sqrt(), valid)})
+                observations.append({**common, "g": mask_failed(g, valid).cpu(),
+                                      "v": mask_failed(observed, valid).cpu()})
             print(f"Completed {profile['name']} {split} shard={shard} step={steps} {label}", flush=True)
     arrays = output.with_suffix(".pt")
     arrays.parent.mkdir(parents=True, exist_ok=True)

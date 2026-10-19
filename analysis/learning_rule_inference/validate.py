@@ -226,6 +226,14 @@ class ScientificChecks(unittest.TestCase):
         self.assertGreater(lower, .02)
         self.assertLess(upper, .1)
 
+    def test_multiple_directions_reveal_hidden_asymmetry(self):
+        g = torch.tensor([[[1., 0., -1., 0.], [0., 1., 0., -1.]]], device=DEVICE, dtype=torch.float64)
+        k = torch.tensor([[[1., .2], [0., 1.]]], device=DEVICE, dtype=torch.float64)
+        v = k @ g
+        result = campaign.score_observation(g.transpose(-1, -2), v.transpose(-1, -2), 4)
+        self.assertGreater(result["scores"]["operator"].item(), .01)
+        self.assertLess(result["scores"]["single_direction"].item(), 1e-10)
+
     def test_readout_rank_and_diagonal_dominance_counterexample(self):
         state = self.state(width=8, outputs=2)
         errors, _ = core.probe_errors(state.seeds, 2)

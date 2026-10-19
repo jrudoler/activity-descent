@@ -1,0 +1,40 @@
+{
+  "protocol": "matched-operator-inference-v1",
+  "locked": true,
+  "alpha": 0.05,
+  "methods": ["operator", "cosine", "pearson", "downhill", "population", "reciprocity", "linearity", "single_direction"],
+  "primary_contrast": {"profile": "primary", "checkpoint_step": 1000, "response_noise": 0.0, "alternative": "feedback-0.1", "baseline": "pearson"},
+  "primary_score": "max(reciprocity, negative_quadratic, linearity)",
+  "null_controls": ["gd", "preconditioned"],
+  "calibration": "maximum of separate split-conformal upper cutoffs for both null controls; strict greater-than rejection",
+  "loss_matching_target": 0.4,
+  "loss_matching_factor": 2.0,
+  "loss_matching_selection": "nearest available checkpoint in absolute log training loss; eligible between target/factor and target*factor",
+  "shard_size": 20,
+  "eta": 0.0001,
+  "sigma": 0.0001,
+  "training_steps": [0, 200, 1000],
+  "training_rates": {"gd": 0.005, "preconditioned": 0.003, "feedback": 0.003, "node": 0.001},
+  "training_node_repeats": 32,
+  "heldout_probes": 16,
+  "magnitude_probes": 16,
+  "feedback_mixtures": [0.1, 1.0],
+  "node_repeats": [1, 32, 512],
+  "shared_node_repeats": [1, 512],
+  "response_noise": [0.0, 0.01],
+  "profiles": [
+    {"name": "primary", "width": 64, "depth": 2, "outputs": 8, "training_rule": "gd"},
+    {"name": "preconditioned-trained", "width": 64, "depth": 2, "outputs": 8, "training_rule": "preconditioned"},
+    {"name": "feedback-trained", "width": 64, "depth": 2, "outputs": 8, "training_rule": "feedback", "training_feedback_mixture": 0.1},
+    {"name": "node-trained", "width": 64, "depth": 2, "outputs": 8, "training_rule": "node"},
+    {"name": "rank-two", "width": 64, "depth": 2, "outputs": 2, "training_rule": "gd"},
+    {"name": "rank-sixteen", "width": 64, "depth": 2, "outputs": 16, "training_rule": "gd"},
+    {"name": "width-thirty-two", "width": 32, "depth": 2, "outputs": 8, "training_rule": "gd"},
+    {"name": "depth-three", "width": 64, "depth": 3, "outputs": 8, "training_rule": "gd"}
+  ],
+  "splits": {
+    "development": {"seed_start": 110000, "runs": 20},
+    "calibration": {"seed_start": 200000, "runs": 200},
+    "evaluation": {"seed_start": 300000, "runs": 200}
+  }
+}
