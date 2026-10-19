@@ -42,5 +42,9 @@ case "$mode" in
     baseline)
         inference_python -m analysis.learning_rule_inference.baseline "$@"
         ;;
+    mean-array)
+        inference_python -m analysis.learning_rule_inference.mean_response --device cpu \
+            --task-index "${SLURM_ARRAY_TASK_ID:?}" "$@"
+        ;;
     *) printf 'Unknown experiment mode: %s\n' "$mode" >&2; exit 2 ;;
 esac

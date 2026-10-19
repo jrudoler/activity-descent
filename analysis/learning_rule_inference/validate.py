@@ -8,7 +8,7 @@ import unittest
 import numpy as np
 import torch
 
-from . import campaign, core, diagnostics, evaluate, operators, reference
+from . import campaign, core, diagnostics, evaluate, mean_response, operators, reference
 from .provenance import provenance, save_json
 
 DEVICE = "cpu"
@@ -233,6 +233,44 @@ class ScientificChecks(unittest.TestCase):
         result = campaign.score_observation(g.transpose(-1, -2), v.transpose(-1, -2), 4)
         self.assertGreater(result["scores"]["operator"].item(), .01)
         self.assertLess(result["scores"]["single_direction"].item(), 1e-10)
+
+    def test_factored_perturbation_updates_equal_explicit_weights(self):
+        state = self.state(width=4, outputs=2)
+        x = core.bar_data(state.seeds, outputs=2)[0][:, :2].to(DEVICE)
+        errors = torch.ones((2, 2, 2), device=DEVICE, dtype=torch.float64)
+        prepared = mean_response.preparations(state, state, x, errors)
+        generator = torch.Generator(device=DEVICE).manual_seed(921)
+        signals = [torch.randn((2, 2, 3, w.shape[-2]), device=DEVICE, dtype=torch.float64, generator=generator)
+                   for w in state.weights]
+        for preconditioned in (False, True):
+            responses = mean_response.factored_responses(state, x, prepared, signals, 1e-4, preconditioned)
+            for draw in range(3):
+                updates = []
+                for layer, signal in enumerate(signals):
+                    a = prepared["activities"][layer]
+                    augmented = torch.cat((a, torch.ones_like(a[..., :1])), -1)
+                    update = signal[..., draw, :].unsqueeze(-1) * augmented.unsqueeze(-2)
+                    if preconditioned:
+                        update = update * state.preconditioner[layer].unsqueeze(1)
+                    updates.append(update)
+                after = core.forward(state, x, core.apply_step(state, updates, 1e-4))[1][-1]
+                expected = -(after - prepared["activities"][-1]) / 1e-4
+                self.assert_close(responses[..., draw, :], expected, atol=1e-9)
+
+    def test_mean_node_samples_equal_documented_rule(self):
+        state = self.state(width=4, outputs=2)
+        x = core.bar_data(state.seeds, outputs=2)[0][:, :2].to(DEVICE)
+        errors = torch.ones((2, 2, 2), device=DEVICE, dtype=torch.float64)
+        prepared = mean_response.preparations(state, state, x, errors)
+        generator = torch.Generator(device=DEVICE).manual_seed(922)
+        samples = mean_response.sample_signals(state, x, errors, prepared, 16, 1e-4, generator)
+        generator.manual_seed(922)
+        expected = core.directions(state, x, errors, "node", repeats=16, sigma=1e-4, generator=generator)
+        for layer, signal in enumerate(samples["node"]):
+            a = prepared["activities"][layer]
+            augmented = torch.cat((a, torch.ones_like(a[..., :1])), -1)
+            actual = signal.mean(-2).unsqueeze(-1) * augmented.unsqueeze(-2)
+            self.assert_close(actual, expected[layer])
 
     def test_readout_rank_and_diagonal_dominance_counterexample(self):
         state = self.state(width=8, outputs=2)

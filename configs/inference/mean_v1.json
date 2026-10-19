@@ -1,0 +1,17 @@
+{
+  "protocol": "conditional-mean-inference-v1",
+  "locked": true,
+  "parent_protocol": "matched-operator-inference-v1",
+  "checkpoint_step": 1000,
+  "shards_per_split": 10,
+  "alpha": 0.05,
+  "eta": 0.00001,
+  "sigma": 0.0001,
+  "magnitude_scale": 1.0,
+  "sample_counts": [8, 32, 128, 512, 2048, 8192],
+  "chunk_size": 128,
+  "null_controls": ["directional-null", "preconditioned-null"],
+  "rules": ["directional-null", "preconditioned-null", "node", "feedback-0.1", "feedback-1"],
+  "statistic": "maximum absolute reciprocity contrast normalized by Monte Carlo standard error from individual restored responses",
+  "calibration": "separate empirical split-conformal cutoffs for both stochastic nulls; maximum cutoff within each sample-count and averaging-mode condition"
+}
