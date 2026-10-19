@@ -8,7 +8,7 @@ inference_snapshot_dir="$inference_project_dir/data/generated/inference/source-$
 if [[ ! -f "$inference_snapshot_dir/SOURCE_REVISION" ]]; then
     inference_staging_dir=$(mktemp -d "$inference_project_dir/data/generated/inference/.source-${SLURM_JOB_ID}.XXXXXX")
     inference_revision=$(git rev-parse HEAD)
-    git archive "$inference_revision" analysis/learning_rule_inference pyproject.toml uv.lock \
+    git archive "$inference_revision" analysis/learning_rule_inference configs/inference pyproject.toml uv.lock \
         | tar -x -C "$inference_staging_dir"
     printf '%s\n' "$inference_revision" > "$inference_staging_dir/SOURCE_REVISION"
     mv "$inference_staging_dir" "$inference_snapshot_dir"

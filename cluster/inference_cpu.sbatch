@@ -32,5 +32,8 @@ case "$mode" in
     benchmark|pilot)
         inference_python -m analysis.learning_rule_inference.run "$mode" --device cpu "$@"
         ;;
+    campaign)
+        inference_python -m analysis.learning_rule_inference.campaign --device cpu "$@"
+        ;;
     *) printf 'Unknown experiment mode: %s\n' "$mode" >&2; exit 2 ;;
 esac

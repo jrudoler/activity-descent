@@ -8,7 +8,7 @@ import unittest
 import numpy as np
 import torch
 
-from . import core, diagnostics, operators, reference
+from . import campaign, core, diagnostics, operators, reference
 from .provenance import provenance, save_json
 
 DEVICE = "cpu"
@@ -163,6 +163,58 @@ class ScientificChecks(unittest.TestCase):
         fitted, diagnostics = operators.fit_psd(g, compatible, iterations=100)
         self.assert_close(fitted, compatible)
         self.assertLess(diagnostics["fit_relative_error"].item(), 1e-10)
+
+    def test_isotropic_span_fit_and_unattained_infimum(self):
+        g = torch.tensor([[1., 0., -1., 0.], [0., 1., 0., -1.], [0., 0., 0., 0.]],
+                         device=DEVICE, dtype=torch.float64)
+        k = torch.tensor([[2., .3, .8], [.3, 1., .4], [.8, .4, 3.]],
+                         device=DEVICE, dtype=torch.float64)
+        v = k @ g
+        restriction, q, result = operators.fit_isotropic_span(g, v)
+        self.assertTrue(result["fit_attained"].item())
+        self.assert_close(restriction @ (q.T @ g), v)
+        self.assertLess(result["fit_relative_error"].item(), 1e-12)
+        # A PSD least-squares infimum can be zero without an interpolant.
+        one_g = torch.tensor([[1.], [0.]], device=DEVICE, dtype=torch.float64)
+        one_v = torch.tensor([[0.], [1.]], device=DEVICE, dtype=torch.float64)
+        _, _, result = operators.fit_isotropic_span(one_g, one_v)
+        self.assertFalse(result["fit_attained"].item())
+        self.assertLess(result["fit_relative_error"].item(), 1e-12)
+        predictions = operators.prediction_errors(one_g, one_v, one_g, one_v)
+        self.assertTrue(torch.isnan(predictions["psd_prediction_error"]))
+        self.assertLess(predictions["psd_infimum_prediction_error"].item(), 1e-12)
+
+    def test_psd_prediction_rejects_unsupported_extrapolation(self):
+        g = torch.tensor([[1.], [0.]], device=DEVICE, dtype=torch.float64)
+        v = torch.tensor([[1.], [2.]], device=DEVICE, dtype=torch.float64)
+        other = torch.tensor([[0.], [1.]], device=DEVICE, dtype=torch.float64)
+        predictions = operators.prediction_errors(g, v, other, other)
+        self.assertFalse(predictions["prediction_supported"].item())
+        self.assertTrue(torch.isnan(predictions["linear_prediction_error"]))
+        self.assertTrue(torch.isnan(predictions["psd_prediction_error"]))
+
+    def test_matched_feedback_and_constant_bank_scales(self):
+        state = self.state()
+        x = core.bar_data(state.seeds, outputs=2)[0][:, :1].to(DEVICE)
+        errors, _ = core.probe_errors(state.seeds, 2, heldout=2)
+        errors = errors.to(DEVICE)
+        x = x.expand(-1, errors.shape[1], -1)
+        norm_errors = campaign.magnitude_errors(state.seeds, 2, count=4).to(DEVICE)
+        exact_feedback = campaign.align_feedback(state, 0.)
+        gd = core.directions(state, x, errors, "gd")
+        fb = core.directions(exact_feedback, x, errors, "feedback")
+        for expected, actual in zip(gd, fb):
+            self.assert_close(expected, actual)
+        for rule in ("gd", "preconditioned", "feedback"):
+            _, _, controls = campaign.matched_observation(
+                campaign.align_feedback(state, .1), x, errors, norm_errors,
+                rule, 1e-4, seed=71)
+            self.assertEqual(controls["magnitude_scale"].shape, (2,))
+            self.assertTrue((controls["magnitude_scale"] > 0).all())
+            self.assert_close(controls["magnitude_scale"] * controls["scale_rule_rms"],
+                              controls["scale_reference_rms"])
+            if rule == "gd":
+                self.assert_close(controls["magnitude_scale"], torch.ones(2, dtype=torch.float64))
 
     def test_readout_rank_and_diagonal_dominance_counterexample(self):
         state = self.state(width=8, outputs=2)

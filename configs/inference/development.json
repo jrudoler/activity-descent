@@ -1,0 +1,27 @@
+{
+  "protocol": "development-matched-v1",
+  "locked": false,
+  "shard_size": 20,
+  "eta": 0.0001,
+  "sigma": 0.0001,
+  "training_steps": [0, 200, 1000],
+  "training_rates": {"gd": 0.005, "preconditioned": 0.003, "feedback": 0.003, "node": 0.001},
+  "training_node_repeats": 32,
+  "heldout_probes": 16,
+  "magnitude_probes": 16,
+  "feedback_mixtures": [0.1, 1.0],
+  "node_repeats": [1, 32, 512],
+  "shared_node_repeats": [1, 512],
+  "response_noise": [0.0, 0.01],
+  "profiles": [
+    {"name": "primary", "width": 64, "depth": 2, "outputs": 8, "training_rule": "gd"},
+    {"name": "preconditioned-trained", "width": 64, "depth": 2, "outputs": 8, "training_rule": "preconditioned"},
+    {"name": "feedback-trained", "width": 64, "depth": 2, "outputs": 8, "training_rule": "feedback", "training_feedback_mixture": 0.1},
+    {"name": "node-trained", "width": 64, "depth": 2, "outputs": 8, "training_rule": "node"}
+  ],
+  "splits": {
+    "development": {"seed_start": 110000, "runs": 20},
+    "calibration": {"seed_start": 200000, "runs": 200},
+    "evaluation": {"seed_start": 300000, "runs": 200}
+  }
+}
