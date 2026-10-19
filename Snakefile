@@ -72,6 +72,7 @@ rule compile_paper:
     input:
         manuscript="paper/activity_dynamics.tex",
         references="paper/activity_dynamics.bib",
+        latexmk_config="paper/latexmkrc",
         figures=PAPER_FIGURES,
         template=["paper/jmlr.cls", "paper/jmlrutils.sty"],
     output:

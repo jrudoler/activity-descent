@@ -2,11 +2,21 @@
 
 A short paper showing that gradient descent on network weights induces **kernel descent** in the space of neural activities, governed by a neural-tangent-kernel-style Gram matrix on internal neurons.
 
-**Key result:** When the kernel is diagonally dominant (wide networks), each neuron's activity change is approximately proportional to the negative loss gradient with respect to that neuron's activity — converting untestable claims about synaptic learning rules into testable predictions about observable activity changes.
+**Key result:** Weight gradient descent induces kernel-mediated activity changes. Neuronwise descent is guaranteed when its self-term dominates gradient-weighted interference and finite-step error; matrix diagonal dominance alone is insufficient. See Appendix C of the manuscript.
 
 ## Reproduce the results
 
 Install `uv`, then run the complete dependency graph from the repository root:
+
+The manuscript is an independent Git repository checked out at `paper/`. New
+analysis clones must also obtain the manuscript repository at that path before
+running the complete workflow:
+
+```bash
+git clone git@github.com:jrudoler/activity-descent-manuscript.git paper
+```
+
+See `paper/HANDOFF.md` for research status and cluster setup.
 
 ```bash
 uv run snakemake --cores 1
@@ -24,8 +34,20 @@ To rebuild one step, use `uv run snakemake --cores 1 --forcerun <rule_name>`.
 - [`data/generated/`](data/generated/) — machine-generated intermediates
 - [`results/`](results/) — final scientific tables and figures
 - [`paper/activity_dynamics.tex`](paper/activity_dynamics.tex) — manuscript source
-- [`paper/activity_dynamics.pdf`](https://github.com/koerding/ADescent/raw/main/paper/activity_dynamics.pdf) — compiled paper
+- `paper/activity_dynamics.pdf` — locally compiled paper
 - [`index.html`](index.html) — static interactive demo for GitHub Pages
+
+## Manuscript collaboration
+
+`paper/` has its own Git history and is ignored by this analysis repository.
+Commit manuscript and figure-asset changes from inside `paper/` (or use
+`git -C paper ...`). See `paper/README.md` for standalone compilation and Overleaf
+setup. The analysis repository's existing history retains the earlier paper
+versions.
+
+`collect_paper_assets` copies analysis figures into `paper/generated/figures/`;
+review and commit those updates in the manuscript repository after regeneration.
+The complete workflow compiles the paper using latexmk from its own directory.
 
 ## Interactive Demo
 

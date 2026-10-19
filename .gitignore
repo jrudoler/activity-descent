@@ -2,6 +2,9 @@ __pycache__/
 .venv/
 .snakemake/
 
+# Independent manuscript repository; clone it here before building the paper.
+/paper/
+
 *.aux
 *.bbl
 *.blg
