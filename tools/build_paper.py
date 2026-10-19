@@ -47,7 +47,10 @@ def main():
     sources = [paper / "activity_dynamics.tex", paper / "activity_dynamics.bib", paper / "jmlr.cls", paper / "jmlrutils.sty"]
     sources += list((paper / "generated").glob("inference_*.tex"))
     sources += list((paper / "generated/figures").glob("fig_inference_*.pdf"))
+    if (paper / "generated/analysis_provenance.json").exists():
+        sources.append(paper / "generated/analysis_provenance.json")
     payload = {"built_utc": datetime.now(timezone.utc).isoformat(), "compiler": version,
+               "build_script_sha256": sha(Path(__file__)),
                "source_date_epoch": env["SOURCE_DATE_EPOCH"],
                "sources": {str(p.relative_to(paper)):sha(p) for p in sorted(sources)},
                "pdf_sha256": sha(paper / "activity_dynamics.pdf"),

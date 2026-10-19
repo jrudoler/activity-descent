@@ -252,7 +252,7 @@ def tables_and_macros(rows, paired, mean, accuracy, predictions):
         values = [select(rows, profile="primary", checkpoint_step=1000, response_noise="0.0", method=m, rule=rule)
                   for m in ("operator", "pearson", "single_direction")]
         cells = [f"{r['rejections']}/{r['evaluation_runs']}" for r in values]
-        table.append(label + " & " + " & ".join(cells) + r"\\")
+        table.append(label.replace("%", r"\%") + " & " + " & ".join(cells) + r"\\")
     table += [r"\hline", r"\end{tabular}"]
     (TABLES / "inference_primary.tex").write_text("\n".join(table)+"\n")
     def number(value):
@@ -268,7 +268,7 @@ def tables_and_macros(rows, paired, mean, accuracy, predictions):
                   for metric in ("fit_attained", "psd_prediction_error", "linear_prediction_error", "diagonal_prediction_error")}
         cells = [f"{values['fit_attained']['true_count']}/200"]
         cells += [number(values[metric]["median"]) for metric in ("psd_prediction_error", "linear_prediction_error", "diagonal_prediction_error")]
-        table.append(label + " & " + " & ".join(cells) + r"\\")
+        table.append(label.replace("%", r"\%") + " & " + " & ".join(cells) + r"\\")
     table += [r"\hline", r"\end{tabular}"]
     (TABLES / "inference_prediction.tex").write_text("\n".join(table)+"\n")
     pair = select(paired, profile="primary", checkpoint_step=1000, response_noise="0.0", rule="feedback-0.1", baseline="pearson")

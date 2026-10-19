@@ -100,6 +100,7 @@ rule compile_paper:
         latexmk_config="paper/latexmkrc",
         figures=INFERENCE_PAPER_FIGURES,
         tables=INFERENCE_PAPER_TABLES,
+        analysis_provenance="paper/generated/analysis_provenance.json",
         builder="tools/build_paper.py",
         template=["paper/jmlr.cls", "paper/jmlrutils.sty"],
     output:
@@ -266,9 +267,10 @@ rule collect_inference_assets:
     input:
         figures=[f"results/figures/{n}.pdf" for n in INFERENCE_FIGURE_NAMES],
         tables=INFERENCE_TABLES,
+        collector="tools/collect_inference_assets.py",
     output:
         INFERENCE_PAPER_FIGURES,
         INFERENCE_PAPER_TABLES,
+        "paper/generated/analysis_provenance.json",
     shell:
-        "mkdir -p paper/generated/figures && "
-        "cp {input.figures:q} paper/generated/figures/ && cp {input.tables:q} paper/generated/"
+        "python tools/collect_inference_assets.py"
