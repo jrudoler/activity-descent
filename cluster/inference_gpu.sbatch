@@ -37,5 +37,9 @@ case "$mode" in
     campaign)
         inference_python -m analysis.learning_rule_inference.campaign --device cuda "$@"
         ;;
+    campaign-array)
+        inference_python -m analysis.learning_rule_inference.campaign --device cuda \
+            --task-index "${SLURM_ARRAY_TASK_ID:?}" "$@"
+        ;;
     *) printf 'Unknown experiment mode: %s\n' "$mode" >&2; exit 2 ;;
 esac

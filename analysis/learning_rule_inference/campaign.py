@@ -9,6 +9,7 @@ positive scalar per network, checkpoint, and update rule.
 import argparse
 from dataclasses import asdict, replace
 import json
+import math
 from pathlib import Path
 import time
 
@@ -195,15 +196,33 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--configuration", type=Path, required=True)
     parser.add_argument("--profile", type=int, default=0)
-    parser.add_argument("--split", choices=("development", "calibration", "evaluation"), required=True)
+    parser.add_argument("--split", choices=("development", "calibration", "evaluation"))
     parser.add_argument("--shard", type=int, default=0)
+    parser.add_argument("--task-index", type=int)
     parser.add_argument("--device", choices=("cpu", "cuda"), default="cpu")
     parser.add_argument("--threads", type=int, default=1)
-    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--output", type=Path)
+    parser.add_argument("--output-dir", type=Path)
     args = parser.parse_args()
     if not args.configuration.is_absolute() and (ROOT / args.configuration).exists():
         args.configuration = ROOT / args.configuration
     configuration_hash = digest(args.configuration)
+    configuration = json.loads(args.configuration.read_text())
+    if args.task_index is not None:
+        if args.output_dir is None:
+            parser.error("--task-index requires --output-dir")
+        sizes = [math.ceil(configuration["splits"][s]["runs"] / configuration["shard_size"])
+                 for s in ("calibration", "evaluation")]
+        profile_tasks = sum(sizes)
+        args.profile, local = divmod(args.task_index, profile_tasks)
+        if args.profile >= len(configuration["profiles"]) or args.task_index < 0:
+            parser.error("Array task is outside the protocol")
+        args.split = "calibration" if local < sizes[0] else "evaluation"
+        args.shard = local if local < sizes[0] else local - sizes[0]
+        name = configuration["profiles"][args.profile]["name"]
+        args.output = args.output_dir / f"{name}-{args.split}-s{args.shard:02}.json"
+    if args.output is None or args.split is None:
+        parser.error("Provide --output and --split, or an array task and output directory")
     if args.output.exists():
         existing = json.loads(args.output.read_text())
         if existing["configuration_sha256"] == configuration_hash and Path(existing["arrays"]).exists():
@@ -211,7 +230,6 @@ def main():
                 print(f"Verified existing completed shard {args.output}")
                 return
         raise RuntimeError("Existing result does not match this protocol or arrays")
-    configuration = json.loads(args.configuration.read_text())
     if args.split != "development" and not configuration.get("locked"):
         raise ValueError("Calibration and evaluation require a locked protocol")
     torch.set_num_threads(args.threads)

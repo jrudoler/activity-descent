@@ -8,7 +8,7 @@ import unittest
 import numpy as np
 import torch
 
-from . import campaign, core, diagnostics, operators, reference
+from . import campaign, core, diagnostics, evaluate, operators, reference
 from .provenance import provenance, save_json
 
 DEVICE = "cpu"
@@ -215,6 +215,16 @@ class ScientificChecks(unittest.TestCase):
                               controls["scale_reference_rms"])
             if rule == "gd":
                 self.assert_close(controls["magnitude_scale"], torch.ones(2, dtype=torch.float64))
+
+    def test_calibration_order_and_independent_run_interval(self):
+        self.assertEqual(evaluate.conformal_cutoff(list(range(200)), .05), 190.)
+        self.assertEqual(evaluate.conformal_cutoff(list(range(19)), .05), 18.)
+        self.assertTrue(np.isinf(evaluate.conformal_cutoff(list(range(10)), .05)))
+        lower, upper = evaluate.wilson(10, 200)
+        self.assertLess(lower, .05)
+        self.assertGreater(upper, .05)
+        self.assertGreater(lower, .02)
+        self.assertLess(upper, .1)
 
     def test_readout_rank_and_diagonal_dominance_counterexample(self):
         state = self.state(width=8, outputs=2)

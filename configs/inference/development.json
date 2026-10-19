@@ -17,7 +17,11 @@
     {"name": "primary", "width": 64, "depth": 2, "outputs": 8, "training_rule": "gd"},
     {"name": "preconditioned-trained", "width": 64, "depth": 2, "outputs": 8, "training_rule": "preconditioned"},
     {"name": "feedback-trained", "width": 64, "depth": 2, "outputs": 8, "training_rule": "feedback", "training_feedback_mixture": 0.1},
-    {"name": "node-trained", "width": 64, "depth": 2, "outputs": 8, "training_rule": "node"}
+    {"name": "node-trained", "width": 64, "depth": 2, "outputs": 8, "training_rule": "node"},
+    {"name": "rank-two", "width": 64, "depth": 2, "outputs": 2, "training_rule": "gd"},
+    {"name": "rank-sixteen", "width": 64, "depth": 2, "outputs": 16, "training_rule": "gd"},
+    {"name": "width-thirty-two", "width": 32, "depth": 2, "outputs": 8, "training_rule": "gd"},
+    {"name": "depth-three", "width": 64, "depth": 3, "outputs": 8, "training_rule": "gd"}
   ],
   "splits": {
     "development": {"seed_start": 110000, "runs": 20},
