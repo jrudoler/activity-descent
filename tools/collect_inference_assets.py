@@ -29,7 +29,7 @@ def main():
     (paper / "generated/figures").mkdir(parents=True, exist_ok=True)
     for name in publication["figure_hashes"]:
         shutil.copy2(ROOT / name, paper / "generated/figures" / Path(name).name)
-    for name in ("primary", "numbers", "prediction"):
+    for name in ("primary", "numbers", "prediction", "regularization"):
         source = ROOT / "results/tables" / f"inference_{name}.tex"
         shutil.copy2(source, paper / "generated" / source.name)
     commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
@@ -49,7 +49,7 @@ def main():
         "preserved_archive_sha256": sha(paper / "archive/neurreps_extended_abstract.tex"),
     }
     (paper / "generated/analysis_provenance.json").write_text(json.dumps(record, indent=2)+"\n")
-    print(f"Collected four figures, three tables, and analysis provenance at {commit}")
+    print(f"Collected {len(publication['figure_hashes'])} figures, four tables, and analysis provenance at {commit}")
 
 
 if __name__ == "__main__":

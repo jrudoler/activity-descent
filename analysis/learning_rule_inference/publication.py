@@ -12,7 +12,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-from .evaluate import write_csv
+from .evaluate import wilson, write_csv
 from .provenance import digest, save_json
 
 DATA = Path("results/data")
@@ -245,6 +245,106 @@ def supporting_tables(manifests):
     return summary
 
 
+def development_controls():
+    paths = [Path("data/generated/inference/mechanism-controls-development.json"),
+             Path("data/generated/inference/fit-sensitivity-development.json")]
+    controls, fitting = (json.loads(p.read_text()) for p in paths)
+    for report in (controls, fitting):
+        if digest(report["arrays"]) != report["arrays_sha256"] or digest(report["parent"]) != report["parent_sha256"]:
+            raise ValueError("Development control arrays or parent reports changed")
+        if len(report["seeds"]) != 20:
+            raise ValueError("Expected 20 independent development networks")
+    metrics = ("full_relative_error", "diagonal_relative_error", "cosine", "pearson", "downhill_fraction",
+               "population_descent_rate", "self_term_l2", "interference_l2", "gate_on", "gate_off",
+               "gradient_dot_activity_change", "actual_loss_change")
+    layer_summary = []
+    for row in controls["layer_loss_results"]:
+        for metric in metrics:
+            values = np.asarray(row[metric], dtype=float).reshape(-1)
+            center, low, high = median_ci(values)
+            layer_summary.append({**{k:row[k] for k in ("loss_control", "parameter_mask", "eta", "layer", "layer_type")},
+                "metric":metric, "networks":len(finite(values)), "undefined_networks":len(values)-len(finite(values)),
+                "median":center, "ci_low":low, "ci_high":high})
+    write_csv(DATA / "inference_mechanism_controls.csv", layer_summary)
+    scale_summary = []
+    for row in controls["scale_results"]:
+        center, low, high = median_ci(row["operator"])
+        scale_summary.append({"rule":row["rule"], "mode":row["mode"], "networks":len(finite(row["operator"])),
+            "median":center, "ci_low":low, "ci_high":high,
+            "q25":float(np.quantile(row["operator"],.25)), "q75":float(np.quantile(row["operator"],.75)),
+            "median_scale":float(np.median(row["magnitude_scale"])),
+            "max_first_order_scale_invariance_error":max(row["first_order_scale_invariance_error"]),
+            "median_relative_first_order_error":float(np.median(row["relative_first_order_error"]))})
+    write_csv(DATA / "inference_scale_sensitivity.csv", scale_summary)
+    fig, axes = plt.subplots(2, 2, figsize=(10.2,7), layout="constrained")
+    for i, loss in enumerate(("task", "synthetic-layer")):
+        for j, metric in enumerate(("full_relative_error", "diagonal_relative_error")):
+            selected = sorted([r for r in layer_summary if r["loss_control"]==loss and r["parameter_mask"]=="all"
+                               and r["layer"]==1 and r["metric"]==metric], key=lambda r:r["eta"])
+            x=[r["eta"] for r in selected];y=[r["median"] for r in selected]
+            axes[0,0].loglog(x,y,("o-","s--")[j],ms=4,color=COLORS[i],label=f"{loss}: {('full','diagonal')[j]}")
+            axes[0,0].fill_between(x,[r["ci_low"] for r in selected],[r["ci_high"] for r in selected],color=COLORS[i],alpha=.1)
+        centers,lows,highs=[],[],[]
+        for mask in ("all","own","upstream"):
+            row=next(r for r in controls["layer_loss_results"] if r["loss_control"]==loss and r["parameter_mask"]==mask and r["eta"]==1e-5 and r["layer"]==1)
+            numerator=np.asarray(row["interference_l2"],dtype=float).reshape(-1)
+            denominator=np.asarray(row["self_term_l2"],dtype=float).reshape(-1)
+            values=np.divide(numerator,denominator,out=np.full_like(numerator,np.nan),where=denominator>1e-20)
+            center,low,high=median_ci(values);centers.append(center);lows.append(low);highs.append(high)
+        axes[0,1].errorbar(np.arange(3)+(i-.5)*.12,centers,
+            yerr=[np.asarray(centers)-lows,np.asarray(highs)-centers],fmt="o-",ms=4,capsize=2,color=COLORS[i],label=loss)
+        selected=sorted([r for r in controls["layer_loss_results"] if r["loss_control"]==loss and r["parameter_mask"]=="all" and r["layer"]==1],key=lambda r:r["eta"])
+        rates,lows,highs=[],[],[]
+        for row in selected:
+            counts=np.asarray(row["gate_on"])+np.asarray(row["gate_off"])
+            total=len(counts);changed=int((counts.reshape(-1)>0).sum());low,high=wilson(changed,total)
+            rates.append(changed/total);lows.append(low);highs.append(high)
+        axes[1,0].errorbar([r["eta"] for r in selected],rates,
+            yerr=[np.asarray(rates)-lows,np.asarray(highs)-rates],fmt="o-",ms=4,capsize=2,color=COLORS[i],label=loss)
+    for i,mode in enumerate(("raw","matched")):
+        selected=[select(scale_summary,rule=rule,mode=mode) for rule in RULES]
+        centers=np.asarray([r["median"] for r in selected]);low=np.asarray([r["ci_low"] for r in selected]);high=np.asarray([r["ci_high"] for r in selected])
+        axes[1,1].errorbar(centers,np.arange(9)+(i-.5)*.15,xerr=[centers-low,high-centers],fmt="o",ms=3,capsize=2,color=COLORS[i],label=mode)
+    axes[0,0].set(title="a  Task and complete-layer loss gradients",xlabel="Step size",ylabel="Median relative prediction error")
+    axes[0,1].set(title="b  Parameter freezing isolates interference",xticks=range(3),xticklabels=("All","Own layer","Upstream"),ylabel="Median ||interference|| / ||self||")
+    axes[1,0].set(title="c  Observed-layer gate changes",xlabel="Step size",ylabel="Fraction of development networks",xscale="log",ylim=(-.03,1.03))
+    axes[1,1].set(title="d  Same draws, constant bank rescaling",xlabel="Median compatibility score",xscale="log",yticks=range(9),yticklabels=LABELS)
+    axes[1,1].invert_yaxis();axes[1,1].tick_params(axis="y",labelsize=7)
+    for ax in axes.flat:ax.legend(fontsize=7)
+    save(fig,"fig_inference_mechanism_controls")
+    fit_summary=[]
+    for row in fitting["results"]:
+        converged=np.asarray(row["converged"],dtype=bool)
+        attained=np.asarray(row["fit_attained"],dtype=bool)
+        predicted=np.asarray(row["prediction_error"],dtype=float)
+        predicted=np.where(converged & attained,predicted,np.nan)
+        center,low,high=median_ci(predicted)
+        norms=np.asarray(row["operator_frobenius_norm"],dtype=float)
+        norms=np.where(converged & attained,norms,np.nan)
+        fit_summary.append({"rule":row["rule"],"method":row["method"],"rtol":row["rtol"],"ridge_fraction":row["ridge_fraction"],
+            "networks":len(attained),"converged":int(converged.sum()),"valid_psd_fits":int((converged&attained).sum()),
+            "prediction_networks":len(finite(predicted)),"prediction_median":center,"prediction_ci_low":low,"prediction_ci_high":high,
+            "operator_norm_median":float(np.median(finite(norms))) if len(finite(norms)) else math.nan,
+            "fit_error_median":float(np.median(row["fit_relative_error"])),
+            "max_projected_gradient":float(np.max(row["projected_gradient"])),"iterations":row["iterations"]})
+    write_csv(DATA / "inference_fit_sensitivity.csv",fit_summary)
+    def number(value):
+        if not math.isfinite(value):return "---"
+        mantissa,exponent=f"{value:.2e}".split("e")
+        return f"${mantissa}\\cdot10^{{{int(exponent)}}}$"
+    table=[r"\begin{tabular}{lrrrr}",r"\hline",r"Rule & $\lambda/c$ & PSD fits & Prediction error & $\|K\|_F$\\",r"\hline"]
+    for rule in fitting["configuration"]["rules"]:
+        selected=[r for r in fit_summary if r["rule"]==rule and (r["method"]=="ridge" or r["rtol"]==1e-9)]
+        for row in selected:
+            label=LABELS[RULES.index(rule)].replace("%",r"\%")
+            table.append(f"{label} & {row['ridge_fraction']:g} & {row['valid_psd_fits']}/20 & " +
+                         number(row["prediction_median"]) + " & " + number(row["operator_norm_median"]) + r"\\")
+    table.extend([r"\hline",r"\end{tabular}"])
+    TABLES.mkdir(parents=True,exist_ok=True)
+    (TABLES / "inference_regularization.tex").write_text("\n".join(table)+"\n")
+    return paths
+
+
 def tables_and_macros(rows, paired, mean, accuracy, predictions):
     TABLES.mkdir(parents=True, exist_ok=True)
     table = [r"\begin{tabular}{lrrr}", r"\hline", r"Update rule & Operator & Pearson & One direction\\", r"\hline"]
@@ -298,15 +398,16 @@ def main():
     robustness_figure(rows)
     mean_figure(mean, accuracy)
     extra_inputs = diagnostics_figure()
+    extra_inputs.extend(development_controls())
     tables_and_macros(rows, paired, mean, accuracy, predictions)
-    names = ("fig_inference_primary", "fig_inference_robustness", "fig_inference_mean", "fig_inference_diagnostics")
+    names = ("fig_inference_primary", "fig_inference_robustness", "fig_inference_mean", "fig_inference_diagnostics", "fig_inference_mechanism_controls")
     inputs = [DATA / name for name in ("inference_evaluation.csv", "inference_paired_comparison.csv", "inference_mean_evaluation.csv", "inference_mean_accuracy.csv", "inference_original_baseline.csv")]
     save_json(DATA / "inference_publication.provenance.json", {
         "script_sha256": digest(__file__), "inputs": {str(p):digest(p) for p in (*inputs, *extra_inputs)},
         "figure_hashes": {str(FIGURES/f"{n}.pdf"):digest(FIGURES/f"{n}.pdf") for n in names},
         "bootstrap": "2000 resamples of independent network summaries; fixed seeds",
         "source_evaluation_manifest": str(provenance_path), "source_evaluation_manifest_sha256": digest(provenance_path)})
-    print("Built four publication figures and supporting tables")
+    print(f"Built {len(names)} publication figures and supporting tables")
 
 
 if __name__ == "__main__":

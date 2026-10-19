@@ -12,11 +12,11 @@ INFERENCE_REPORTS = [f"data/generated/inference/confirmatory-v1/{profile}-{split
 MEAN_REPORTS = [f"data/generated/inference/mean-v1/primary-{split}-s{shard:02}.json"
                 for split in ("calibration", "evaluation") for shard in range(10)]
 INFERENCE_FIGURE_NAMES = ["fig_inference_primary", "fig_inference_robustness",
-                          "fig_inference_mean", "fig_inference_diagnostics"]
+                          "fig_inference_mean", "fig_inference_diagnostics", "fig_inference_mechanism_controls"]
 INFERENCE_FIGURES = [f"results/figures/{n}.{s}" for n in INFERENCE_FIGURE_NAMES for s in ("pdf", "png")]
-INFERENCE_TABLES = [f"results/tables/inference_{n}.tex" for n in ("primary", "numbers", "prediction")]
+INFERENCE_TABLES = [f"results/tables/inference_{n}.tex" for n in ("primary", "numbers", "prediction", "regularization")]
 INFERENCE_PAPER_FIGURES = [f"paper/generated/figures/{n}.pdf" for n in INFERENCE_FIGURE_NAMES]
-INFERENCE_PAPER_TABLES = [f"paper/generated/inference_{n}.tex" for n in ("primary", "numbers", "prediction")]
+INFERENCE_PAPER_TABLES = [f"paper/generated/inference_{n}.tex" for n in ("primary", "numbers", "prediction", "regularization")]
 
 MAIN_FIGURE_NAMES = [
     "fig_main_compact",
@@ -252,12 +252,17 @@ rule inference_publication:
         "results/data/inference_mean_evaluation.provenance.json",
         "data/generated/inference/pilot-q8-trained.json",
         "data/generated/inference/sensitivity-development.json",
+        "data/generated/inference/mechanism-controls-development.json",
+        "data/generated/inference/fit-sensitivity-development.json",
         "analysis/learning_rule_inference/publication.py",
     output:
         INFERENCE_FIGURES,
         INFERENCE_TABLES,
         "results/data/inference_prediction_summary.csv",
         "results/data/inference_layerwise_summary.csv",
+        "results/data/inference_mechanism_controls.csv",
+        "results/data/inference_scale_sensitivity.csv",
+        "results/data/inference_fit_sensitivity.csv",
         "results/data/inference_publication.provenance.json",
     shell:
         "PYTHONPATH=. .venv/bin/python -P -m analysis.learning_rule_inference.publication"
@@ -274,3 +279,29 @@ rule collect_inference_assets:
         "paper/generated/analysis_provenance.json",
     shell:
         "python tools/collect_inference_assets.py"
+
+
+rule inference_mechanism_controls:
+    input:
+        parent="data/generated/inference/matched-development-p0.json",
+        arrays="data/generated/inference/matched-development-p0.pt",
+        configuration="configs/inference/mechanism_controls_v1.json",
+        source="analysis/learning_rule_inference/mechanism_controls.py",
+    output:
+        "data/generated/inference/mechanism-controls-development.json",
+        "data/generated/inference/mechanism-controls-development.pt",
+    shell:
+        "PYTHONPATH=. .venv/bin/python -P -m analysis.learning_rule_inference.mechanism_controls"
+
+
+rule inference_fit_sensitivity:
+    input:
+        parent="data/generated/inference/matched-development-p0.json",
+        arrays="data/generated/inference/matched-development-p0.pt",
+        configuration="configs/inference/fit_sensitivity_v1.json",
+        source="analysis/learning_rule_inference/fit_sensitivity.py",
+    output:
+        "data/generated/inference/fit-sensitivity-development.json",
+        "data/generated/inference/fit-sensitivity-development.pt",
+    shell:
+        "PYTHONPATH=. .venv/bin/python -P -m analysis.learning_rule_inference.fit_sensitivity"

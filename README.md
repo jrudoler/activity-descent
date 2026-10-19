@@ -13,6 +13,7 @@ bounded by the observation model, finite-step effects, and the chosen null
 calibration. See the [progress record](docs/RESEARCH_PROGRESS.md),
 [research plan](RESEARCH_PLAN.md), [primary protocol](docs/CONFIRMATORY_PROTOCOL.md),
 [mean-response protocol](docs/MEAN_RESPONSE_PROTOCOL.md),
+[supporting development controls](docs/DEVELOPMENT_CONTROLS.md),
 [derivation](docs/learning_rule_identification.md), and
 [related-work audit](docs/related_work_audit.md).
 
@@ -95,6 +96,11 @@ The main evaluator refuses incomplete splits, duplicate identities, changed
 scientific sources, or corrupted arrays. It retains undefined results and fit
 nonattainment. Final CSVs, figures, and provenance are versioned in `results/`;
 large checkpoints and job logs under `data/generated/inference/` are ignored.
+
+The bounded development follow-ups have explicit `mechanism-controls` and
+`fit-sensitivity` CPU job modes, as well as Snakemake rules. They compare task
+and synthetic layer losses, raw and matched scales, and PSD-fit regularization
+without changing the locked main evaluation.
 
 To update publication artifacts from already verified, frozen summaries without
 re-running experiments:
