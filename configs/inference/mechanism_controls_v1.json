@@ -1,0 +1,14 @@
+{
+  "protocol": "development-mechanism-controls-v1",
+  "status": "Post-primary exploratory completion of prespecified mechanism and raw-scale controls; development networks only",
+  "checkpoint_step": 1000,
+  "etas": [0.00001, 0.0001, 0.001, 0.01],
+  "loss_controls": ["task", "synthetic-layer"],
+  "parameter_masks": ["all", "own", "upstream"],
+  "synthetic_gradient": "Isotropic direction in the complete last hidden layer, norm matched to the task activity gradient per network",
+  "raw_scale_eta": 0.0001,
+  "raw_scale_sigma": 0.0001,
+  "feedback_mixtures": [0.1, 1.0],
+  "node_repeats": [1, 32, 512],
+  "shared_node_repeats": [1, 512]
+}

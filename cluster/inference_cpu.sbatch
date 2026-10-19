@@ -49,5 +49,8 @@ case "$mode" in
     sensitivity)
         inference_python -m analysis.learning_rule_inference.sensitivity --device cpu "$@"
         ;;
+    mechanism-controls)
+        inference_python -m analysis.learning_rule_inference.mechanism_controls --device cpu "$@"
+        ;;
     *) printf 'Unknown experiment mode: %s\n' "$mode" >&2; exit 2 ;;
 esac
