@@ -1,7 +1,7 @@
 # Learning rule inference research progress
 
 Updated 2026-10-19. The goal is active. The main CPU study, conditional-mean
-study, four publication figures, supporting tables, and revised compiled draft
+study, five publication figures, supporting tables, and revised compiled draft
 are complete. Actual B200 validation, benchmarking, and replication remain
 queued; they must succeed before the full goal can be completed. No permission
 or scientific choice is currently required from the user.
@@ -11,7 +11,8 @@ or scientific choice is currently required from the user.
 The analysis and manuscript are separate repositories on
 `codex/learning-rule-inference`. The main experiment was locked at analysis
 revision `69021a5`; the mean-response protocol at `7bde9b9`. The current workflow
-and CUDA comparison entrypoints were committed at `8a9a8e3`. Scientific source
+and CUDA comparison entrypoints were first committed at `8a9a8e3`; the added
+development controls and asset workflow are at `bd2ed9a`. Scientific source
 hashes are retained in the result manifests. Changes to publication code do not
 alter the frozen experiment implementations.
 
@@ -28,8 +29,8 @@ and undefined/tiny-value handling.
 | --- | --- |
 | M0 Setup and GPU validation | CPU checks complete; actual B200 checks and benchmarks queued |
 | M1 Layerwise diagnostics | Original 20-run classification simulation reproduced; pooled correlations match the untouched original to 1e-12; hidden/output statistics separated |
-| M2 Bounded mechanism checks | Development step-size and parameter-freezing experiments complete; exact shared PSD and physical node sensitivity measured |
-| M3 Identification | Exact conditions, rank/nullspace audit, empirical cutoffs, supported held-out prediction, and attained/infimum distinction implemented and executed |
+| M2 Bounded mechanism checks | Matched-state task/synthetic layer losses, step sizes 1e-5 through 1e-2, parameter freezing, signed coordinate arrays, exact shared PSD, and raw/matched scales executed |
+| M3 Identification | Exact conditions, rank/nullspace audit, empirical cutoffs, held-out prediction, nonattainment, tolerance checks, and ridge sensitivity executed |
 | M4 Rule comparison | 3,200-network main study and 400-network conditional-mean analysis complete on CPU, with independent calibration/evaluation and uncertainty |
 | M5 Paper and workflow | Revised full draft compiles with resolved references; four figures and generated tables included; GPU evidence and final cross-repository audit remain |
 
@@ -109,6 +110,44 @@ first-order operator residual about 8e-16; its finite-step score decreases from
 even without estimator bias. This explains a mechanism, not every individual
 shared-control rejection or a revised main cutoff.
 
+## Additional audited development controls
+
+The completion audit found planned task/synthetic-loss and raw-scale controls
+missing from the first full draft. Jobs 9161103 and 9161259 executed these
+follow-ups on the existing 20 development checkpoints; they do not alter the
+locked primary test or its calibration/evaluation splits.
+
+At the same width-64 checkpoint and input, task and synthetic complete-layer
+gradients are norm matched and held fixed over eta=1e-5,1e-4,1e-3,1e-2, with
+all/own/upstream parameter masks. At eta=1e-4, median full prediction errors
+are 2.10e-6 and 1.84e-6, while diagonal errors remain 0.192 and 0.185. The raw
+arrays retain signed self/interference and individual coordinate loss
+contributions for hidden layers and output, including both gate directions.
+The synthetic layer loss is an oracle mechanism control outside the actual
+decoder's accessible gradient span.
+
+Same-draw raw and magnitude-matched banks verify exact replay of the common
+scalar. First-order operator-score differences are at most 4.45e-16. Finite-step
+shared R=1 node scores differ: median raw 5.70e-5 versus matched 5.82e-6. The 10%
+feedback score is about 0.00905 for either scale. This preserves the feedback
+contrast while quantifying scale-dependent errors in equivalence controls.
+
+PSD-fit sensitivity uses four rules, three pseudoinverse tolerances, and three
+positive ridge fractions. The unregularized attained counts and prediction
+medians are unchanged across tolerances 1e-7 through 1e-11 in these 20 networks.
+All 240 positive-ridge fits meet the recorded stationarity threshold. Three
+independent diagonal analytic cases validate the auxiliary solver to maximum
+absolute error below 2.1e-11. Ridge biases prediction even for GD: its median
+reserved-probe error is 1.14e-5 without ridge and 0.00536 at lambda/c=0.001.
+These are supporting optimizer diagnostics, never additional rejections.
+
+Results are in `inference_mechanism_controls.csv`,
+`inference_scale_sensitivity.csv`, and `inference_fit_sensitivity.csv` under
+`results/data/`. The fifth figure and regularization table appear in the
+manuscript's additional-development-controls appendix. The requirement audit is
+in `docs/COMPLETION_AUDIT.md`.
+
+
 ## Jobs and scheduling
 
 The user's Wharton PhD GPU group/partition limit is **three concurrent GPU
@@ -126,6 +165,8 @@ became available and completed while B200 requests remained queued.
 | 9158833 | Locked main CPU array, 160 shards, concurrency 12 | All 160 completed 0:0 |
 | 9159329 | Locked mean CPU array, 20 shards, concurrency 6 | All 20 completed 0:0 |
 | 9159778 | Development-only shared-PSD sensitivity | Completed 0:0 |
+| 9161103 | Development task/synthetic losses and same-draw raw/matched banks | Completed 0:0 in 31s |
+| 9161259 | Development PSD tolerance/ridge sensitivity and analytic solver checks | Completed 0:0 in 11s |
 | 9156748 | Full B200 preflight | Pending; preserve handle |
 | 9158857 | B200 MIG45 preflight, 6 CPUs, 48G, 10 min | Pending; preserve handle |
 | 9160192 | B200 MIG45 validation, exact-checkpoint comparison, primary CUDA replication | Pending afterok:9158857; preserve handle |
@@ -149,7 +190,7 @@ MIG45 accepts six CPUs and 48G despite the filter's displayed 56G table entry.
 - `results/data/inference_mean_evaluation.csv`, `inference_mean_accuracy.csv`: mean decisions and convergence.
 - `results/data/inference_original_baseline.csv`, `inference_layerwise_summary.csv`: original-task continuity and diagnostics.
 - Matching provenance JSONs retain raw file identities, source hashes, and job metadata.
-- Four `results/figures/fig_inference_*.pdf`/`.png` figures and three `results/tables/inference_*.tex` files supply the manuscript.
+- Five `results/figures/fig_inference_*.pdf`/`.png` figures and four `results/tables/inference_*.tex` files supply the manuscript.
 - `paper/activity_dynamics.tex` is the revised full draft; its PDF compiles using pinned Tectonic 0.17.0 with resolved references. `paper/generated/build_provenance.json` records source/asset/PDF hashes.
 
 The parent `Snakefile` has explicit CPU generation, aggregation, publication,
