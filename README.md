@@ -1,84 +1,133 @@
-# Gradient Descent in Weight Space Is Kernel Descent in Activity Space
+# Inferring learning rules from activity responses
 
-A short paper showing that gradient descent on network weights induces **kernel descent** in the space of neural activities, governed by a neural-tangent-kernel-style Gram matrix on internal neurons.
+Controlled target interventions test whether learning-induced activity changes
+share an unknown symmetric positive-semidefinite operator. The study compares
+this constraint with scalar alignment, measures observational equivalences, and
+separates finite stochastic update banks from conditional mean responses.
 
-**Key result:** Weight gradient descent induces kernel-mediated activity changes. Neuronwise descent is guaranteed when its self-term dominates gradient-weighted interference and finite-step error; matrix diagonal dominance alone is insufficient. See Appendix C of the manuscript.
+The completed CPU campaign contains 3,200 independent network realizations
+across eight profiles, with separate calibration and evaluation splits. The
+primary operator test detects a partially biased fixed-feedback construction in
+200/200 held-out runs, compared with 6/200 for Pearson alignment. This result is
+bounded by the observation model, finite-step effects, and the chosen null
+calibration. See the [progress record](docs/RESEARCH_PROGRESS.md),
+[research plan](RESEARCH_PLAN.md), [primary protocol](docs/CONFIRMATORY_PROTOCOL.md),
+[mean-response protocol](docs/MEAN_RESPONSE_PROTOCOL.md),
+[derivation](docs/learning_rule_identification.md), and
+[related-work audit](docs/related_work_audit.md).
 
-The [learning rule inference research plan](RESEARCH_PLAN.md) describes the next
-study: calibrated tests using repeated activity probes and comparisons of
-learning rules, with experiments targeting Betty's B200 GPUs.
+## Setup and checks
 
-## Reproduce the results
-
-Install `uv`, then run the complete dependency graph from the repository root:
-
-The manuscript is an independent Git repository checked out at `paper/`. New
-analysis clones must also obtain the manuscript repository at that path before
-running the complete workflow:
+The manuscript is an independent repository at `paper/`, not a submodule. A new
+analysis checkout also needs the corresponding manuscript checkout:
 
 ```bash
 git clone git@github.com:jrudoler/activity-descent-manuscript.git paper
-```
-
-See `paper/HANDOFF.md` for research status and cluster setup.
-
-```bash
-uv run snakemake --cores 1
-```
-
-This regenerates seeded simulation outputs, publication-ready figures,
-manuscript assets, and the compiled paper. The Snakemake dependency graph is
-the authoritative provenance record.
-To rebuild one step, use `uv run snakemake --cores 1 --forcerun <rule_name>`.
-
-## Learning rule inference development
-
-The new study uses the optional PyTorch dependency on CPU or CUDA:
-
-```bash
 uv sync --frozen --extra gpu
-uv run --frozen --extra gpu python -m analysis.learning_rule_inference.validate --device cpu
+PYTHONPATH=. .venv/bin/python -P -m analysis.learning_rule_inference.validate --device cpu
 ```
 
-The [operator test derivation](docs/learning_rule_identification.md) states the
-observation assumptions, exact compatibility conditions, and equivalences.
-Submit cluster checks and throughput measurements from the repository root:
+Use the corresponding research branch in both repositories. The optional `gpu`
+extra installs PyTorch for both CPU and CUDA execution. The locked Linux runtime
+is Python 3.14 and PyTorch 2.11.0+cu128. CUDA requests fail if no GPU is available.
+The 18 scientific checks compare independent NumPy Jacobians, differentiation,
+restored updates, PSD examples, and perturbation implementations.
+
+## Betty experiments
+
+Submit from the repository root after committing the scientific code. Jobs run
+from immutable per-job source archives, retain source/configuration/array hashes,
+and verify completed shards before resuming. Run substantial work in allocations.
 
 ```bash
 mkdir -p data/generated/inference
-sbatch cluster/inference_cpu.sbatch preflight
+sbatch --cpus-per-task=1 cluster/inference_cpu.sbatch validate
 sbatch cluster/inference_gpu.sbatch preflight
+sbatch --array=0-159%12 --cpus-per-task=1 cluster/inference_cpu.sbatch campaign-array \
+  --configuration configs/inference/confirmatory_v1.json \
+  --output-dir data/generated/inference/confirmatory-v1
 ```
 
-Both scripts save completed validation reports and benchmarks with source,
-runtime, and Slurm provenance. GPU jobs request one B200. Account for the Wharton
-PhD scheduler limit when submitting concurrent GPU jobs; independent CPU shards
-can run alongside them. Large checkpoint/probe arrays and scheduler logs under
-`data/generated/inference/` are local outputs. Final scientific summaries and
-figures belong in `results/`.
+After the primary profile's 20 calibration/evaluation shards finish:
 
-## Repository layout
+```bash
+sbatch --array=0-19%6 --cpus-per-task=1 cluster/inference_cpu.sbatch mean-array \
+  --configuration configs/inference/mean_v1.json \
+  --input-dir data/generated/inference/confirmatory-v1 \
+  --output-dir data/generated/inference/mean-v1
+```
 
-- [`Snakefile`](Snakefile) — the executable workflow and artifact lineage
-- [`analysis/`](analysis/) — one explicit entrypoint per workflow step
-- [`data/generated/`](data/generated/) — machine-generated intermediates
-- [`results/`](results/) — final scientific tables and figures
-- [`paper/activity_dynamics.tex`](paper/activity_dynamics.tex) — manuscript source
-- `paper/activity_dynamics.pdf` — locally compiled paper
-- [`index.html`](index.html) — static interactive demo for GitHub Pages
+The Wharton PhD GPU group/partition permits **three concurrent GPU jobs**. Each
+GPU job here requests one GPU. CPU arrays run concurrently with that queue;
+choose CPU/GPU work using measured execution time plus queue delay. A B200 MIG
+preflight can use `--partition=b200-mig45 --cpus-per-task=6 --mem=48G`; full B200
+jobs use the script's 28 CPUs and 224G. The scheduler's displayed MIG45 table says
+56G, but the accepted allocation is 48G. Preserve existing job handles and check
+the progress record before submitting overlapping work.
 
-## Manuscript collaboration
+The `replicate-primary` GPU mode validates CUDA, compares four deterministic
+probe banks at the exact saved CPU checkpoints, then repeats the primary
+200-network evaluation on CUDA. Device random-number streams differ, so CUDA
+retraining is a distributional replication, not a paired numerical check. GPU
+execution remains pending in the current draft.
 
-`paper/` has its own Git history and is ignored by this analysis repository.
-Commit manuscript and figure-asset changes from inside `paper/` (or use
-`git -C paper ...`). See `paper/README.md` for standalone compilation and Overleaf
-setup. The analysis repository's existing history retains the earlier paper
-versions.
+After all ten CUDA replication shards complete, evaluate them with the original
+CPU cutoffs, without recalibration:
 
-`collect_paper_assets` copies analysis figures into `paper/generated/figures/`;
-review and commit those updates in the manuscript repository after regeneration.
-The complete workflow compiles the paper using latexmk from its own directory.
+```bash
+PYTHONPATH=. .venv/bin/python -P -m analysis.learning_rule_inference.evaluate_gpu
+```
 
-## Interactive Demo
+## Reproduce summaries, figures, and the manuscript
 
-**[Launch the interactive demo](https://koerding.github.io/ADescent/)** — the runnable demo is the static browser page in [`index.html`](index.html), served directly by GitHub Pages with no install or build step. Adjust width, depth, and learning rate to see how the kernel and diagonal approximation behave.
+The Snakemake graph contains CPU shard generation, strict aggregation, the
+original-task continuity check, bounded development diagnostics, publication
+figures, asset collection, and compilation. Once raw experiments are present:
+
+```bash
+XDG_CACHE_HOME=/tmp/activity-descent-cache .venv/bin/snakemake --cores 1
+```
+
+For a fresh experiment directory this graph can generate all CPU experiments;
+run it inside a CPU allocation with `--cores` matched to the allocation. The
+Slurm arrays above usually make better use of independently available CPUs.
+The main evaluator refuses incomplete splits, duplicate identities, changed
+scientific sources, or corrupted arrays. It retains undefined results and fit
+nonattainment. Final CSVs, figures, and provenance are versioned in `results/`;
+large checkpoints and job logs under `data/generated/inference/` are ignored.
+
+To update publication artifacts from already verified, frozen summaries without
+re-running experiments:
+
+```bash
+XDG_CACHE_HOME=/tmp/activity-descent-cache .venv/bin/snakemake collect_inference_assets \
+  --cores 1 --allowed-rules inference_publication collect_inference_assets
+python tools/build_paper.py
+```
+
+Compilation uses latexmk when available, otherwise the pinned Tectonic binary:
+
+```bash
+python tools/install_tectonic.py
+python tools/build_paper.py --compiler tectonic
+```
+
+The installer verifies the official release archive's SHA-256. The build fails
+on unresolved references and records source, figure, compiler, and PDF hashes
+in `paper/generated/build_provenance.json`. Compiled PDFs are ignored by Git.
+`paper/activity_dynamics.pdf` is the full draft; the preserved extended abstract
+is `paper/archive/neurreps_extended_abstract.tex`. The separate COSYNE work is
+unchanged.
+
+## Original activity-descent study
+
+The original figure entrypoints and browser demonstration remain available:
+
+```bash
+XDG_CACHE_HOME=/tmp/activity-descent-cache .venv/bin/snakemake legacy_figures --cores 1
+```
+
+[Interactive demo](https://koerding.github.io/ADescent/) explores kernel and
+diagonal approximations. It illustrates the original mechanism and is not the
+new inference experiment. Manuscript changes and analysis changes have separate
+Git histories; review and commit each repository independently.

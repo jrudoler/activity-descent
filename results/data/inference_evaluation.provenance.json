@@ -1,0 +1,1433 @@
+{
+  "protocol": {
+    "protocol": "matched-operator-inference-v1",
+    "locked": true,
+    "alpha": 0.05,
+    "methods": [
+      "operator",
+      "cosine",
+      "pearson",
+      "downhill",
+      "population",
+      "reciprocity",
+      "linearity",
+      "single_direction"
+    ],
+    "primary_contrast": {
+      "profile": "primary",
+      "checkpoint_step": 1000,
+      "response_noise": 0.0,
+      "alternative": "feedback-0.1",
+      "baseline": "pearson"
+    },
+    "primary_score": "max(reciprocity, negative_quadratic, linearity)",
+    "null_controls": [
+      "gd",
+      "preconditioned"
+    ],
+    "calibration": "maximum of separate split-conformal upper cutoffs for both null controls; strict greater-than rejection",
+    "loss_matching_target": 0.4,
+    "loss_matching_factor": 2.0,
+    "loss_matching_selection": "nearest available checkpoint in absolute log training loss; eligible between target/factor and target*factor",
+    "shard_size": 20,
+    "eta": 0.0001,
+    "sigma": 0.0001,
+    "training_steps": [
+      0,
+      200,
+      1000
+    ],
+    "training_rates": {
+      "gd": 0.005,
+      "preconditioned": 0.003,
+      "feedback": 0.003,
+      "node": 0.001
+    },
+    "training_node_repeats": 32,
+    "heldout_probes": 16,
+    "magnitude_probes": 16,
+    "feedback_mixtures": [
+      0.1,
+      1.0
+    ],
+    "node_repeats": [
+      1,
+      32,
+      512
+    ],
+    "shared_node_repeats": [
+      1,
+      512
+    ],
+    "response_noise": [
+      0.0,
+      0.01
+    ],
+    "profiles": [
+      {
+        "name": "primary",
+        "width": 64,
+        "depth": 2,
+        "outputs": 8,
+        "training_rule": "gd"
+      },
+      {
+        "name": "preconditioned-trained",
+        "width": 64,
+        "depth": 2,
+        "outputs": 8,
+        "training_rule": "preconditioned"
+      },
+      {
+        "name": "feedback-trained",
+        "width": 64,
+        "depth": 2,
+        "outputs": 8,
+        "training_rule": "feedback",
+        "training_feedback_mixture": 0.1
+      },
+      {
+        "name": "node-trained",
+        "width": 64,
+        "depth": 2,
+        "outputs": 8,
+        "training_rule": "node"
+      },
+      {
+        "name": "rank-two",
+        "width": 64,
+        "depth": 2,
+        "outputs": 2,
+        "training_rule": "gd"
+      },
+      {
+        "name": "rank-sixteen",
+        "width": 64,
+        "depth": 2,
+        "outputs": 16,
+        "training_rule": "gd"
+      },
+      {
+        "name": "width-thirty-two",
+        "width": 32,
+        "depth": 2,
+        "outputs": 8,
+        "training_rule": "gd"
+      },
+      {
+        "name": "depth-three",
+        "width": 64,
+        "depth": 3,
+        "outputs": 8,
+        "training_rule": "gd"
+      }
+    ],
+    "splits": {
+      "development": {
+        "seed_start": 110000,
+        "runs": 20
+      },
+      "calibration": {
+        "seed_start": 200000,
+        "runs": 200
+      },
+      "evaluation": {
+        "seed_start": 300000,
+        "runs": 200
+      }
+    }
+  },
+  "configuration_sha256": "90de1209d858e67bc5f90f54c5b420df0bac84b8c593ed75250d6a0a6af06b8c",
+  "science_sources": {
+    "core.py": "4f49eb19f6c0591078e6a0ac03a28ab3a8037031115be8b6a0d3a7d195da4ce1",
+    "operators.py": "9b7a51d53236ef8170ffabc994b4de42d9a3258d25142b54e83d0f1354a49b5c",
+    "campaign.py": "35429d8c838eb09720cc67cbaa7d0342324ac277cdcd50db44d4acd195cf840c",
+    "diagnostics.py": "5264ed24d571550165ee58ae20b5d5f59dbe4175432fab25b058f0c5d907d2b1"
+  },
+  "completed_shards": [
+    {
+      "path": "data/generated/inference/confirmatory-v1/depth-three-calibration-s00.json",
+      "sha256": "c03df486927025e94c7343d58f1e598a8b856ad10ead7e52c37b1e8615fd6ec3",
+      "arrays": "data/generated/inference/confirmatory-v1/depth-three-calibration-s00.pt",
+      "arrays_sha256": "bf0add4917fe0b8749f3084e4faad5c3ef26e1993c5ba4a2be732c92449aacc2",
+      "job_id": "9159135",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/depth-three-calibration-s01.json",
+      "sha256": "368c7efd3aceecedac5d7dcf95c7b6cab28e0f431062a1c674492c6f662ef7e3",
+      "arrays": "data/generated/inference/confirmatory-v1/depth-three-calibration-s01.pt",
+      "arrays_sha256": "75944f1952dc3b31ea7bd630570963902e48512e397552c09985a6cc7a7c022f",
+      "job_id": "9159136",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/depth-three-calibration-s02.json",
+      "sha256": "9e2970b076ab6b190f46fab75e53321919daa9687bc4fca54a0cf13aedc9f2af",
+      "arrays": "data/generated/inference/confirmatory-v1/depth-three-calibration-s02.pt",
+      "arrays_sha256": "a2ff054f433a57906d146108ed5c343a4badec44e4764da152e03c72cf83ba3c",
+      "job_id": "9159141",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/depth-three-calibration-s03.json",
+      "sha256": "153eaa0046542136148162113db05423388d41cb1d0be9775a95ab71f150abfd",
+      "arrays": "data/generated/inference/confirmatory-v1/depth-three-calibration-s03.pt",
+      "arrays_sha256": "947d57f53bb63ea2051c1bf15404e7c820bf565c09b8f3fc708c9894e37dce86",
+      "job_id": "9159142",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/depth-three-calibration-s04.json",
+      "sha256": "897f354ca211a1101b0f82dab8b20ec59c599f1c2bcfacf083dd6fa7c9ecbf44",
+      "arrays": "data/generated/inference/confirmatory-v1/depth-three-calibration-s04.pt",
+      "arrays_sha256": "53ceac2faec8bce5fed034edadf3497bad42ef211f2339443dd8c6da4f4c3211",
+      "job_id": "9159144",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/depth-three-calibration-s05.json",
+      "sha256": "b4b739396643f37fa3243e4c41aa0a068e0e6526c404e46eb784c89a54d3e96a",
+      "arrays": "data/generated/inference/confirmatory-v1/depth-three-calibration-s05.pt",
+      "arrays_sha256": "fe5102a4bcd9f32e352aef818fba121d57022f50f7fbf88fd78c83d5b4d39b2c",
+      "job_id": "9159145",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/depth-three-calibration-s06.json",
+      "sha256": "53a57de2b6323ceed2423636f744a696c69b468e5a1c27d6e7c82994dfb63da3",
+      "arrays": "data/generated/inference/confirmatory-v1/depth-three-calibration-s06.pt",
+      "arrays_sha256": "94615f0a2858574eeacb464208da98acf4752a7416c38e720cd2b0ce13f2a94e",
+      "job_id": "9159146",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/depth-three-calibration-s07.json",
+      "sha256": "62307610b298d9541efba6411e560769a73953e350f4c2d7c0b0343ac8b40847",
+      "arrays": "data/generated/inference/confirmatory-v1/depth-three-calibration-s07.pt",
+      "arrays_sha256": "5d38e20e4d21b2267986b0dc584082e3667a08d6b17caa56257e695d920f9994",
+      "job_id": "9159147",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/depth-three-calibration-s08.json",
+      "sha256": "a777b02c15124eac5b807aaf6992e59c7fb0bc0308b995b2e5e2e29d36e46a9d",
+      "arrays": "data/generated/inference/confirmatory-v1/depth-three-calibration-s08.pt",
+      "arrays_sha256": "50ae57bd378fdaa7d72386d0fd79c8c3d3ae621c4527c3f65b17a13ad38367e3",
+      "job_id": "9159148",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/depth-three-calibration-s09.json",
+      "sha256": "79e913a5b71a62207227059cf5c13626291455e773b073b4d257ed555dd25d44",
+      "arrays": "data/generated/inference/confirmatory-v1/depth-three-calibration-s09.pt",
+      "arrays_sha256": "0a67360e54ad4f0b79ff86da101023453bde75b1ec177b0d0963d53cdf751923",
+      "job_id": "9159149",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/depth-three-evaluation-s00.json",
+      "sha256": "e74a55ebb27240a3bdf6cb55fc7ad2094d240470a19958cef58684c0aa2cecdf",
+      "arrays": "data/generated/inference/confirmatory-v1/depth-three-evaluation-s00.pt",
+      "arrays_sha256": "cfcf0275d45481195d5f874c19e800f934a5cf6239775c5c4cdb9b575fc8b2f0",
+      "job_id": "9159150",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/depth-three-evaluation-s01.json",
+      "sha256": "5a4fe612ac58bac17634d878086e52af8e2a119a201982626ba0c910172c37ef",
+      "arrays": "data/generated/inference/confirmatory-v1/depth-three-evaluation-s01.pt",
+      "arrays_sha256": "d88de4b98590267b2bf14a283792e06a36bf5c46cd95b43d7fc6dce3b66350b4",
+      "job_id": "9159151",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/depth-three-evaluation-s02.json",
+      "sha256": "13a13a2f6ad8dbdf2035a273c34c2f92a7dabe86c3b98f05940703b06fdf8a5f",
+      "arrays": "data/generated/inference/confirmatory-v1/depth-three-evaluation-s02.pt",
+      "arrays_sha256": "be4364f06255c8e3a1aebd51c6db3655663fe31ad79d34c2da6c397df7be2013",
+      "job_id": "9159174",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/depth-three-evaluation-s03.json",
+      "sha256": "ec279da38aad2ead21357bc91c404a0e51b88d9113469def68c28913670d9273",
+      "arrays": "data/generated/inference/confirmatory-v1/depth-three-evaluation-s03.pt",
+      "arrays_sha256": "e42aca16a5c9ceafdd98f74bf071b1b9b90c8f0dc53d3a0435480744059b3fe4",
+      "job_id": "9159175",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/depth-three-evaluation-s04.json",
+      "sha256": "bb76a20c86825fe550e9c17c9143eb2e1aaedb9d40652b661ec4141dce174199",
+      "arrays": "data/generated/inference/confirmatory-v1/depth-three-evaluation-s04.pt",
+      "arrays_sha256": "93823984e34184953dcb8d47f89f471948fc7ace32e54dfa2e9ba54ef5b59727",
+      "job_id": "9159181",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/depth-three-evaluation-s05.json",
+      "sha256": "334171217807eb4e57ea32e42416ebf55a3a9caef34e1140e0f277833ecc54d0",
+      "arrays": "data/generated/inference/confirmatory-v1/depth-three-evaluation-s05.pt",
+      "arrays_sha256": "55549b0345aaa6466a549141809fac64916ef7f2fc541318a585d0e9d9f37715",
+      "job_id": "9159182",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/depth-three-evaluation-s06.json",
+      "sha256": "ee0ff33e3b543913fd6751a1b94561dee80a93f5254cd4bb5968a324a32cf787",
+      "arrays": "data/generated/inference/confirmatory-v1/depth-three-evaluation-s06.pt",
+      "arrays_sha256": "57736a7ba41b77b6402f17b8a9c99773c5602453df00a85927d5546f98d6d453",
+      "job_id": "9159184",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/depth-three-evaluation-s07.json",
+      "sha256": "b6ca6d7bbc48e7faef043a0017ad32e990263af2674fbbb506e5e845fac3a5d1",
+      "arrays": "data/generated/inference/confirmatory-v1/depth-three-evaluation-s07.pt",
+      "arrays_sha256": "0c2c4e2ac028d5130083240567f83e1a67a6ed7bf7a694648088a161eb79622a",
+      "job_id": "9159185",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/depth-three-evaluation-s08.json",
+      "sha256": "23b40dc928baa16a73d674c1c571128f4586e472fe914e89ac02d7bb6933a6b6",
+      "arrays": "data/generated/inference/confirmatory-v1/depth-three-evaluation-s08.pt",
+      "arrays_sha256": "e239390cc38714901d15fa7e0294cf0a858e101a2165a9296353180dbe953fb3",
+      "job_id": "9159186",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/depth-three-evaluation-s09.json",
+      "sha256": "0a120b31f7e8803388c9ec4e35aa30bf999b01417f591f724948e3cc600c28b2",
+      "arrays": "data/generated/inference/confirmatory-v1/depth-three-evaluation-s09.pt",
+      "arrays_sha256": "3dd0905fd76c532cd8118cd05d431cf90b0d911a140d25cf9759a8cfa886c226",
+      "job_id": "9158833",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/feedback-trained-calibration-s00.json",
+      "sha256": "1546ef20a971158ecf7909b71ded445a5daf5d8f224e81de7205c910d8b1d3cf",
+      "arrays": "data/generated/inference/confirmatory-v1/feedback-trained-calibration-s00.pt",
+      "arrays_sha256": "d0735ca823dc09304108e24962d54a1bd50f8661aae02db3824b4eefff859b1a",
+      "job_id": "9158921",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/feedback-trained-calibration-s01.json",
+      "sha256": "3173bd09251ce6c737d4ff88adf70e89e2d660ca6b484402559342763986e8b3",
+      "arrays": "data/generated/inference/confirmatory-v1/feedback-trained-calibration-s01.pt",
+      "arrays_sha256": "30aaa45501b146a60c8fbc267d1072950a7c96dc7c5c35c8e947094a8d3914d4",
+      "job_id": "9158922",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/feedback-trained-calibration-s02.json",
+      "sha256": "e16269486a1428bbfff42317bb98e7ff03f7862d29740811b260813506638bbc",
+      "arrays": "data/generated/inference/confirmatory-v1/feedback-trained-calibration-s02.pt",
+      "arrays_sha256": "3117a99de230c98bc35eaffa08f765a64092260803bcd69c034e3fdcceec8d93",
+      "job_id": "9158923",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/feedback-trained-calibration-s03.json",
+      "sha256": "1bcf0a213df664d3c5c5f65183c2abba11c130ce7b4580b7279cd09ed0c1ac45",
+      "arrays": "data/generated/inference/confirmatory-v1/feedback-trained-calibration-s03.pt",
+      "arrays_sha256": "e5e551eb1dde39e74da1268c2cd1ef3e65de57bd54c84272d24498ce08b6210d",
+      "job_id": "9158924",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/feedback-trained-calibration-s04.json",
+      "sha256": "731eca69c601ec1d65a0af600a3b8614904ae6fe22775cd1c10869f7d7d2ba1f",
+      "arrays": "data/generated/inference/confirmatory-v1/feedback-trained-calibration-s04.pt",
+      "arrays_sha256": "c865f5a7efda4d1a3c2e70ee99e7fc2a8ef1b644e20b76051d77cfad95080943",
+      "job_id": "9158925",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/feedback-trained-calibration-s05.json",
+      "sha256": "d55fa22ab9d3b91f5c167c2fdc1858e4ca1474e36823affe522d416958cf83c8",
+      "arrays": "data/generated/inference/confirmatory-v1/feedback-trained-calibration-s05.pt",
+      "arrays_sha256": "c1bf0e39601f30ee85870453437e0a03889af089a477b6db7df31f95aa4dc5eb",
+      "job_id": "9158926",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/feedback-trained-calibration-s06.json",
+      "sha256": "b3d6138c2973a61090316916217e50c60a656dddf79814047b948aa107b58972",
+      "arrays": "data/generated/inference/confirmatory-v1/feedback-trained-calibration-s06.pt",
+      "arrays_sha256": "f68d400f1e5ae77110af75adbce39a79f4416d95270c40d771f2cd91e322682a",
+      "job_id": "9158927",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/feedback-trained-calibration-s07.json",
+      "sha256": "cd39ce533db80af63afec5586295afd3dad6319948d4b1d30d80b0c8f0159642",
+      "arrays": "data/generated/inference/confirmatory-v1/feedback-trained-calibration-s07.pt",
+      "arrays_sha256": "92a4a5ce5a2e9ed60a626ec889cb9be8caaf9b2e64333154ee88b99ff999c86c",
+      "job_id": "9158928",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/feedback-trained-calibration-s08.json",
+      "sha256": "2692110a730c4d0462ec9a971d6ecacec4aeaeeaf7dd42aa9d65f43a789caa55",
+      "arrays": "data/generated/inference/confirmatory-v1/feedback-trained-calibration-s08.pt",
+      "arrays_sha256": "9ac3d6c1a8e3f15da6cf68592573bdfc7e09514a5bf4ebaa39ed7df0083223cf",
+      "job_id": "9158937",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/feedback-trained-calibration-s09.json",
+      "sha256": "10523df42542acfb7cd002c138b6b97778bf58b4830ae9d7c5068e1f4a9c9571",
+      "arrays": "data/generated/inference/confirmatory-v1/feedback-trained-calibration-s09.pt",
+      "arrays_sha256": "70909d20fc911468440d454d2643f9f34bd264b8defa81f2784c2ca7c150d5a7",
+      "job_id": "9158938",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/feedback-trained-evaluation-s00.json",
+      "sha256": "488c0b470775082abbd12941a4fa12c2e04913cb533d97d100b9e718b9d476a1",
+      "arrays": "data/generated/inference/confirmatory-v1/feedback-trained-evaluation-s00.pt",
+      "arrays_sha256": "6d173cab7979a5345346cbb8a57013ae9cc31ca29e1e1419c327522f001cb0aa",
+      "job_id": "9158939",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/feedback-trained-evaluation-s01.json",
+      "sha256": "cd701aa4c3683b51bff4fa55f30b87e298564b70a7eb02564c7766f3176ef718",
+      "arrays": "data/generated/inference/confirmatory-v1/feedback-trained-evaluation-s01.pt",
+      "arrays_sha256": "7ecea279ee41466dacf7595efbac6b9bd539ded28770208db12c7c77fa1c19a4",
+      "job_id": "9158940",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/feedback-trained-evaluation-s02.json",
+      "sha256": "fb0f691b22882c2fb7dec0fbdf64fdd5e58053e0f14a62be97c9619936ba3f1c",
+      "arrays": "data/generated/inference/confirmatory-v1/feedback-trained-evaluation-s02.pt",
+      "arrays_sha256": "615b496342da222b6a57b6b795140d582ec611e84af44fe59723c1f2ebc1344d",
+      "job_id": "9158942",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/feedback-trained-evaluation-s03.json",
+      "sha256": "8a59de05aa73c4695f778c3659cfb590a6c0079be54e9e52425f27352aa7a3d3",
+      "arrays": "data/generated/inference/confirmatory-v1/feedback-trained-evaluation-s03.pt",
+      "arrays_sha256": "c7b9a5a2603809af815f6c96025bfc6e4b5799ba96e3f326d1d6f6e78d3f3f8e",
+      "job_id": "9158943",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/feedback-trained-evaluation-s04.json",
+      "sha256": "e9d85efb7d576d2ced934d482dc6c8bea4e66166b1c03d1b57412a41e02701ae",
+      "arrays": "data/generated/inference/confirmatory-v1/feedback-trained-evaluation-s04.pt",
+      "arrays_sha256": "1ab4b2619569d005591ff3f2b50eda6a5a2de69fb33bad4af8b8cee5d60198b9",
+      "job_id": "9158944",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/feedback-trained-evaluation-s05.json",
+      "sha256": "eb4796177546a907a52f0f78c45b5ea23b8180ee2eae8cd6911228cb7556f114",
+      "arrays": "data/generated/inference/confirmatory-v1/feedback-trained-evaluation-s05.pt",
+      "arrays_sha256": "fc6140c0076b661a00f1939e01f5955c8c1d2c69ae2eba8a2e10a995507896b6",
+      "job_id": "9158945",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/feedback-trained-evaluation-s06.json",
+      "sha256": "58fb1584125316db3f2b7de0630c55f10f51324e89115f7a29115a45c43ceba8",
+      "arrays": "data/generated/inference/confirmatory-v1/feedback-trained-evaluation-s06.pt",
+      "arrays_sha256": "90c4af6438c57135863f05fa88282f3d3aae2f11ba6cb3f86727362e6015e8fa",
+      "job_id": "9158946",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/feedback-trained-evaluation-s07.json",
+      "sha256": "cdc54779f52b4137050d6889decb872a03687c626ab5270fe1e28e612c172b9d",
+      "arrays": "data/generated/inference/confirmatory-v1/feedback-trained-evaluation-s07.pt",
+      "arrays_sha256": "236dc1a4a83c83cd23b3dd23ca900e451bbda65670d8b71fca212a6544b753f2",
+      "job_id": "9158948",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/feedback-trained-evaluation-s08.json",
+      "sha256": "31078519da4f8b0473d61c2aa6a69656a57348aaf1509ef5bec0196e8df0ee36",
+      "arrays": "data/generated/inference/confirmatory-v1/feedback-trained-evaluation-s08.pt",
+      "arrays_sha256": "4d095d10c2cb3acdcc640c276c81242532bd4bac9dbbeb776304d581db85754f",
+      "job_id": "9158949",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/feedback-trained-evaluation-s09.json",
+      "sha256": "e00337deeeb0a055a79b6dfeb9175a6f6e3e397d9b477b2b4cd412427e795658",
+      "arrays": "data/generated/inference/confirmatory-v1/feedback-trained-evaluation-s09.pt",
+      "arrays_sha256": "b38a9e9e0310b300ed3ca788d8e15eb5893313e5c47625cdf226f7ca55002e32",
+      "job_id": "9158950",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/node-trained-calibration-s00.json",
+      "sha256": "0b6a46169d7c8816733af0b195ee44131015c1d27dbc84f89cea4143e3c7690f",
+      "arrays": "data/generated/inference/confirmatory-v1/node-trained-calibration-s00.pt",
+      "arrays_sha256": "c068b6ddd4e41dd117de55710fbe8dfc81104288b7172b9241218e3042c66145",
+      "job_id": "9158952",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/node-trained-calibration-s01.json",
+      "sha256": "7a0446af107246f3a6a696c067cdaa33b8c34d4ee7b6cac8f705a53dd53cc713",
+      "arrays": "data/generated/inference/confirmatory-v1/node-trained-calibration-s01.pt",
+      "arrays_sha256": "decb3cfb69f2cf31bddbfedc0edf2b66e5ed2c20b09c348a88a1bbdca9951d2f",
+      "job_id": "9158953",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/node-trained-calibration-s02.json",
+      "sha256": "4ca4cc41beff2a1e28506fc616b8e87c9a2b67292f6678d7286eee188b5a62af",
+      "arrays": "data/generated/inference/confirmatory-v1/node-trained-calibration-s02.pt",
+      "arrays_sha256": "a1cf39c19be3e9c27b7a539b860ac1a28edb110ce72c097fd72daf44a95fd491",
+      "job_id": "9158956",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/node-trained-calibration-s03.json",
+      "sha256": "e98d2140ca2e767145881fda51163e480ed1fa8409f90d1e1fba1d259b944a4d",
+      "arrays": "data/generated/inference/confirmatory-v1/node-trained-calibration-s03.pt",
+      "arrays_sha256": "b80c8be4b6b21528b43ccb882fb71d0aa0f03ee61e88e652b1f43d3a6f499374",
+      "job_id": "9158957",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/node-trained-calibration-s04.json",
+      "sha256": "acd5de5c88f289e56bd1c32c55605d19ed79e510f8628e34fc5567fe841b893f",
+      "arrays": "data/generated/inference/confirmatory-v1/node-trained-calibration-s04.pt",
+      "arrays_sha256": "4a804ab481d53d5dbcacabc7217480688251571c3b4dc8df4f3cb78d952adb9e",
+      "job_id": "9158958",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/node-trained-calibration-s05.json",
+      "sha256": "02aa8fbfbf309185b63023f46a4410a072a982afe1316d6f2f1271cd9b719875",
+      "arrays": "data/generated/inference/confirmatory-v1/node-trained-calibration-s05.pt",
+      "arrays_sha256": "ac780558b26c5f0d675621ab03a6538d8ae54e9832f2632f7086bc626266c1d6",
+      "job_id": "9158959",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/node-trained-calibration-s06.json",
+      "sha256": "914b64336c7e89914bd64d9e73331007c2ff989d8d7318dbdc70e676ab3e685b",
+      "arrays": "data/generated/inference/confirmatory-v1/node-trained-calibration-s06.pt",
+      "arrays_sha256": "383cab5db2d2a3946fee7a9b8c4d14254d75d687f06c4e8e8efca9f5dae72ea6",
+      "job_id": "9158961",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/node-trained-calibration-s07.json",
+      "sha256": "cb5e0d82a6bbab41a5fb386fec036abf2a02ca17e0f43f32cdce3d0ffb151f09",
+      "arrays": "data/generated/inference/confirmatory-v1/node-trained-calibration-s07.pt",
+      "arrays_sha256": "349e2cb65258f6958fa5e1b02249eecb0c907c46d5c52de4e6a37156db5d31de",
+      "job_id": "9158962",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/node-trained-calibration-s08.json",
+      "sha256": "18a844b68bee66543c804d7b761e95403a8080f95ad987cfc96b2aef92e06c4a",
+      "arrays": "data/generated/inference/confirmatory-v1/node-trained-calibration-s08.pt",
+      "arrays_sha256": "f4d55b6b04b5f4dc0dbb3cd2f6d502ee20b2618b188cd1fa46e461514fda4d0a",
+      "job_id": "9158963",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/node-trained-calibration-s09.json",
+      "sha256": "4fe445b71f65b9853bb4e2e4ec24b3dce5cd64b0bac7aaf9ebc1c9b8eaef6ac0",
+      "arrays": "data/generated/inference/confirmatory-v1/node-trained-calibration-s09.pt",
+      "arrays_sha256": "96bf6e80e50feb97e43afd732dfa32502377f13dc7afa10ddd9381b78238180c",
+      "job_id": "9158965",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/node-trained-evaluation-s00.json",
+      "sha256": "6ef9a66e7f2828a7ca9b509d092a5485015f33f5b7a4eb12bda89a53c288615f",
+      "arrays": "data/generated/inference/confirmatory-v1/node-trained-evaluation-s00.pt",
+      "arrays_sha256": "e734b0d42d05d21041c5006332dc29acbe919ea8df64f2acfa3bd7b7b669202f",
+      "job_id": "9158967",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/node-trained-evaluation-s01.json",
+      "sha256": "1a7176de4bd4474e78e000f6621cc21b48891bfbb996c4af40ef69ede818cc05",
+      "arrays": "data/generated/inference/confirmatory-v1/node-trained-evaluation-s01.pt",
+      "arrays_sha256": "a285ad52e5b9f9d894c7e027b31b7a9e79fc6907460bbe7d1fc3d5ace13da6f2",
+      "job_id": "9158968",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/node-trained-evaluation-s02.json",
+      "sha256": "635ad802cb56ed3e7e90e8340c0679d86c9eafa22c8bab7c3ec78701cca4a70a",
+      "arrays": "data/generated/inference/confirmatory-v1/node-trained-evaluation-s02.pt",
+      "arrays_sha256": "d60945698af703385d99cda0092e3c371782908e6d884dbd597724c95fc8a796",
+      "job_id": "9158978",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/node-trained-evaluation-s03.json",
+      "sha256": "1913cb15b54f8469fac275e601a8a31ecfca0d9d3a8bf9bf36c753e9d60d649f",
+      "arrays": "data/generated/inference/confirmatory-v1/node-trained-evaluation-s03.pt",
+      "arrays_sha256": "0265861060f6614ad798624ed6442e988fca7edd0dd4262db2bf594907b8c7a7",
+      "job_id": "9158979",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/node-trained-evaluation-s04.json",
+      "sha256": "af861bcb1affdcb3b37eee8a97e8355cd79c5b70cf2d4d2631f9156420759565",
+      "arrays": "data/generated/inference/confirmatory-v1/node-trained-evaluation-s04.pt",
+      "arrays_sha256": "c4135404e225b2f737efd290b272a5f6c38ee77862b6e9ff0820b3e7967a8d45",
+      "job_id": "9158980",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/node-trained-evaluation-s05.json",
+      "sha256": "5ae83419e803b7ac40ee5827b4cc851e8af4eb0529b35a5cff3127466dcf5c19",
+      "arrays": "data/generated/inference/confirmatory-v1/node-trained-evaluation-s05.pt",
+      "arrays_sha256": "9e96a05ee47aff35de0d68bf7edbd28b644c5f7085cf0640c166e71cbaf4cdeb",
+      "job_id": "9158981",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/node-trained-evaluation-s06.json",
+      "sha256": "09a9b156ed548c7ae7bf674a4d47e0e733db294c5ad95c88302fb5e1684c333d",
+      "arrays": "data/generated/inference/confirmatory-v1/node-trained-evaluation-s06.pt",
+      "arrays_sha256": "1fcbeacbf917efb3a22714cfec9e262a217f4ff9042742b83cf7c7f9d43833d5",
+      "job_id": "9158982",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/node-trained-evaluation-s07.json",
+      "sha256": "099c1e5cc4d9009de34983f3b61f0bbf054e69054a69bf9ed8391fbea3409307",
+      "arrays": "data/generated/inference/confirmatory-v1/node-trained-evaluation-s07.pt",
+      "arrays_sha256": "16f8adabdace8a3896cd6d8efd3d9fd326962fe8c82ee5ada72f0a9d3bd41388",
+      "job_id": "9158984",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/node-trained-evaluation-s08.json",
+      "sha256": "16768ed93119cab3d068924b4b591bd0e44ef45bc0571afdff86e2f2e42fd664",
+      "arrays": "data/generated/inference/confirmatory-v1/node-trained-evaluation-s08.pt",
+      "arrays_sha256": "2077e09bcfecd45583220b71bea83cd768803f01ab201b639576c9e67f8c49f9",
+      "job_id": "9158989",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/node-trained-evaluation-s09.json",
+      "sha256": "b81218e45857a6c1711b3f65160291e6ea87d0ff899b2a6bb651dda78de8e789",
+      "arrays": "data/generated/inference/confirmatory-v1/node-trained-evaluation-s09.pt",
+      "arrays_sha256": "1458c5b4b2d7f59d7ea766cf867349584db019acb0e7b8b87d062020788d8920",
+      "job_id": "9158990",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/preconditioned-trained-calibration-s00.json",
+      "sha256": "289b3b9fd12990232747068fccea61592d5add4d6f274883b89ee2f6feedf5a7",
+      "arrays": "data/generated/inference/confirmatory-v1/preconditioned-trained-calibration-s00.pt",
+      "arrays_sha256": "11cbb9596314bdd11b196823eafea91a22b917c0780833be493da301989c67a0",
+      "job_id": "9158864",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/preconditioned-trained-calibration-s01.json",
+      "sha256": "aebf79f1665df862b1336858c9a19109802c6742d45a252e07c1f5a4f31a444d",
+      "arrays": "data/generated/inference/confirmatory-v1/preconditioned-trained-calibration-s01.pt",
+      "arrays_sha256": "e92cdfe7781d64298e099c6276f47d7ebaa01cbfdbda295deda232b595adb87e",
+      "job_id": "9158865",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/preconditioned-trained-calibration-s02.json",
+      "sha256": "5394b77d272ddcea5af48ce838fa92fd27630f2c0bb6bd7b05c04d09561391aa",
+      "arrays": "data/generated/inference/confirmatory-v1/preconditioned-trained-calibration-s02.pt",
+      "arrays_sha256": "344c8d84f6f50e4e43144a9a322021a32413bec2e6e3777a5c4c59e98b7d29ec",
+      "job_id": "9158866",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/preconditioned-trained-calibration-s03.json",
+      "sha256": "0f4e37369b83f0e3555607895286b88b15577438982316d024f67d3b7c8815f9",
+      "arrays": "data/generated/inference/confirmatory-v1/preconditioned-trained-calibration-s03.pt",
+      "arrays_sha256": "6e9af289ec815acf839d1ef74af799a0b91a06f0e92969e4560d59b5a9a9116f",
+      "job_id": "9158867",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/preconditioned-trained-calibration-s04.json",
+      "sha256": "577d24ff1d89cb216c9f8cba3de5e3dd9587f74c220de5d8a3942975153e4728",
+      "arrays": "data/generated/inference/confirmatory-v1/preconditioned-trained-calibration-s04.pt",
+      "arrays_sha256": "a5344d8df66f3d647fa82faf6bbc9d2862d5c0166cd9fde00a12c1475d02af77",
+      "job_id": "9158876",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/preconditioned-trained-calibration-s05.json",
+      "sha256": "14d7e074aacbbf8c803e22cf62e5953bd08f9f1d179bc42573e4a81afef0a12e",
+      "arrays": "data/generated/inference/confirmatory-v1/preconditioned-trained-calibration-s05.pt",
+      "arrays_sha256": "64074a0ab4eec19fd33bfd63435b436e6040a852fba0b69f7a1a6418f4db2e38",
+      "job_id": "9158883",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/preconditioned-trained-calibration-s06.json",
+      "sha256": "076af37790fbfd75b0aaebf88c38fd87ff61ee96e33db6e64af96a81b56c41ae",
+      "arrays": "data/generated/inference/confirmatory-v1/preconditioned-trained-calibration-s06.pt",
+      "arrays_sha256": "808770c095b74abd8a5629b20fdacef3055769baa837f7f416a1ad6d1b2dd731",
+      "job_id": "9158884",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/preconditioned-trained-calibration-s07.json",
+      "sha256": "fc041855e4691ebc5abeb0b64635db938354dc99d5966b58c2df789d1e92ddc0",
+      "arrays": "data/generated/inference/confirmatory-v1/preconditioned-trained-calibration-s07.pt",
+      "arrays_sha256": "6a1142057a84db190d54575926299f1506181b902586bcc9035456bdcab76b80",
+      "job_id": "9158885",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/preconditioned-trained-calibration-s08.json",
+      "sha256": "235aaf9f1cdac9feb31f499083b6b4a4af93369140ee26b742af576886a032c7",
+      "arrays": "data/generated/inference/confirmatory-v1/preconditioned-trained-calibration-s08.pt",
+      "arrays_sha256": "83890708ca9957a020ccef9c68bd7b4ea1f5056687e8784c2f2a3258cc1632b3",
+      "job_id": "9158886",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/preconditioned-trained-calibration-s09.json",
+      "sha256": "83d470332dc4caca0a9a2b6068fe8a34fff2d4994872090a07551edf8ffbcf78",
+      "arrays": "data/generated/inference/confirmatory-v1/preconditioned-trained-calibration-s09.pt",
+      "arrays_sha256": "35df0eb1d7ec7d8aa5c2b663458c9cf9362f101cfe549c2aa4b75e1b28fe3813",
+      "job_id": "9158887",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/preconditioned-trained-evaluation-s00.json",
+      "sha256": "e96f7b8273467ea46df2fccaa6c335ac2631431e1b22fd9138ff482afc92a01b",
+      "arrays": "data/generated/inference/confirmatory-v1/preconditioned-trained-evaluation-s00.pt",
+      "arrays_sha256": "b7a2852ff162a8f1a94066530715608f0e3632a3c1d66598098a5753c7d01f9b",
+      "job_id": "9158888",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/preconditioned-trained-evaluation-s01.json",
+      "sha256": "0b6a6f87bb55bd48a8b8505171a512b8f935f555dc71c35960a0c3415d958e27",
+      "arrays": "data/generated/inference/confirmatory-v1/preconditioned-trained-evaluation-s01.pt",
+      "arrays_sha256": "76c700a5311c84c0fdb316458ff5f54bebe604670d617a34f663d48264bb7a0f",
+      "job_id": "9158889",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/preconditioned-trained-evaluation-s02.json",
+      "sha256": "6f2b0c3c79e2522570f37a44894c8f5c62b1c4073ff8af4c474b87cf82f8784c",
+      "arrays": "data/generated/inference/confirmatory-v1/preconditioned-trained-evaluation-s02.pt",
+      "arrays_sha256": "5dd70e3c4e49e1261e3dee5c710d24fe24b138aa94200b67c57869ac5537b429",
+      "job_id": "9158891",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/preconditioned-trained-evaluation-s03.json",
+      "sha256": "0b0abe2673bcf108dfc050d0e0f6516eab308da4e33b8072b0ed83207d0688d8",
+      "arrays": "data/generated/inference/confirmatory-v1/preconditioned-trained-evaluation-s03.pt",
+      "arrays_sha256": "ffa686307cdebd981647e299c5e933147c88842284d27f171a381a783a0ec208",
+      "job_id": "9158892",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/preconditioned-trained-evaluation-s04.json",
+      "sha256": "a15b67cff5c54dabbf2c302a9bedba253dd37c6a598f4d4c83c78fd16207b830",
+      "arrays": "data/generated/inference/confirmatory-v1/preconditioned-trained-evaluation-s04.pt",
+      "arrays_sha256": "1309a008e7f90184e8d4e007d41650771091f205dcac870c231770e861100284",
+      "job_id": "9158893",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/preconditioned-trained-evaluation-s05.json",
+      "sha256": "38b526721611bb3bee8dddfc3de95784759d946330e63f5d228cd21470e1354c",
+      "arrays": "data/generated/inference/confirmatory-v1/preconditioned-trained-evaluation-s05.pt",
+      "arrays_sha256": "6a385f7cf350ba12d85d46948e95f14fce7508bdb906431c83d902d6670d0d4c",
+      "job_id": "9158900",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/preconditioned-trained-evaluation-s06.json",
+      "sha256": "ffe16ba32a23477251485afb33732bd1e0eecaf568dca910aa6a540361dd07b2",
+      "arrays": "data/generated/inference/confirmatory-v1/preconditioned-trained-evaluation-s06.pt",
+      "arrays_sha256": "cb4e2b1a50aed83f4a5149cba21eeb00587bbaac3ad509727201477e432cff35",
+      "job_id": "9158913",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/preconditioned-trained-evaluation-s07.json",
+      "sha256": "66f7bc5d8d1222966dd7cff6677dfb761f118083b84bda2a0037680281818486",
+      "arrays": "data/generated/inference/confirmatory-v1/preconditioned-trained-evaluation-s07.pt",
+      "arrays_sha256": "c91381e58d4f6b87083ee583225c209fbe5c47d1e4ee7eef1a66b895e67fbfac",
+      "job_id": "9158915",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/preconditioned-trained-evaluation-s08.json",
+      "sha256": "1ce4414f1be40dfc8f7b162090859050e3e6c251dad4714e5c23a3a884262dcc",
+      "arrays": "data/generated/inference/confirmatory-v1/preconditioned-trained-evaluation-s08.pt",
+      "arrays_sha256": "4066cf529d723aa960ae7a33d6fdd34f70f3cc4bc5d4da6f2c9d9e38791980a3",
+      "job_id": "9158916",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/preconditioned-trained-evaluation-s09.json",
+      "sha256": "3271f9ee53fda752030c31dcb74070aad095cfaba6d7a4522994d84bc780c738",
+      "arrays": "data/generated/inference/confirmatory-v1/preconditioned-trained-evaluation-s09.pt",
+      "arrays_sha256": "97eafd0985dd4072f704cf6969d4496a48c6a6f64de2170a0c9d91eccee64483",
+      "job_id": "9158920",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-calibration-s00.json",
+      "sha256": "da16161f5d94c2c1e8e484714bdc9a19f7930048fa78e3a47864747ad9c09421",
+      "arrays": "data/generated/inference/confirmatory-v1/primary-calibration-s00.pt",
+      "arrays_sha256": "e1e16bea36833d71ddf7439d62a3217ab8cae2fb51e5f4d83050c29c2027b702",
+      "job_id": "9158836",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-calibration-s01.json",
+      "sha256": "e3e85c0d9dc042f26c8b90e852fcf7f296e3ae8e41a682ac2fc62d2c94850347",
+      "arrays": "data/generated/inference/confirmatory-v1/primary-calibration-s01.pt",
+      "arrays_sha256": "d86c0df15453d0b675cb7b6a6e2856d1f0ebe9427ca59262b1a3833f2197d665",
+      "job_id": "9158837",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-calibration-s02.json",
+      "sha256": "f61c8478726c6198e4e26e7dcb8437f3463c8e2f36e0f0814fc3bb4e1833c384",
+      "arrays": "data/generated/inference/confirmatory-v1/primary-calibration-s02.pt",
+      "arrays_sha256": "461987c25c0519b6a6a22c319109c52b3f645bc0f118e40321dc14095ee53ef1",
+      "job_id": "9158838",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-calibration-s03.json",
+      "sha256": "1ea0907e49371aa1b5a4f6bd3e55d820c68d9aaff25ced12beab8f61ee5b49ea",
+      "arrays": "data/generated/inference/confirmatory-v1/primary-calibration-s03.pt",
+      "arrays_sha256": "e0f453b7c3061ebbe84c2a10883ec642c01c6cb8c50a43a01c3c6a34df8ad7d4",
+      "job_id": "9158839",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-calibration-s04.json",
+      "sha256": "8037ca4451d1877333703de94e804574dd2748cb954c2ba00a77b5406ca7f4ce",
+      "arrays": "data/generated/inference/confirmatory-v1/primary-calibration-s04.pt",
+      "arrays_sha256": "c8568853f83bdc7be6b2d986af8acbee882f3b61a806b4bf2a1a0c60a302b8db",
+      "job_id": "9158840",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-calibration-s05.json",
+      "sha256": "77ef1a5d6f8325c0fedd80412c4787fb5ebaf312e54ad1d0eaeead0ca77f85f7",
+      "arrays": "data/generated/inference/confirmatory-v1/primary-calibration-s05.pt",
+      "arrays_sha256": "27d48f824b3880a9d3f338620535a445a3d5b83bd3474a7bcb9fbd7d38c6d8ee",
+      "job_id": "9158841",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-calibration-s06.json",
+      "sha256": "ba1e2b336a6840666acba0194af24010da0da514dbcbd3aa641a1dc340faccd2",
+      "arrays": "data/generated/inference/confirmatory-v1/primary-calibration-s06.pt",
+      "arrays_sha256": "1338c80a9a8d498d245c3de29544b73241cd38e1e9a0403d0a2d58f862a91722",
+      "job_id": "9158842",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-calibration-s07.json",
+      "sha256": "cb79a95845caa4c46dbe3bb56f855ce2694d539d38c0e5471aaeca7aa737895c",
+      "arrays": "data/generated/inference/confirmatory-v1/primary-calibration-s07.pt",
+      "arrays_sha256": "3a7d3be372abd969ef8bc8597f69f1d28fe45f2239f57aa6e67a4e22b82bd3fe",
+      "job_id": "9158843",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-calibration-s08.json",
+      "sha256": "9b6bd0f42a66d6abe8e141e27f974a0647f29cd6e979f32ae31cfb77e9cf502e",
+      "arrays": "data/generated/inference/confirmatory-v1/primary-calibration-s08.pt",
+      "arrays_sha256": "29e2fe1fe47b08e2edfd1e47993b457f1dff87135cb22a858b93eb32fa36752c",
+      "job_id": "9158844",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-calibration-s09.json",
+      "sha256": "11aef32133a7c6d5993b5d095a4f9b0c792adefe17eb2cdcdbe44ff29107017a",
+      "arrays": "data/generated/inference/confirmatory-v1/primary-calibration-s09.pt",
+      "arrays_sha256": "ff2685cfc49b78611415df33c7b6c644474673ee476b58e2fb05c5727e09b00d",
+      "job_id": "9158845",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-evaluation-s00.json",
+      "sha256": "7c483c035853ee61d5d0645eb89c2069118b8a6735adf0043cf6acfee38226f3",
+      "arrays": "data/generated/inference/confirmatory-v1/primary-evaluation-s00.pt",
+      "arrays_sha256": "a40cc59be9a1644cf37447408df14162c7ac96e671ea95c7a0ff134cad2f5702",
+      "job_id": "9158846",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-evaluation-s01.json",
+      "sha256": "0913c7e50bc6cc8f61ce1688d4bf91e6f6c99a0004aec56db1c3e488b7a1f3fa",
+      "arrays": "data/generated/inference/confirmatory-v1/primary-evaluation-s01.pt",
+      "arrays_sha256": "d11fc39278bbb38a94879e55aaa474793189a16949c23be5b2b1a343af029920",
+      "job_id": "9158847",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-evaluation-s02.json",
+      "sha256": "bed6b99ecf7eb72162fa479910882d7f85d67c4d3407cda41990ea5fbbbd6b9c",
+      "arrays": "data/generated/inference/confirmatory-v1/primary-evaluation-s02.pt",
+      "arrays_sha256": "fd86660d13e99baeb0e9a87f3fe7b2399c6942ea5661fcf8db0ce4ca7fdcd6bb",
+      "job_id": "9158853",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-evaluation-s03.json",
+      "sha256": "361b72c02011377b61886021ea2765f8e8c4b2bffe78e3248965b708849393d8",
+      "arrays": "data/generated/inference/confirmatory-v1/primary-evaluation-s03.pt",
+      "arrays_sha256": "6235fc825cbe05e32f992e1ed30e0b22feaff0c052fa5531c27391b984acf163",
+      "job_id": "9158854",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-evaluation-s04.json",
+      "sha256": "3bee38dbda426b7466a4a7ef6019dddf21494a09d8a0d774636bd18603af9ced",
+      "arrays": "data/generated/inference/confirmatory-v1/primary-evaluation-s04.pt",
+      "arrays_sha256": "f463dba486b229bf9847d54f866ae7c541e81355e2f1633816cf25c0cac3bede",
+      "job_id": "9158855",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-evaluation-s05.json",
+      "sha256": "2cc86b4d0ad8bfc010c2e210c143ed7a533b5e1e382d4e1878967914b892df51",
+      "arrays": "data/generated/inference/confirmatory-v1/primary-evaluation-s05.pt",
+      "arrays_sha256": "d17509d4aacc738ea8043814aea28dadeebed31b01f6ff5378225e425eac9d08",
+      "job_id": "9158856",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-evaluation-s06.json",
+      "sha256": "37f95eb2ca23eb86789c190dd5e0f6249077f08bac9a5ff7870310cb30bf3d0a",
+      "arrays": "data/generated/inference/confirmatory-v1/primary-evaluation-s06.pt",
+      "arrays_sha256": "79bf9e85be6b67243005d60c478c5a1c1709b6d80af37eadd1c8c3297e328c93",
+      "job_id": "9158858",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-evaluation-s07.json",
+      "sha256": "a1c1eab8e5677c50e4961768c30739fc6fcce1de373f851fc193c4714e9c78cf",
+      "arrays": "data/generated/inference/confirmatory-v1/primary-evaluation-s07.pt",
+      "arrays_sha256": "daf911ce6c223eaac6483f71ee1491eb38ecded1b3ccb169f46a9053042b43df",
+      "job_id": "9158861",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-evaluation-s08.json",
+      "sha256": "71caaf54828aef441fa0b8243bdafd2b700b3a3cb418871a17d62d50a118fd57",
+      "arrays": "data/generated/inference/confirmatory-v1/primary-evaluation-s08.pt",
+      "arrays_sha256": "2afc4b3cd76d9de3df04a2b6220e7ec14db283f204cc4bdd0bcd69da1f7a29fe",
+      "job_id": "9158862",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-evaluation-s09.json",
+      "sha256": "b9977db7d06efe3fbea5ce01e44892b3fd0db4fde49d72f21fc50283719791d5",
+      "arrays": "data/generated/inference/confirmatory-v1/primary-evaluation-s09.pt",
+      "arrays_sha256": "f49be4896f7b84ce9dbc67e8246c33288c468cecbb66a361c34e78e4b5faf7cc",
+      "job_id": "9158863",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-sixteen-calibration-s00.json",
+      "sha256": "7fc7af2f61ea9c1f8913e9917f3e974b7b58d22d2dc825cd6092e147bc4af17c",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-sixteen-calibration-s00.pt",
+      "arrays_sha256": "b63156b55c957ea80219861fdfb5823486de83927378d51c37a49e6350b2b1a9",
+      "job_id": "9159036",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-sixteen-calibration-s01.json",
+      "sha256": "0bd2d2207be95db40ae4b73345025af774392239df7de686c0a3f171bde4340f",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-sixteen-calibration-s01.pt",
+      "arrays_sha256": "64a9ccdf8a5a112cdc81585b5ea10312392f58082068589de2354f6c80a2391c",
+      "job_id": "9159037",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-sixteen-calibration-s02.json",
+      "sha256": "474e9442245f8ff133a2dba4bde4ab749fd729b9f0baae230db3e4a5d434ea1f",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-sixteen-calibration-s02.pt",
+      "arrays_sha256": "ef79a0e2fe04072c614a613c2044eea3b34220806429f04e61b01df7d68d15ff",
+      "job_id": "9159038",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-sixteen-calibration-s03.json",
+      "sha256": "d186daa3eacb66fb9a3c69f3ceffa48cd803d0169ff383db8222bb156de62b74",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-sixteen-calibration-s03.pt",
+      "arrays_sha256": "d2a9e4aa35f81ff384b83f0ea22cd76804d7b5662f326d99085d55a013e800fc",
+      "job_id": "9159039",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-sixteen-calibration-s04.json",
+      "sha256": "9836178b9e66f2fe7da4d3e642681833be116c82dd533bf0446fb32d48e36ed3",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-sixteen-calibration-s04.pt",
+      "arrays_sha256": "71210855a6389a560a51999de1ca1b158c5634e8920819ad309ec27c698bd777",
+      "job_id": "9159040",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-sixteen-calibration-s05.json",
+      "sha256": "c0cbac219a1e0d40ef7f2df7c3de528be0ed7aed2e9a3c0c7a081ac499ec52b4",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-sixteen-calibration-s05.pt",
+      "arrays_sha256": "4d6f09b3f95a11d2a90c3621e8987ba012e3b6ddbed90b7fb7f3a9c9c5255c26",
+      "job_id": "9159050",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-sixteen-calibration-s06.json",
+      "sha256": "adc1bc67945ef6ce82534f8fa6b5cc0671e4ac697586dbb94ff68e81983de693",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-sixteen-calibration-s06.pt",
+      "arrays_sha256": "32f46700a2a1eadf201226d5835027fb6858ea3dca3a1a5f8c7391dffe703ea1",
+      "job_id": "9159051",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-sixteen-calibration-s07.json",
+      "sha256": "aa782f1c114d48b1133d74b4f0f3f531e7dea10671c4cf60e32764fcb66e78d1",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-sixteen-calibration-s07.pt",
+      "arrays_sha256": "7e263f7575b08e46b01547d12a6ec422b97fb2227dc9c7d1922c20e86383412c",
+      "job_id": "9159057",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-sixteen-calibration-s08.json",
+      "sha256": "6e9d68a5ccd92987631098c69fcfc144c2c5d6d8b4461c24fbe980f13901d6d8",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-sixteen-calibration-s08.pt",
+      "arrays_sha256": "44d66e8fb91d1a87a76f242deb899d6dc737d5aabce7f32739ec61025813e771",
+      "job_id": "9159058",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-sixteen-calibration-s09.json",
+      "sha256": "dce80a86ab7b5851fb1b929d4e17e25ef3bfc6ccfdc19e318da4457870f35698",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-sixteen-calibration-s09.pt",
+      "arrays_sha256": "ff14ddefb2bac8b5cccae4150821f968ecdba18d50726cc6e6a07011481a12ae",
+      "job_id": "9159059",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-sixteen-evaluation-s00.json",
+      "sha256": "ed12083622a859a83073697ce6b3dafebfff6f5e4136fdcd2a5eb45b4b113bb4",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-sixteen-evaluation-s00.pt",
+      "arrays_sha256": "3e0ae172e4a63e5f9f681812dd4a75bce4dcc3c15750783de5a6e5c5d9623168",
+      "job_id": "9159060",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-sixteen-evaluation-s01.json",
+      "sha256": "57745f383ee08b615f84d05937dc88bf1310c443eff92fc32ca0dd383ab3149d",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-sixteen-evaluation-s01.pt",
+      "arrays_sha256": "f77cd2a0a600c52670177293c0f9e77e9228538558fb683f89f24d4068a6d800",
+      "job_id": "9159061",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-sixteen-evaluation-s02.json",
+      "sha256": "5e5a8218f2ac8882fc6daed91d69bfde95846dcaa7962946c8d279bc7aacbc42",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-sixteen-evaluation-s02.pt",
+      "arrays_sha256": "5da91c2aa929c2fb47c2442ef254ba7bd0fbd4030c10452bbf11330b00273214",
+      "job_id": "9159077",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-sixteen-evaluation-s03.json",
+      "sha256": "90c704e06f5533672a348d4a4f601b9596f3b01e9986dc8b5e7c78b4c98069ad",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-sixteen-evaluation-s03.pt",
+      "arrays_sha256": "a4d08a4b3cdc09bcc0cc4587701a29e518536ba41df64d81bb741d688a77f4d5",
+      "job_id": "9159078",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-sixteen-evaluation-s04.json",
+      "sha256": "43a7099b5f6cef8b29af46ac6bdda2065fbf183cefba77052f67812e673f779a",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-sixteen-evaluation-s04.pt",
+      "arrays_sha256": "21277fc7b5120e4f51a50243a621f4e2ed2a93cb75e74301217b0869720976c9",
+      "job_id": "9159079",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-sixteen-evaluation-s05.json",
+      "sha256": "5e4475051bfd4f4abc965f34e28b823a0db64c2ffbe314a181e50dbcb1f5505e",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-sixteen-evaluation-s05.pt",
+      "arrays_sha256": "cf62c5dcb075b80efa62b46521fd581e425d4e2285cf7242f3d7c5e63ae89969",
+      "job_id": "9159080",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-sixteen-evaluation-s06.json",
+      "sha256": "4d481be44acd84a910654ee762817b8bb35a540c4ac1cc6e2137e85f264df6cf",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-sixteen-evaluation-s06.pt",
+      "arrays_sha256": "6213d14d1685a6eacfe79666dd393651b774d5e0fd24f66bcebda4e2a523b904",
+      "job_id": "9159088",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-sixteen-evaluation-s07.json",
+      "sha256": "2601fa2f9fbe6c4db1e019ddb42fce45652dbff314a2b0fbad79eef5ba4d5fed",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-sixteen-evaluation-s07.pt",
+      "arrays_sha256": "0e586471841743dbe6b05db5f4f3e1216aae1420f5f60b91c74a6ee770cf31ba",
+      "job_id": "9159089",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-sixteen-evaluation-s08.json",
+      "sha256": "68d807c4bd477bfcdb453cf7a3db9fa10db047627573abbddeba0da8619a0f08",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-sixteen-evaluation-s08.pt",
+      "arrays_sha256": "70711cd6600140e6923cbb0fb64ea494088632ee55104e2d61d3942a626046b2",
+      "job_id": "9159090",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-sixteen-evaluation-s09.json",
+      "sha256": "f35270add3477e64e3afd4b766a541cb178fa0475cad09075106ba7a5e4474b4",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-sixteen-evaluation-s09.pt",
+      "arrays_sha256": "d07bb4983b75b0253b0aeea32e96dadc1c999e49ab1c166380c62a1728b84912",
+      "job_id": "9159091",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-two-calibration-s00.json",
+      "sha256": "c9d6b4e03200288f02005db6e4780c630b8c7c97edafc9e0d252b4adc71431bc",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-two-calibration-s00.pt",
+      "arrays_sha256": "76d2a5460b571494c894b5292675ff6e4f276aec338c759306854ff91d0cdc4b",
+      "job_id": "9158991",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-two-calibration-s01.json",
+      "sha256": "2af09da069ab1574d01d827e3c59fb90ac659da0b4b3babb974085fa5867d522",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-two-calibration-s01.pt",
+      "arrays_sha256": "e78bd54281e35559c2595af6f4b8e55c6bd662312ecee94106e1c50b3e0968a6",
+      "job_id": "9158992",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-two-calibration-s02.json",
+      "sha256": "ff9b2dd348172dffeaf767248d74eb9457dc0a2098903ac9d0e37f87b1372260",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-two-calibration-s02.pt",
+      "arrays_sha256": "1bec7573fe3692aad2e7f92631bc149a600542567ac5e228b069f0ac689e6e32",
+      "job_id": "9159000",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-two-calibration-s03.json",
+      "sha256": "519eb56244aae62f37c37270d307f4cf0e1d8b432b889ed47923e4cd2976e08a",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-two-calibration-s03.pt",
+      "arrays_sha256": "b00faae7993fd05245348149622f1d4b2435ef38a050b9560491d94db0f630e8",
+      "job_id": "9159001",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-two-calibration-s04.json",
+      "sha256": "923aeef3a1ffad92f73196fe55fbffedd39c18dc4ee75d3eb33725e585e3d5a1",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-two-calibration-s04.pt",
+      "arrays_sha256": "0a1f3c9ef995778603ef433e602202b55b503cfb5ceddd95e2a30a0a0459c6ba",
+      "job_id": "9159003",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-two-calibration-s05.json",
+      "sha256": "d6ae11dd8ff6740bfc3dd783d8f52d7d05778f8cfcf9a006501d2706ffd553da",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-two-calibration-s05.pt",
+      "arrays_sha256": "7519dc5512ca22f64cd911aec678bbb6d94650d0aec5fc4d847a298e9a889c7a",
+      "job_id": "9159004",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-two-calibration-s06.json",
+      "sha256": "903148559db2a3e393d06d6507654e84656b6e137a891f113a2cfdecfb59203e",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-two-calibration-s06.pt",
+      "arrays_sha256": "e6ad366845d63940484e179669fb747c9b281c726adac8a0a4a5242be6afab22",
+      "job_id": "9159005",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-two-calibration-s07.json",
+      "sha256": "d323a8223ce33a765250ebdf798fce5c33404eb4afe5f52a4bf256b9fd34a7c7",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-two-calibration-s07.pt",
+      "arrays_sha256": "b43546610c68ad167da49e4878d4ee9d9fd92a7e5492194da7f041eeca31bb2a",
+      "job_id": "9159009",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-two-calibration-s08.json",
+      "sha256": "0f0c270fbcf3dcddc4ea17180ee817f8de3f5758189f903f86b156dd3f778f4b",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-two-calibration-s08.pt",
+      "arrays_sha256": "cb8a28f9fa71e674f74817ac56503251978d516d71a74be8c7a190dd39a06cd3",
+      "job_id": "9159010",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-two-calibration-s09.json",
+      "sha256": "15d60c8274f595e07973732894ea8666a60be59c30ce1bc94f962d4f306e68a3",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-two-calibration-s09.pt",
+      "arrays_sha256": "66b3cf15907744e43b2a328cbaa7dff4412f5a01ca794186cb9726c92d72fdf1",
+      "job_id": "9159011",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-two-evaluation-s00.json",
+      "sha256": "04113bdeb8702ae517eeaf1e845f82d5349d7888bbbd230b9b994034d298b94f",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-two-evaluation-s00.pt",
+      "arrays_sha256": "b2e14c024a43e00c81d05231f009b844f78095b18a1336e0f24344c0ee93fb08",
+      "job_id": "9159012",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-two-evaluation-s01.json",
+      "sha256": "8d07e5cc7ddedd684745551a1d2b918038d2a85691074c3adda63dab9f9a1ff5",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-two-evaluation-s01.pt",
+      "arrays_sha256": "fe53aa3746c20765e27f6e078cf681a00d3c6bc0d88eb606ea0dfa2c674db978",
+      "job_id": "9159013",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-two-evaluation-s02.json",
+      "sha256": "7b0177b65fdf074a7327ffe65d90b1d144a4bdce0755e873001722015913b748",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-two-evaluation-s02.pt",
+      "arrays_sha256": "eaf7d021c5249579bc64deb90572af3ebc0ce8da6b227b2d495fdab5a0829930",
+      "job_id": "9159016",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-two-evaluation-s03.json",
+      "sha256": "8b7d72929c4bae898d1d2b0b1b6ef5a521008ec1d1aa72b815ab83f19c1b4a94",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-two-evaluation-s03.pt",
+      "arrays_sha256": "051c587dd8b8112014bc27822dec433c0177f041f4da6bd0e17f0eed22f7c5c1",
+      "job_id": "9159018",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-two-evaluation-s04.json",
+      "sha256": "9d59f90360611e4d601ca6c2e9e0febbf8ab9b256105fabf0f0dab4c08fd7019",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-two-evaluation-s04.pt",
+      "arrays_sha256": "664a349d9317a3d9c844362849f4dffa7a1499984d08a593fee99f19a48d5e16",
+      "job_id": "9159019",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-two-evaluation-s05.json",
+      "sha256": "d87c4676114c740a89c3f388a7024e4c20032aa943183abd6ac42b798f47d6c2",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-two-evaluation-s05.pt",
+      "arrays_sha256": "fb77bc6d8774e9a9f912f203a15fa254ffe474bb839aa6a944e9696e62d3ff97",
+      "job_id": "9159020",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-two-evaluation-s06.json",
+      "sha256": "b3d126e1d85343de119b18715d8a5707a5b7ee586925a068363f6c0866ca7894",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-two-evaluation-s06.pt",
+      "arrays_sha256": "fed3c0a3b15ab669ad6e822e3155aa5c6e17da1ebb5588a781665eb5ac6ae7a4",
+      "job_id": "9159023",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-two-evaluation-s07.json",
+      "sha256": "a5f4acdefa09a7b8fda5780d37a15beb1655acd24f4969d21da5cdd579eaf9f9",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-two-evaluation-s07.pt",
+      "arrays_sha256": "e209966df4f359f092fdb73e935e067e82a97704afca0a4e4a0f7bb1b2e91fc1",
+      "job_id": "9159024",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-two-evaluation-s08.json",
+      "sha256": "441718a0892da9fc5f0ee505f3c7ce71401aa24debf8ae15c49070cfd597331d",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-two-evaluation-s08.pt",
+      "arrays_sha256": "e18accb3689b20344b37cd065e9cee9f6291dae46cdbf0f9e100733467349ea6",
+      "job_id": "9159025",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/rank-two-evaluation-s09.json",
+      "sha256": "62e10e2f52b6ec8cd2e6d3e6a425d507033cc0e1fd848d017dc8eab15f1c6779",
+      "arrays": "data/generated/inference/confirmatory-v1/rank-two-evaluation-s09.pt",
+      "arrays_sha256": "c1cadb194683a7451f59fc49900f19a770465e203a681dbd88e65cf5b7e075fc",
+      "job_id": "9159026",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/width-thirty-two-calibration-s00.json",
+      "sha256": "a0819ccca71049c94a43c04ca1e0829928d06b715e68c5b613d250d0ca5177b0",
+      "arrays": "data/generated/inference/confirmatory-v1/width-thirty-two-calibration-s00.pt",
+      "arrays_sha256": "acbe85e2eea6ed9b641c9663210e4adf03a6bebf4360943c7bb57553bdd1254e",
+      "job_id": "9159092",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/width-thirty-two-calibration-s01.json",
+      "sha256": "77aa7080d20bf3bc9b5fbf94ba95726601b15b80adcc4cb03363a36a62bfb00d",
+      "arrays": "data/generated/inference/confirmatory-v1/width-thirty-two-calibration-s01.pt",
+      "arrays_sha256": "a1f496bb755205c3a17b85e0b60ba9f96ee6528090717a8faf9164714ff10b03",
+      "job_id": "9159098",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/width-thirty-two-calibration-s02.json",
+      "sha256": "62065e7b55e94b0d30fad376b2543b187ad6f6106c07f0d6bd4df5cf4df27393",
+      "arrays": "data/generated/inference/confirmatory-v1/width-thirty-two-calibration-s02.pt",
+      "arrays_sha256": "6fff27c47b177d034da6af1325df067c2ce241dfbb2e8801532457a82c4c4124",
+      "job_id": "9159099",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/width-thirty-two-calibration-s03.json",
+      "sha256": "1bfa3b45fb8cdad3f18c64c1a5fc2207cff5e555600b5a72f957d6c517890956",
+      "arrays": "data/generated/inference/confirmatory-v1/width-thirty-two-calibration-s03.pt",
+      "arrays_sha256": "1e2c5560c41bb56a3fa603ce12194a170905ba9a72b25cb588ce50213b412e08",
+      "job_id": "9159100",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/width-thirty-two-calibration-s04.json",
+      "sha256": "6154a197ff3961c4a44d4ca73648785fb62aa6eb54dd60821d1db9a28c388c4f",
+      "arrays": "data/generated/inference/confirmatory-v1/width-thirty-two-calibration-s04.pt",
+      "arrays_sha256": "b95fe3379d2e3517b31449f9ab65ed46c1277aba9b1fb8219d00f77b08043752",
+      "job_id": "9159109",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/width-thirty-two-calibration-s05.json",
+      "sha256": "b2661c8f5798e988c33b680b6ca069d97b8d848e7bc8ee6f63a50c561c094617",
+      "arrays": "data/generated/inference/confirmatory-v1/width-thirty-two-calibration-s05.pt",
+      "arrays_sha256": "49caa742d02144598a302adf93217577788e477b9375e68ea4f4ec108de48725",
+      "job_id": "9159111",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/width-thirty-two-calibration-s06.json",
+      "sha256": "9d119d93656c6ea6fa43f4b5e53fd3af0d663c6ab2a9d9e2e9ab258239bad9cc",
+      "arrays": "data/generated/inference/confirmatory-v1/width-thirty-two-calibration-s06.pt",
+      "arrays_sha256": "6b5011a908d3a2140ee5015d6c7a3b784a67657fc4177778e20314e6ddaa5e07",
+      "job_id": "9159112",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/width-thirty-two-calibration-s07.json",
+      "sha256": "d740a034a33f1fcbbb3611c87fbdbd5507a1602fbff34d567fdbec1a114c29be",
+      "arrays": "data/generated/inference/confirmatory-v1/width-thirty-two-calibration-s07.pt",
+      "arrays_sha256": "2bb4ef1a33c3ad26e55745aba59ba8458fa55061512476ec7a868e9306f7b18a",
+      "job_id": "9159113",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/width-thirty-two-calibration-s08.json",
+      "sha256": "7d4cfb0f4100e3af23d7797ae3c9f64f66433ba73f5800d92bf050c8ff077d20",
+      "arrays": "data/generated/inference/confirmatory-v1/width-thirty-two-calibration-s08.pt",
+      "arrays_sha256": "bb24002128a9e100d04e4533c9a787348e2aee46044fdac15af62c1691f1dfc8",
+      "job_id": "9159114",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/width-thirty-two-calibration-s09.json",
+      "sha256": "0947fea98dba1814e1bda723f2b89570701e220479ad74dcc1ad6459e8f368fc",
+      "arrays": "data/generated/inference/confirmatory-v1/width-thirty-two-calibration-s09.pt",
+      "arrays_sha256": "af45ad0ac42e527665d25231554f5577549446539f05385073f4085c7b319019",
+      "job_id": "9159115",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/width-thirty-two-evaluation-s00.json",
+      "sha256": "0eb8a589c9f4f05ad97b820db8a03e8ba824241be39ba94a875f9385e2b45c0a",
+      "arrays": "data/generated/inference/confirmatory-v1/width-thirty-two-evaluation-s00.pt",
+      "arrays_sha256": "f980e358268f9cde4a8245749d8fef9ec21dbc02b2dd2b5b36dae9a936cda4fa",
+      "job_id": "9159118",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/width-thirty-two-evaluation-s01.json",
+      "sha256": "79630a53a3a7ed2b6f11cf6c5dd43395fad4a5e9389b1e44332bbef9fba176ee",
+      "arrays": "data/generated/inference/confirmatory-v1/width-thirty-two-evaluation-s01.pt",
+      "arrays_sha256": "313efac41e2df4926d0704bcb76ceb66de86f3c13962f2fd14a732829c60eaaa",
+      "job_id": "9159119",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/width-thirty-two-evaluation-s02.json",
+      "sha256": "1bf98ea4a03ec377b75a4908d7285d93927fd328f4217531c269862f9ca093dd",
+      "arrays": "data/generated/inference/confirmatory-v1/width-thirty-two-evaluation-s02.pt",
+      "arrays_sha256": "f9295cca9f7b6a945a35a78e3210c274bd47a381a51a12754eda516b2c2a6a51",
+      "job_id": "9159127",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/width-thirty-two-evaluation-s03.json",
+      "sha256": "289e60cbc21dd9a538a119f9f994ba0fa64c9fe41bfb11e8ec07ea342c8cc647",
+      "arrays": "data/generated/inference/confirmatory-v1/width-thirty-two-evaluation-s03.pt",
+      "arrays_sha256": "708db140737d37cfbda58385bc4566f27e498c29873bdc47429cc97f1ad249d5",
+      "job_id": "9159128",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/width-thirty-two-evaluation-s04.json",
+      "sha256": "24ad7c1cd8d22b8371cf1348a37e52deb22b94a95ceb8780fc29d66c95d25d2a",
+      "arrays": "data/generated/inference/confirmatory-v1/width-thirty-two-evaluation-s04.pt",
+      "arrays_sha256": "6d4abc4013c516e6174c3ba3bb5d15702ab15c1fe064dac77ce81f75ebdfb52c",
+      "job_id": "9159129",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/width-thirty-two-evaluation-s05.json",
+      "sha256": "dd3250b7464e00d3d06df528e90687c41ba4e8e8a9ddd0889b4c8eea33bda1d2",
+      "arrays": "data/generated/inference/confirmatory-v1/width-thirty-two-evaluation-s05.pt",
+      "arrays_sha256": "51d3e28d85214459d0c03180796ac900d6aab3d92dd43611c861852641027be6",
+      "job_id": "9159130",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/width-thirty-two-evaluation-s06.json",
+      "sha256": "f764ed16aa60e49acf1229e5bedb0c98124c5fda38d65a3631c0aa37f0355319",
+      "arrays": "data/generated/inference/confirmatory-v1/width-thirty-two-evaluation-s06.pt",
+      "arrays_sha256": "c0d408ccdf7e2800aec990a72e187be69cee37ebf46a5b7aade9afe479eb980a",
+      "job_id": "9159131",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/width-thirty-two-evaluation-s07.json",
+      "sha256": "2084736e6f538bcb84f5cdb8528fb1d7f33fab5cf58acb6543df9158393e6141",
+      "arrays": "data/generated/inference/confirmatory-v1/width-thirty-two-evaluation-s07.pt",
+      "arrays_sha256": "16e06a78537b6df88bd836601c5f8fc278614d126df9ca867efe0fd146c55023",
+      "job_id": "9159132",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/width-thirty-two-evaluation-s08.json",
+      "sha256": "afff936580291bec9cbb58c782a38d2abd111d4d0fa8e893005eeac638b8ca94",
+      "arrays": "data/generated/inference/confirmatory-v1/width-thirty-two-evaluation-s08.pt",
+      "arrays_sha256": "380aa4d389ec9f4f66c0cf590c462c5ce3f4dbe9cc657cfd3404cc4aa25eb0d7",
+      "job_id": "9159133",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/width-thirty-two-evaluation-s09.json",
+      "sha256": "24b05c911656d2588d3d479910fd2e2bd0b957c27e2d050aa89c232a360716ba",
+      "arrays": "data/generated/inference/confirmatory-v1/width-thirty-two-evaluation-s09.pt",
+      "arrays_sha256": "e7e45c072654732d4120be084d62d16ec95964343ff9a56cb0849d56e711106e",
+      "job_id": "9159134",
+      "source_revision": "69021a50f63f201dd3a8dc3ffed6132cccd1f1f6"
+    }
+  ],
+  "evaluator_sha256": "2e1704bd5fbae6d27fb9304f69c3b91177a74e224ed6bfcd9c9e6607a9dc989e",
+  "confidence_intervals": "Wilson 95% intervals for independent held-out runs, conditional on calibrated cutoffs",
+  "paired_intervals": "Conservative bound from 97.5% Wilson intervals for the two paired discordance probabilities; 2000 paired bootstrap resamples as sensitivity analysis",
+  "null_calibration": "Maximum of separate finite-sample split-conformal cutoffs for GD and fixed PSD-preconditioned GD"
+}

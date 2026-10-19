@@ -1,0 +1,227 @@
+{
+  "configuration": {
+    "protocol": "conditional-mean-inference-v1",
+    "locked": true,
+    "parent_protocol": "matched-operator-inference-v1",
+    "checkpoint_step": 1000,
+    "shards_per_split": 10,
+    "alpha": 0.05,
+    "eta": 1e-05,
+    "sigma": 0.0001,
+    "magnitude_scale": 1.0,
+    "sample_counts": [
+      8,
+      32,
+      128,
+      512,
+      2048,
+      8192
+    ],
+    "chunk_size": 128,
+    "null_controls": [
+      "directional-null",
+      "preconditioned-null"
+    ],
+    "rules": [
+      "directional-null",
+      "preconditioned-null",
+      "node",
+      "feedback-0.1",
+      "feedback-1"
+    ],
+    "statistic": "maximum absolute reciprocity contrast normalized by Monte Carlo standard error from individual restored responses",
+    "calibration": "separate empirical split-conformal cutoffs for both stochastic nulls; maximum cutoff within each sample-count and averaging-mode condition"
+  },
+  "configuration_sha256": "fd513f40e0b40255a92cb3ad46934551533dc2fcb832139be7b99434fc0731ea",
+  "science_sources": {
+    "core.py": "4f49eb19f6c0591078e6a0ac03a28ab3a8037031115be8b6a0d3a7d195da4ce1",
+    "operators.py": "9b7a51d53236ef8170ffabc994b4de42d9a3258d25142b54e83d0f1354a49b5c",
+    "campaign.py": "35429d8c838eb09720cc67cbaa7d0342324ac277cdcd50db44d4acd195cf840c",
+    "mean_response.py": "9221443ee9fe26a302f0762919b97c74742d006cb7e14b39629069fdcd599ede"
+  },
+  "completed_shards": [
+    {
+      "path": "data/generated/inference/mean-v1/primary-calibration-s00.json",
+      "sha256": "e9f4bfccf226760bac779f161cdb8e4e1295c8ba2d9156dfab93012fb8aadaa6",
+      "arrays_sha256": "899e0aabcacad20615b47fb431ea6a35bf9be05e094e04fa6c8c739153f07894",
+      "parent_sha256": "da16161f5d94c2c1e8e484714bdc9a19f7930048fa78e3a47864747ad9c09421",
+      "seconds": 60.555826443014666,
+      "job_id": "9159330",
+      "source_revision": "7bde9b9c7a9baecd65882f8801505fa3bdc0e492"
+    },
+    {
+      "path": "data/generated/inference/mean-v1/primary-calibration-s01.json",
+      "sha256": "47f101d7a99a042e8c678b29182982c3df81833c5ca6ce4f0788f9272cad67b2",
+      "arrays_sha256": "d09f0905360fae5784f8ae64269781bd9d7e5e2af23f48b32d47bc4f62b78045",
+      "parent_sha256": "e3e85c0d9dc042f26c8b90e852fcf7f296e3ae8e41a682ac2fc62d2c94850347",
+      "seconds": 63.081107917940244,
+      "job_id": "9159331",
+      "source_revision": "7bde9b9c7a9baecd65882f8801505fa3bdc0e492"
+    },
+    {
+      "path": "data/generated/inference/mean-v1/primary-calibration-s02.json",
+      "sha256": "de3c9d7ec0275a2e7506d658c0abbe59fd14da46394994b2526246b3b5ca8815",
+      "arrays_sha256": "a7be08c831d48789deca65436275c61852606921a09ad19895346125b71c468f",
+      "parent_sha256": "f61c8478726c6198e4e26e7dcb8437f3463c8e2f36e0f0814fc3bb4e1833c384",
+      "seconds": 76.2802370369991,
+      "job_id": "9159332",
+      "source_revision": "7bde9b9c7a9baecd65882f8801505fa3bdc0e492"
+    },
+    {
+      "path": "data/generated/inference/mean-v1/primary-calibration-s03.json",
+      "sha256": "ddfbbe85792bc2bdfc604fefcf8a461b18babcf4ecc71053cc22a556e371a290",
+      "arrays_sha256": "6f941563293c594729d76671d51fd8e0481e7ca6045976406ac983c1ba0679ae",
+      "parent_sha256": "1ea0907e49371aa1b5a4f6bd3e55d820c68d9aaff25ced12beab8f61ee5b49ea",
+      "seconds": 111.23892659600097,
+      "job_id": "9159333",
+      "source_revision": "7bde9b9c7a9baecd65882f8801505fa3bdc0e492"
+    },
+    {
+      "path": "data/generated/inference/mean-v1/primary-calibration-s04.json",
+      "sha256": "f26e6d7595bb9143ffc032c46f2ec37a0322392b75535301c64a0cdc82829334",
+      "arrays_sha256": "61255bfb04a36d24d5ef12b0a1c1d28a4c80fb8d0e12e76efb4c173c695d5679",
+      "parent_sha256": "8037ca4451d1877333703de94e804574dd2748cb954c2ba00a77b5406ca7f4ce",
+      "seconds": 104.74546269500024,
+      "job_id": "9159334",
+      "source_revision": "7bde9b9c7a9baecd65882f8801505fa3bdc0e492"
+    },
+    {
+      "path": "data/generated/inference/mean-v1/primary-calibration-s05.json",
+      "sha256": "4ecbdbc06b1cf86ab591a7242bc7ba2a39091a15a534396c785b8ffdd8219672",
+      "arrays_sha256": "5bb8d6b056e35eddbc3c1a398f5b0f231b2b9b4cf67b400419cf1b4306b97cdb",
+      "parent_sha256": "77ef1a5d6f8325c0fedd80412c4787fb5ebaf312e54ad1d0eaeead0ca77f85f7",
+      "seconds": 109.26848801600136,
+      "job_id": "9159335",
+      "source_revision": "7bde9b9c7a9baecd65882f8801505fa3bdc0e492"
+    },
+    {
+      "path": "data/generated/inference/mean-v1/primary-calibration-s06.json",
+      "sha256": "4f8008c0a608891e2ad93276c2a07ab37f70719f838755e699ec0ab0a8e6641c",
+      "arrays_sha256": "0a4f87c36074c02017eb50915c0c4618de9b2d955f821bd38647681d579bf698",
+      "parent_sha256": "ba1e2b336a6840666acba0194af24010da0da514dbcbd3aa641a1dc340faccd2",
+      "seconds": 66.89503499900457,
+      "job_id": "9159764",
+      "source_revision": "7bde9b9c7a9baecd65882f8801505fa3bdc0e492"
+    },
+    {
+      "path": "data/generated/inference/mean-v1/primary-calibration-s07.json",
+      "sha256": "29f5621297c571359ce6c57e39d1f681403db9d87b1c829fa9d451245c40cdfb",
+      "arrays_sha256": "a63be3d57f9b4b78512ba29dc629d4b2918c44fc03c029cd20ae30a0aeca41e8",
+      "parent_sha256": "cb79a95845caa4c46dbe3bb56f855ce2694d539d38c0e5471aaeca7aa737895c",
+      "seconds": 65.24192820396274,
+      "job_id": "9159765",
+      "source_revision": "7bde9b9c7a9baecd65882f8801505fa3bdc0e492"
+    },
+    {
+      "path": "data/generated/inference/mean-v1/primary-calibration-s08.json",
+      "sha256": "53d97db8f51142c3fdcbdf3b9044209bf3ab1db771faa2be2a459f8a9ba22e72",
+      "arrays_sha256": "321523d96701214e93ee3293e75f3d9a3322352e3781c5a018b85c3045a90ec7",
+      "parent_sha256": "9b6bd0f42a66d6abe8e141e27f974a0647f29cd6e979f32ae31cfb77e9cf502e",
+      "seconds": 64.8842767518945,
+      "job_id": "9159769",
+      "source_revision": "7bde9b9c7a9baecd65882f8801505fa3bdc0e492"
+    },
+    {
+      "path": "data/generated/inference/mean-v1/primary-calibration-s09.json",
+      "sha256": "5cec48e8b4623d9ac93a0da3c0122c8e932377221145a515c0774ff373652ecb",
+      "arrays_sha256": "cf0e068e13de23bdbe7ac3c5bfa84cafca35dba3cd29560f1e6cae9228d45972",
+      "parent_sha256": "11aef32133a7c6d5993b5d095a4f9b0c792adefe17eb2cdcdbe44ff29107017a",
+      "seconds": 62.63016459625214,
+      "job_id": "9159770",
+      "source_revision": "7bde9b9c7a9baecd65882f8801505fa3bdc0e492"
+    },
+    {
+      "path": "data/generated/inference/mean-v1/primary-evaluation-s00.json",
+      "sha256": "469e366d86a21c837447a3e8f46676648116573313147f21e15db6b0d2121a74",
+      "arrays_sha256": "5f6a5d3df45919c02fcd5829b7700a64d02f6503f58929ab9dff208742ce7910",
+      "parent_sha256": "7c483c035853ee61d5d0645eb89c2069118b8a6735adf0043cf6acfee38226f3",
+      "seconds": 64.01681138016284,
+      "job_id": "9159773",
+      "source_revision": "7bde9b9c7a9baecd65882f8801505fa3bdc0e492"
+    },
+    {
+      "path": "data/generated/inference/mean-v1/primary-evaluation-s01.json",
+      "sha256": "ea2f166211d6555c110685bfa852b1aa26f743cc10f4beb7216f8b1c8e8b6408",
+      "arrays_sha256": "958af9534e63ad4ab8b875d842729e22da79c29e5cf50eea5f6d0766bce56413",
+      "parent_sha256": "0913c7e50bc6cc8f61ce1688d4bf91e6f6c99a0004aec56db1c3e488b7a1f3fa",
+      "seconds": 60.3788719647564,
+      "job_id": "9159774",
+      "source_revision": "7bde9b9c7a9baecd65882f8801505fa3bdc0e492"
+    },
+    {
+      "path": "data/generated/inference/mean-v1/primary-evaluation-s02.json",
+      "sha256": "b6bf7c31874eb83d7f3433eed9c4df9328b80a3aa7de1232cc32f9b4014718ff",
+      "arrays_sha256": "a6fd22991902f02e6f921381aed95ad5f3d92da45abdbf06d5f3b6cfb7053c1e",
+      "parent_sha256": "bed6b99ecf7eb72162fa479910882d7f85d67c4d3407cda41990ea5fbbbd6b9c",
+      "seconds": 68.07094890694134,
+      "job_id": "9159791",
+      "source_revision": "c37607c3744532feb959d38c91061128a06bf4c8"
+    },
+    {
+      "path": "data/generated/inference/mean-v1/primary-evaluation-s03.json",
+      "sha256": "46b5ffb431a50c8017e4d2d6930dd513038834334bb3e094899d757371e6ebed",
+      "arrays_sha256": "a37eec938a7958d3f1f384953276294915521d24474627b4f3e936bd37fb600a",
+      "parent_sha256": "361b72c02011377b61886021ea2765f8e8c4b2bffe78e3248965b708849393d8",
+      "seconds": 65.57424217206426,
+      "job_id": "9159792",
+      "source_revision": "c37607c3744532feb959d38c91061128a06bf4c8"
+    },
+    {
+      "path": "data/generated/inference/mean-v1/primary-evaluation-s04.json",
+      "sha256": "72418aad3aafc390fe93bbfeee6f61b6f568e84516020211681d60ae3085472c",
+      "arrays_sha256": "b11547203c3f8dfa2b57a6dd6f136ea4f47cf8080d056dafc0dbb23418e4c0af",
+      "parent_sha256": "3bee38dbda426b7466a4a7ef6019dddf21494a09d8a0d774636bd18603af9ced",
+      "seconds": 63.19908112473786,
+      "job_id": "9159794",
+      "source_revision": "c37607c3744532feb959d38c91061128a06bf4c8"
+    },
+    {
+      "path": "data/generated/inference/mean-v1/primary-evaluation-s05.json",
+      "sha256": "7be67f7af85bf08cbb30c0d1f48480024266dfc00944fc1dec50d27df239a4c4",
+      "arrays_sha256": "cb18c404812952fc7dbe0875f729b985338835b378013f936f9c55d2715bc8a5",
+      "parent_sha256": "2cc86b4d0ad8bfc010c2e210c143ed7a533b5e1e382d4e1878967914b892df51",
+      "seconds": 64.05596579611301,
+      "job_id": "9159799",
+      "source_revision": "c37607c3744532feb959d38c91061128a06bf4c8"
+    },
+    {
+      "path": "data/generated/inference/mean-v1/primary-evaluation-s06.json",
+      "sha256": "99e7a305a608798735488d2406c8b9ddf78651cab2d4cc0af1d91747f43ac973",
+      "arrays_sha256": "9f7d2c49ac7e42ccb865012a9b4bd27a1e8f5bdfdd07ab5363cd4c70989c52c4",
+      "parent_sha256": "37f95eb2ca23eb86789c190dd5e0f6249077f08bac9a5ff7870310cb30bf3d0a",
+      "seconds": 69.25054994411767,
+      "job_id": "9159817",
+      "source_revision": "c37607c3744532feb959d38c91061128a06bf4c8"
+    },
+    {
+      "path": "data/generated/inference/mean-v1/primary-evaluation-s07.json",
+      "sha256": "cf609ad5c0d4e12618605db7bea8059852e98e43907e568d551e9c4ee6816358",
+      "arrays_sha256": "910e9399b979be7742668b1791924c6b00455885a5ca27c67b2004a297fedb6d",
+      "parent_sha256": "a1c1eab8e5677c50e4961768c30739fc6fcce1de373f851fc193c4714e9c78cf",
+      "seconds": 60.31986961187795,
+      "job_id": "9159818",
+      "source_revision": "c37607c3744532feb959d38c91061128a06bf4c8"
+    },
+    {
+      "path": "data/generated/inference/mean-v1/primary-evaluation-s08.json",
+      "sha256": "35142cdd936b460b33c81db933f6cdf2e09f4561a6d8d05eb8f77ba113b0951d",
+      "arrays_sha256": "9558e1281e75756ae9e496d28d6f7e42f9874eb17be097e1409427e7eafa8b16",
+      "parent_sha256": "71caaf54828aef441fa0b8243bdafd2b700b3a3cb418871a17d62d50a118fd57",
+      "seconds": 65.87232998094987,
+      "job_id": "9159824",
+      "source_revision": "c37607c3744532feb959d38c91061128a06bf4c8"
+    },
+    {
+      "path": "data/generated/inference/mean-v1/primary-evaluation-s09.json",
+      "sha256": "4095e7e8c6e78aa9be3999648c94993d7a31830cc0dd0a57a50823ad94468ea3",
+      "arrays_sha256": "f246a6fe5bfc50ea91051692be983a3aaadd6652b3729af4f1a3f5d654d6a445",
+      "parent_sha256": "b9977db7d06efe3fbea5ce01e44892b3fd0db4fde49d72f21fc50283719791d5",
+      "seconds": 65.56617518910207,
+      "job_id": "9159329",
+      "source_revision": "c37607c3744532feb959d38c91061128a06bf4c8"
+    }
+  ],
+  "evaluator_sha256": "6f2dcf0699d018af9deae44664ba81ed095afb7793bce76e2df231a2fd92d80c",
+  "intervals": "Wilson 95% rates; 2000 network bootstrap medians",
+  "interpretation": "Necessary mean reciprocity test calibrated against two specified stochastic null families"
+}

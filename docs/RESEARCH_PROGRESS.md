@@ -1,133 +1,179 @@
 # Learning rule inference research progress
 
-Updated 2026-10-19. The goal remains active. The previous goal turn made progress
-by saving the research plan and establishing the goal; the execution recorded
-here adds implemented methods, scientific validation, and completed development
-experiments. Confirmatory evaluation and the revised manuscript remain ahead.
+Updated 2026-10-19. The goal is active. The main CPU study, conditional-mean
+study, four publication figures, supporting tables, and revised compiled draft
+are complete. Actual B200 validation, benchmarking, and replication remain
+queued; they must succeed before the full goal can be completed. No permission
+or scientific choice is currently required from the user.
 
-## Current implementation and evidence
+## Completed evidence
 
-The analysis branch is `codex/learning-rule-inference`. The scientific core and
-completed pilot inputs use revision `a2c495e`. The manuscript repository remains
-unmodified at its handoff revision. The runtime is Python 3.14 with optional
-PyTorch 2.11.0+cu128; Linux wheels come from the explicit official CUDA 12.8 index
-in `pyproject.toml` and `uv.lock`.
+The analysis and manuscript are separate repositories on
+`codex/learning-rule-inference`. The main experiment was locked at analysis
+revision `69021a5`; the mean-response protocol at `7bde9b9`. The current workflow
+and CUDA comparison entrypoints were committed at `8a9a8e3`. Scientific source
+hashes are retained in the result manifests. Changes to publication code do not
+alter the frozen experiment implementations.
 
-Eleven CPU checks pass, including an independent NumPy forward/backprop/Jacobian
-reference, automatic differentiation, finite differences, preconditioned
-kernels, restored-state probes, own/upstream decomposition, output diagnostics,
-exact PSD interpolation and nullspace counterexamples, zero-gradient handling,
-and shared-direction perturbation. The theory and primary-paper audit are in
-`docs/learning_rule_identification.md` and `docs/related_work_audit.md`.
+The runtime is Python 3.14.0 and PyTorch 2.11.0+cu128, with the official CUDA 12.8
+wheel index explicitly locked in `pyproject.toml` and `uv.lock`. Eighteen CPU
+scientific checks pass. They cover independent NumPy Jacobians and backprop,
+autograd and finite differences, restored-state steps and Taylor scaling,
+preconditioning, own/upstream parameter masks, exact PSD interpolation and
+nullspaces, isotropic PSD Procrustes and nonattainment, unsupported prediction,
+constant bank scaling, shared perturbations, explicit-versus-factored updates,
+and undefined/tiny-value handling.
 
-Completed CPU jobs:
+| Milestone | Current status |
+| --- | --- |
+| M0 Setup and GPU validation | CPU checks complete; actual B200 checks and benchmarks queued |
+| M1 Layerwise diagnostics | Original 20-run classification simulation reproduced; pooled correlations match the untouched original to 1e-12; hidden/output statistics separated |
+| M2 Bounded mechanism checks | Development step-size and parameter-freezing experiments complete; exact shared PSD and physical node sensitivity measured |
+| M3 Identification | Exact conditions, rank/nullspace audit, empirical cutoffs, supported held-out prediction, and attained/infimum distinction implemented and executed |
+| M4 Rule comparison | 3,200-network main study and 400-network conditional-mean analysis complete on CPU, with independent calibration/evaluation and uncertainty |
+| M5 Paper and workflow | Revised full draft compiles with resolved references; four figures and generated tables included; GPU evidence and final cross-repository audit remain |
 
-| Job | Work | Scheduler outcome |
+## Main held-out results
+
+Eight profiles each have 200 calibration and 200 evaluation networks. Candidate
+rules share restored checkpoints at steps 0, 200, and 1000. The default observes
+one complete width-64 hidden layer with a fixed eight-output known decoder.
+The primary comparison was locked before evaluation data generation. No training
+failures occurred. All 160 shards and their raw arrays passed strict identity,
+configuration, scientific-source, completeness, and checksum checks.
+
+At the primary GD-trained 1000-step checkpoint, without observation noise:
+
+| Rule | Shared operator | Pearson | One direction |
+| --- | ---: | ---: | ---: |
+| GD | 11/200 | 6/200 | 4/200 |
+| Fixed diagonal PSD preconditioning | 11/200 | 8/200 | 2/200 |
+| Fixed feedback, mixture 0.1 | 200/200 | 6/200 | 2/200 |
+| Fixed feedback, mixture 1 | 200/200 | 200/200 | 103/200 |
+| Independent node R=1 | 200/200 | 200/200 | 200/200 |
+| Independent node R=32 | 200/200 | 152/200 | 200/200 |
+| Independent node R=512 | 200/200 | 9/200 | 200/200 |
+| Shared node R=1 | 24/200 | 200/200 | 7/200 |
+| Shared node R=512 | 19/200 | 9/200 | 6/200 |
+
+The primary paired operator-minus-Pearson detection improvement is 97.0
+percentage points, with conservative 95% interval [90.5, 98.8]. Intervals are
+conditional on the realized calibration sample and are per condition, not
+simultaneous across the secondary grid. Cutoffs are the maximum of separate
+split-conformal GD and P-GD cutoffs; this covers the two specified exchangeable
+null distributions marginally, not all possible PSD update distributions.
+
+Depth three reduces 10% feedback detection to 30/200; preconditioned-trained
+checkpoints give 155/200. At 1% GD-response-RMS noise, primary 10% feedback
+detection falls to 69/200. Shared R=1 rejection rises to 176/200: its response
+can have lower signal than GD despite parameter-norm matching. Even noiseless
+shared-node rejection exceeds nominal calibration. These results are explicit
+limits of GD/P-GD nuisance calibration, not evidence against the algebraic PSD
+equivalence. Do not claim uniform false-rejection control over the PSD class.
+
+The supported prediction comparison fits only the +/- output basis and predicts
+16 reserved mixtures within its span. Primary median relative PSD prediction
+errors are 9.8e-6 for GD, 1.0e-5 for P-GD, and 0.0278 for 10% feedback. The
+unrestricted linear error for 10% feedback is 8.4e-6. The best nonnegative
+diagonal GD fit has error 0.186. Actual PSD prediction is undefined when the fit
+infimum is unattained: primary fully random feedback and independent R=1 node
+have no attained optimum; shared R=1 has 191/200 attained fits. Fit flags are
+not additional scientific rejections.
+
+Loss matching is a prespecified secondary selection near loss 0.4. Eligible
+held-out counts are 200 primary, 199 P-trained, 197 FA-trained, 200 NP-trained,
+149 rank-two, 195 rank-sixteen, 198 width-32, and 176 depth-three. The CSV retains
+actual selected steps/losses and exclusions, rather than claiming exact equality.
+
+## Conditional means and finite steps
+
+The separate mean protocol reuses the primary saved checkpoints with disjoint
+200-run calibration and evaluation sets, eta=1e-5, sigma=1e-4, constant multiplier
+one, and nested R=8 through 8192. It calibrates a studentized reciprocity statistic
+against exactly unbiased directional GD and its fixed preconditioned version.
+Both orders of averaging are retained: independent restored responses first,
+or weight directions first followed by one step.
+
+At R=8192, restored-response mean rejection is 9/200 for directional GD, 11/200
+for its preconditioned version, and 9/200 for physical node perturbation. The
+10% biased mean is detected in 200/200 runs, versus 8/200 at R=8. Applying the
+naive deterministic cutoff rejects all 200 unbiased controls at every studied
+R. Median averaged-direction response errors at R=8192 are 4.59% for directional
+GD and 4.60% for physical node perturbation. These necessary reciprocity tests
+do not prove a full PSD model or uniquely identify a stochastic algorithm.
+
+The post-evaluation sensitivity experiment uses only 20 development checkpoints
+and is labeled exploratory. An exact shared PSD construction has median
+first-order operator residual about 8e-16; its finite-step score decreases from
+5.0e-6 at eta=1e-4 to 5.0e-8 at eta=1e-6. Thus finite-step incompatibility occurs
+even without estimator bias. This explains a mechanism, not every individual
+shared-control rejection or a revised main cutoff.
+
+## Jobs and scheduling
+
+The user's Wharton PhD GPU group/partition limit is **three concurrent GPU
+jobs**. Each request here uses one GPU. This is a concurrent-job limit, not a
+claim about the cluster's total hardware. CPU shards were selected because they
+became available and completed while B200 requests remained queued.
+
+| Job | Work | Verified state |
 | --- | --- | --- |
-| 9156749 | Initial PyTorch 2.14 CPU validation and benchmark | Completed 0:0 in 2m20s; superseded runtime for comparison |
-| 9157408 | Current runtime CPU validation and benchmark | Completed 0:0 in 54s; all 11 checks passed |
-| 9157417 | Two outputs, initial checkpoints, 20 development seeds | Completed 0:0 in 35s |
-| 9157426 | Eight outputs, initial checkpoints, 20 development seeds | Completed 0:0 in 39s |
-| 9157428 | Two outputs, after 1000 GD training steps, 20 seeds | Completed 0:0 in 34s |
-| 9157431 | Eight outputs, after 1000 GD training steps, 20 seeds | Completed 0:0 in 42s |
+| 9157408 | Current-runtime CPU preflight and benchmark | Completed 0:0 |
+| 9157417, 9157426, 9157428, 9157431 | Initial rank-two/rank-eight development and mechanism pilots | Completed 0:0 |
+| 9157970--9157973 | Matched development training-source profiles | Completed 0:0 |
+| 9158474--9158477 | Matched development rank/width/depth profiles | Completed 0:0 |
+| 9158478 | Original classification continuity, 20 seeds | Completed 0:0 |
+| 9158833 | Locked main CPU array, 160 shards, concurrency 12 | All 160 completed 0:0 |
+| 9159329 | Locked mean CPU array, 20 shards, concurrency 6 | All 20 completed 0:0 |
+| 9159778 | Development-only shared-PSD sensitivity | Completed 0:0 |
+| 9156748 | Full B200 preflight | Pending; preserve handle |
+| 9158857 | B200 MIG45 preflight, 6 CPUs, 48G, 10 min | Pending; preserve handle |
+| 9160192 | B200 MIG45 validation, exact-checkpoint comparison, primary CUDA replication | Pending afterok:9158857; preserve handle |
 
-GPU preflight job `9156748` was verified pending for priority after its runtime
-maintenance hold was released. It is the original submitted job, not a replacement.
-Recheck `squeue`/`sacct` and its log before taking further action. No B200 execution
-or GPU speedup has yet been demonstrated. This first job predates the snapshot
-shell wrapper, so its source can still follow the checkout until it starts. New
-jobs run committed code from per-job archives under
-`data/generated/inference/source-JOBID/`.
+9159779 was canceled before starting and replaced by 9160192 to add the explicit
+same-checkpoint CPU/CUDA comparison. A retraining run alone is not that check:
+CPU and CUDA random-number streams differ. Do not restart the current jobs
+merely because the queue estimate changes. Do not infer GPU execution from a
+queued request. The full-GPU and MIG preflights measure distinct resource shapes.
 
-Betty requires 28 CPUs and 224 GB host memory per B200 allocation. CPU requests
-must use 5632 MB per CPU on `genoa-std-mem`. The Wharton GPU job limit must be
-accounted for when scheduling; all submitted GPU jobs request one GPU. CPU
-pilot shards use one CPU each and can run concurrently.
+Both job wrappers run immutable Git source snapshots. CPU shards use one CPU
+and 5632M per CPU on genoa-std-mem. Full B200 requests require 28 CPUs and 224G.
+MIG45 accepts six CPUs and 48G despite the filter's displayed 56G table entry.
 
-## Development results
+## Artifacts and reproduction
 
-The four pilots each contain 27 conditions: three learning rates, GD, fixed
-diagonal PSD-preconditioned GD, fixed random feedback, and layerwise node
-perturbation at 1, 32, and 512 repeats with independent or shared directions.
-Each condition has 20 network realizations. The same seed identities are used
-across tasks/stages; these are paired development conditions, not 80 independent
-evaluation seeds. All checkpoints and raw gradient/response arrays were saved,
-and their recorded SHA256 values were checked.
+- `results/data/inference_evaluation.csv`: 4,608 held-out method/rule conditions.
+- `results/data/inference_paired_comparison.csv`: paired improvement and intervals.
+- `results/data/inference_loss_matched_stages.csv`: actual selection and exclusions.
+- `results/data/inference_prediction_summary.csv`: support, attainment, and errors.
+- `results/data/inference_mean_evaluation.csv`, `inference_mean_accuracy.csv`: mean decisions and convergence.
+- `results/data/inference_original_baseline.csv`, `inference_layerwise_summary.csv`: original-task continuity and diagnostics.
+- Matching provenance JSONs retain raw file identities, source hashes, and job metadata.
+- Four `results/figures/fig_inference_*.pdf`/`.png` figures and three `results/tables/inference_*.tex` files supply the manuscript.
+- `paper/activity_dynamics.tex` is the revised full draft; its PDF compiles using pinned Tectonic 0.17.0 with resolved references. `paper/generated/build_provenance.json` records source/asset/PDF hashes.
 
-`results/data/inference_pilot_summary.csv` has 108 condition summaries.
-`results/figures/fig_inference_pilot.pdf` and `.png` show alignment and reciprocity.
-The ranges are descriptive development quantiles, not confidence intervals.
+The parent `Snakefile` has explicit CPU generation, aggregation, publication,
+asset-copy, and compilation rules; the original figures remain under
+`legacy_figures`. See the root README for allocation-aware execution and the
+frozen-summary artifact rebuild. The nested paper still compiles independently
+using its tracked generated assets. The archive source and COSYNE files retain
+the handoff revision's hashes.
 
-For eight outputs at initialization and eta=1e-4, median reciprocity residuals
-were about 3.35e-6 for GD, 4.45e-6 for PSD-preconditioned GD, and 0.118 for pure
-random feedback. Independent node perturbation gave approximately 0.119, 0.055,
-and 0.015 at 1, 32, and 512 repeats. Shared directions gave residuals near the GD
-scale even when cosine alignment was much lower. This supports retaining the
-shared-direction equivalence control; thresholds and detection power are not yet
-calibrated.
+## Remaining work for the active goal
 
-The GD reciprocity residual decreased approximately tenfold for each tenfold
-step reduction from 1e-3 to 1e-5, consistent with finite-step error. The pilot
-also saves parameter-freezing, interference, and gate-change diagnostics for
-each layer and the output. Kernels in these diagnostics are simulation oracles;
-the inference functions use only gradients and responses.
-
-The current CPU benchmark completes a one-network deterministic bank in about
-2.5 ms. At width 64 and batch size 64, a float64 32-repeat node bank takes about
-1.07s and a 500-iteration PSD fit about 6.4s. Float32 activity-response errors
-reach roughly 6.8e-4 relative to float64 at eta=1e-4, so retain float64 for the
-inference study until decision-level precision checks justify a change.
-
-## Issues to resolve before confirmatory evaluation
-
-1. The generic projected-gradient PSD fit sometimes fails its stationarity
-   tolerance, including some compatible or nearly compatible null conditions.
-   Do not count this as scientific rejection. The spanning +/- output probes
-   give an isotropic gradient design, permitting a reduced semi-analytical
-   PSD Procrustes fit. Use the Gillis-Sharma reduction, distinguish unattained
-   infima, and test the response outside the probe span. Retain the algebraic
-   compatibility tests independently of the fitting implementation.
-2. Pure random feedback has near-zero or negative alignment and is an easy
-   alternative. Add partially aligned fixed feedback at matched checkpoints to
-   test whether joint constraints improve on alignment for a harder alternative.
-   Use one positive magnitude-matching scale per rule/checkpoint, estimated from
-   a separate probe bank and fixed across evaluation probes. The present pilots
-   use raw scales and are not the final matched comparison.
-3. Finalize and lock the primary statistic using development data, then run
-   independent calibration and evaluation seeds. The planned initial targets
-   are 200 runs each at a nominal 5% false rejection rate, with both GD and
-   preconditioned-GD null controls. Multiple probes within a run are dependent.
-4. A finite Monte Carlo mean can still fail a very precise deterministic-null
-   threshold. Mean-rule inference needs sampling uncertainty, such as replicate
-   blocks and a bootstrap of reciprocity contrasts; do not interpret finite-R
-   rejection as biased expectation. Separately compare averaged weight directions
-   before a step and averages of responses after restored single steps.
-5. The existing training in the pilots is GD only. Add checkpoints trained by
-   each rule, learning curves, and overlapping-loss comparisons. Preserve failed
-   learning outcomes and report stochastic single-update/mean equivalences.
-6. Complete the original task's layerwise continuity checks and targeted
-   architecture/rank controls. The current two-output pilot uses teacher
-   regression on the bar inputs, not a replication of the old pooled-neuron,
-   trainable-readout bar-classification figures.
-7. Complete GPU validation and benchmark, route large perturbation batches to
-   B200 when beneficial, and run remaining CPU shards in parallel. Do not infer
-   job termination from a polling timeout; inspect the exact existing handle.
-8. Add workflow entrypoints and final result verification, revise the manuscript
-   using measured results, collect assets with analysis provenance, and compile
-   with references resolved. Preserve the archived abstract and COSYNE work.
-
-## Reproduce and inspect
-
-Use the documented `uv sync --frozen --extra gpu` environment. For current job
-states, inspect the IDs above. Completed local raw results and scheduler logs are
-under the ignored `data/generated/inference/` directory; publication summaries
-and the development figure are tracked under `results/`. Their provenance JSON
-records source revisions and implementation hashes. Recreate the pilot summary:
-
-```bash
-.venv/bin/python -m analysis.summarize_inference.run \
-  data/generated/inference/pilot-q2-initial.json \
-  data/generated/inference/pilot-q8-initial.json \
-  data/generated/inference/pilot-q2-trained.json \
-  data/generated/inference/pilot-q8-trained.json
-```
+1. Observe successful actual B200 preflight: CUDA scientific checks, float64 and
+   float32 benchmarks at batch sizes 1/20/64, hardware/driver/runtime/memory logs.
+2. Let 9160192 execute after preflight. Verify deterministic CUDA responses
+   against the same saved CPU checkpoints; inspect numerical differences and
+   decision disagreements. Evaluate the CUDA retraining replication against the
+   fixed CPU calibration cutoffs, identifying its different RNG trajectory.
+   The prepared entrypoint is `PYTHONPATH=. .venv/bin/python -P -m
+   analysis.learning_rule_inference.evaluate_gpu`; it refuses missing shards,
+   non-CUDA or non-B200 provenance, or changed scientific sources.
+3. Compare measured CPU/GPU throughput including queue time. Record the chosen
+   scheduling tradeoff and any meaningful numerical limitations.
+4. Update the manuscript's pending-GPU implementation paragraph with measured
+   evidence, refresh the build/provenance, and finish the cross-repository audit.
+5. Mark the goal complete only after these executed results and final manuscript
+   checks succeed. The completed CPU evidence and compiled draft alone do not
+   satisfy the goal's actual-GPU requirement.

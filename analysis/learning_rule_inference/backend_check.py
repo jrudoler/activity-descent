@@ -78,6 +78,7 @@ def main():
     write_csv(output,rows)
     save_json(output.with_suffix(".provenance.json"), {"provenance":metadata,
         "seconds":time.perf_counter()-started, "parents":manifests,
+        "cpu_evaluation_sha256":digest("results/data/inference_evaluation.csv"),
         "comparison":"Same saved CPU checkpoints, target probes, magnitude bank, and four deterministic update rules; float64",
         "peak_allocated_bytes":provenance("cuda")["peak_allocated_bytes"]})
 

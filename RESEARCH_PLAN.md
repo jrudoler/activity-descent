@@ -2,8 +2,9 @@
 
 Updated 2026-10-19. This is the implementation plan selected after the research
 handoff. Diagnostics and a small set of mechanism checks support the main work:
-designing an identification protocol and comparing learning rules. All new
-experiments below are planned.
+designing an identification protocol and comparing learning rules. See
+`docs/RESEARCH_PROGRESS.md` for execution status and completed results; the
+sections below retain the original study plan.
 
 The intended paper asks which classes of synaptic update rules can be
 distinguished through controlled changes in neural activity, with measured false

@@ -1,0 +1,21 @@
+{
+  "script_sha256": "4fd964bf9a45f9028e03ab2034fce558970b769171feadf21fee9e2f5418d1a9",
+  "inputs": {
+    "results/data/inference_evaluation.csv": "3e8e2b5733e6349780d924a697fc2f4eb2501d74c90d41e49ca3b47320c6611b",
+    "results/data/inference_paired_comparison.csv": "1eadb13b95a577f5fee985196f7284d8d5c60c5f8673de028aaa54a0640fde50",
+    "results/data/inference_mean_evaluation.csv": "cfbd1c76983959a10e9e64f4f02f5161ca85acac59682091f2c7f837df4392b2",
+    "results/data/inference_mean_accuracy.csv": "1c732d9699e80a3567038f1109d1ac9dcb422a0f22e063bbd2f5381326dd03f9",
+    "results/data/inference_original_baseline.csv": "76fdffc5a54cd13622c650185bf380a24be4eba4e6b4c8ad0430015f458376aa",
+    "data/generated/inference/pilot-q8-trained.json": "95017a55a7d4b68751d969c7645501e9cbcaf06142138ab19c11bfa1ed4d4532",
+    "data/generated/inference/sensitivity-development.json": "c7d988266e12bae74cf1e493aa6e63b28b9f2676c7d99ef10a494d5c1da56c80"
+  },
+  "figure_hashes": {
+    "results/figures/fig_inference_primary.pdf": "c50b474e1159fa953e8d026f36b560b01e651982b7577cd63d5330ae3a1c4f91",
+    "results/figures/fig_inference_robustness.pdf": "13fe72aeff8c9f5081c3d83362f3d201a5b61a8c2811ccbd7ed2593b38d56502",
+    "results/figures/fig_inference_mean.pdf": "d28017dbbdef9a2486f7d95bad5228e0f2017636d28025ed1094c9daf1326306",
+    "results/figures/fig_inference_diagnostics.pdf": "e05a2f63b2f4b22a75ee097cc201819f1bc87ef92083b3ce9a6508229f8d46a4"
+  },
+  "bootstrap": "2000 resamples of independent network summaries; fixed seeds",
+  "source_evaluation_manifest": "results/data/inference_evaluation.provenance.json",
+  "source_evaluation_manifest_sha256": "b66e8f27e4cdbb3aa27233cfd3a3e1457aa7d424fa9506762b46a9352e502660"
+}
