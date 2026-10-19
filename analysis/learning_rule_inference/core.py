@@ -86,6 +86,13 @@ def bar_data(seeds, outputs=8, n_per_class=20, original_targets=False):
 
 def matvec(matrix, vector):
     """Broadcast network matrices over additional sample dimensions."""
+    if matrix.ndim == 3:
+        # A single GEMM per network shares the weights over all probes/repeats.
+        # Broadcasting matmul over every vector can materialize huge copies of
+        # the same weights, particularly during perturbation experiments.
+        flattened = vector.reshape(vector.shape[0], -1, vector.shape[-1])
+        result = torch.bmm(flattened, matrix.transpose(-1, -2))
+        return result.reshape(*vector.shape[:-1], matrix.shape[-2])
     while matrix.ndim < vector.ndim + 1:
         matrix = matrix.unsqueeze(-3)
     return (matrix @ vector.unsqueeze(-1)).squeeze(-1)
@@ -201,7 +208,7 @@ def activity_jvp(state, x, updates, layers=None):
     return result
 
 
-def kernels(state, x, preconditioned=False):
+def kernels(state, x, preconditioned=False, layers=None):
     """Exact first-order kernels for each hidden layer, with decoder fixed."""
     _, acts, zs = forward(state, x)
     previous, result = None, []
@@ -215,6 +222,8 @@ def kernels(state, x, preconditioned=False):
             diagonal = (p * augmented.square().unsqueeze(-2)).sum(-1) * gate
         else:
             diagonal = augmented.square().sum(-1, keepdim=True) * gate
+        if layers is not None and layer not in layers:
+            diagonal = torch.zeros_like(diagonal)
         current = torch.diag_embed(diagonal)
         if previous is not None:
             matrix = w[..., :-1]

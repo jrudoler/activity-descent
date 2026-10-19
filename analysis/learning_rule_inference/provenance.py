@@ -34,7 +34,10 @@ def provenance(device):
         "torch": torch.__version__, "cuda_runtime": torch.version.cuda,
         "device": str(device), "threads": torch.get_num_threads(),
         "matmul_precision": torch.get_float32_matmul_precision(),
-        "analysis_commit": command(["git", "rev-parse", "HEAD"]),
+        "analysis_commit": ((ROOT / "SOURCE_REVISION").read_text().strip()
+                            if (ROOT / "SOURCE_REVISION").is_file()
+                            else command(["git", "rev-parse", "HEAD"])),
+        "source_snapshot": str(ROOT) if (ROOT / "SOURCE_REVISION").is_file() else None,
         "working_tree_dirty": bool(command(["git", "status", "--porcelain"])),
         "slurm_job_id": os.environ.get("SLURM_JOB_ID"),
         "slurm_array_task_id": os.environ.get("SLURM_ARRAY_TASK_ID"),

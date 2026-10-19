@@ -100,6 +100,14 @@ are discontinuous near singular matrices. Numerical tolerance is part of the
 protocol and must be calibrated; an exact algebraic incompatibility alone is not
 a statistically meaningful rejection.
 
+The complementary fit is a PSD Procrustes problem; its rank-deficient cases can
+have an unattained infimum, as analyzed by
+[Gillis and Sharma 2018](https://arxiv.org/html/1612.01354v2). For example, although
+G = (1, 0)^T and V = (0, 1)^T are exactly incompatible, the PSD matrix
+K_e = ((e, 1), (1, 1/e)) gives a residual of size e for any e > 0. Consequently,
+an arbitrarily small residual does not certify exact interpolation, and the
+nullspace condition is not uniformly robust to noise without further bounds.
+
 Record reciprocity, negative quadratic forms, linear consistency, nullspace
 residuals, and held-out prediction. Use convex least squares over symmetric PSD
 operators as a complementary fit, retain solver convergence diagnostics, and

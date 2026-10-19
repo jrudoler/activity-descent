@@ -28,7 +28,7 @@ def observe(state, x, errors, rule, eta, repeats, sigma, seed, shared_noise=Fals
 
 
 def benchmark(args, state, data):
-    output = []
+    output, reference_responses, inference_timings = [], {}, []
     for dtype in (torch.float64, torch.float32):
         current = state.to(args.device, dtype)
         errors, _ = core.probe_errors(state.seeds, args.outputs)
@@ -36,7 +36,17 @@ def benchmark(args, state, data):
         x = data[:, :1].to(args.device, dtype).expand(-1, errors.shape[1], -1)
         # Warm up library initialization and GPU kernels before measuring.
         for rule, repeats in (("gd", 1), ("feedback", 1), ("node", 32)):
-            observe(current, x, errors, rule, args.eta, repeats, args.sigma, 41)
+            g, v, _ = observe(current, x, errors, rule, args.eta, repeats, args.sigma, 41)
+            precision = {}
+            if rule != "node":
+                if dtype == torch.float64:
+                    reference_responses[rule] = v
+                else:
+                    reference_v = reference_responses[rule]
+                    relative_error = (torch.linalg.vector_norm(v.double() - reference_v, dim=(-2, -1))
+                                      / torch.linalg.vector_norm(reference_v, dim=(-2, -1)).clamp_min(1e-30))
+                    precision = {"response_error_vs_float64_median": relative_error.median().item(),
+                                 "response_error_vs_float64_max": relative_error.max().item()}
             synchronize(args.device)
             start = time.perf_counter()
             for _ in range(args.benchmark_repeats):
@@ -46,8 +56,21 @@ def benchmark(args, state, data):
             output.append({"dtype": str(dtype), "rule": rule, "perturbation_repeats": repeats,
                            "seconds_per_bank": seconds, "networks": len(state.seeds),
                            "probes_per_network": errors.shape[1],
-                           "network_probes_per_second": len(state.seeds) * errors.shape[1] / seconds})
-    return {"timings": output}
+                           "network_probes_per_second": len(state.seeds) * errors.shape[1] / seconds,
+                           **precision})
+            if dtype == torch.float64 and rule == "gd":
+                gm, vm = g.transpose(-1, -2), v.transpose(-1, -2)
+                for name, operation in (
+                    ("compatibility", lambda: operators.compatibility(gm, vm)),
+                    ("psd_fit", lambda: operators.fit_psd(gm, vm, iterations=args.fit_iterations)),
+                ):
+                    synchronize(args.device)
+                    fit_start = time.perf_counter()
+                    operation()
+                    synchronize(args.device)
+                    inference_timings.append({"operation": name, "seconds": time.perf_counter() - fit_start,
+                                              "networks": len(state.seeds), "iterations": args.fit_iterations})
+    return {"timings": output, "inference_timings": inference_timings}
 
 
 def experiment(args, state, data, targets):

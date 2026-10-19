@@ -8,7 +8,7 @@ import unittest
 import numpy as np
 import torch
 
-from . import core, operators, reference
+from . import core, diagnostics, operators, reference
 from .provenance import provenance, save_json
 
 DEVICE = "cpu"
@@ -94,6 +94,38 @@ class ScientificChecks(unittest.TestCase):
             self.assertLess(residuals[-1], residuals[0] * .03)
         for before, after in zip(original, state.weights):
             self.assertTrue(torch.equal(before, after))
+
+    def test_own_upstream_decomposition(self):
+        state = self.state()
+        x = core.bar_data(state.seeds, outputs=2)[0][:, :1].to(DEVICE)
+        errors = torch.ones((2, 1, 2), device=DEVICE, dtype=torch.float64)
+        updates = core.directions(state, x, errors)
+        own = core.activity_jvp(state, x, updates, [1])[-1]
+        upstream = core.activity_jvp(state, x, updates, [0])[-1]
+        combined = core.activity_jvp(state, x, updates)[-1]
+        self.assert_close(own + upstream, combined)
+        k_own = core.kernels(state, x, layers=[1])[-1]
+        k_upstream = core.kernels(state, x, layers=[0])[-1]
+        self.assert_close(k_own + k_upstream, core.kernels(state, x)[-1])
+        self.assert_close(k_own, torch.diag_embed(k_own.diagonal(dim1=-2, dim2=-1)))
+        eta = 1e-5
+        before = core.forward(state, x)[1][-1]
+        after = core.forward(state, x, core.apply_step(state, updates, eta, [1]))[1][-1]
+        self.assert_close(-(after - before) / eta, own, atol=1e-9)
+        measured = diagnostics.step_diagnostics(state, x, errors, eta, [1])
+        self.assertEqual(measured[-1]["layer_type"], "output")
+        self.assertLess(measured[-1]["full_relative_error"].max().item(), 1e-8)
+
+    def test_zero_gradient_and_undefined_metrics(self):
+        zero = torch.zeros((2, 8), device=DEVICE, dtype=torch.float64)
+        result = diagnostics.alignment(zero, zero)
+        self.assertTrue(torch.isnan(result["cosine"]).all())
+        self.assertTrue(torch.isnan(result["pearson"]).all())
+        self.assertTrue(torch.isnan(result["downhill_fraction"]).all())
+        self.assertTrue((result["tiny_gradient_neurons"] == 8).all())
+        scores = operators.compatibility(zero.unsqueeze(-1), zero.unsqueeze(-1))
+        for name in ("reciprocity", "negative_quadratic", "linearity", "nullspace", "gradient_rank"):
+            self.assertTrue((scores[name] == 0).all())
 
     def test_exact_compatibility_including_nullspace(self):
         g = torch.eye(2, device=DEVICE, dtype=torch.float64)
