@@ -45,5 +45,15 @@ case "$mode" in
         inference_python -m analysis.learning_rule_inference.mean_response --device cuda \
             --task-index "${SLURM_ARRAY_TASK_ID:?}" "$@"
         ;;
+    replicate-primary)
+        inference_python -m analysis.learning_rule_inference.validate --device cuda \
+            --output "data/generated/inference/validation-cuda-replication-${SLURM_JOB_ID}.json"
+        for shard in {0..9}; do
+            inference_python -m analysis.learning_rule_inference.campaign --device cuda \
+                --configuration configs/inference/confirmatory_v1.json \
+                --profile 0 --split evaluation --shard "$shard" \
+                --output "data/generated/inference/b200-primary-evaluation/primary-evaluation-s$(printf '%02d' "$shard").json"
+        done
+        ;;
     *) printf 'Unknown experiment mode: %s\n' "$mode" >&2; exit 2 ;;
 esac

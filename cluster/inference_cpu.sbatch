@@ -46,5 +46,8 @@ case "$mode" in
         inference_python -m analysis.learning_rule_inference.mean_response --device cpu \
             --task-index "${SLURM_ARRAY_TASK_ID:?}" "$@"
         ;;
+    sensitivity)
+        inference_python -m analysis.learning_rule_inference.sensitivity --device cpu "$@"
+        ;;
     *) printf 'Unknown experiment mode: %s\n' "$mode" >&2; exit 2 ;;
 esac
