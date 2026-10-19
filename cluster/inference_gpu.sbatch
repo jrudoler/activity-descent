@@ -4,8 +4,8 @@
 #SBATCH --partition=dgx-b200
 #SBATCH --qos=wharton-phd-student-dgx-b200
 #SBATCH --gpus=1
-#SBATCH --cpus-per-task=4
-#SBATCH --mem=32G
+#SBATCH --cpus-per-task=28
+#SBATCH --mem=224G
 #SBATCH --time=00:30:00
 #SBATCH --output=data/generated/inference/slurm-%j.out
 

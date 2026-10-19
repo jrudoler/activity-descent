@@ -4,7 +4,7 @@
 #SBATCH --partition=genoa-std-mem
 #SBATCH --qos=wharton-phd-student-genoa
 #SBATCH --cpus-per-task=4
-#SBATCH --mem=16G
+#SBATCH --mem-per-cpu=5632M
 #SBATCH --time=00:30:00
 #SBATCH --output=data/generated/inference/slurm-%j.out
 
