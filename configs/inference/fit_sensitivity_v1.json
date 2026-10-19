@@ -1,0 +1,11 @@
+{
+  "protocol": "development-psd-fit-sensitivity-v1",
+  "status": "Post-primary supporting analysis on development networks only; no changes to confirmatory tests",
+  "checkpoint_step": 1000,
+  "rules": ["gd", "feedback-0.1", "feedback-1", "node-shared-1"],
+  "pseudoinverse_tolerances": [0.0000001, 0.000000001, 0.00000000001],
+  "ridge_fractions": [0.001, 0.01, 0.1],
+  "ridge_scaling": "lambda = fraction * largest eigenvalue of G_fit G_fit^T",
+  "max_iterations": 2000,
+  "stationarity_tolerance": 0.000000001
+}
