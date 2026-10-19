@@ -1,0 +1,129 @@
+{
+  "sources": [
+    {
+      "path": "data/generated/inference/pilot-q2-initial.json",
+      "provenance": {
+        "time_utc": "2026-10-19T19:10:27.995517+00:00",
+        "host": "epyc-3-5",
+        "python": "3.14.0",
+        "torch": "2.11.0+cu128",
+        "cuda_runtime": "12.8",
+        "device": "cpu",
+        "threads": 1,
+        "matmul_precision": "highest",
+        "analysis_commit": "a2c495eded2b17a248479012819116ea3f4ded80",
+        "source_snapshot": "/vast/projects/wharton/phd-students/jrudoler/activity-descent/data/generated/inference/source-9157417",
+        "working_tree_dirty": false,
+        "slurm_job_id": "9157417",
+        "slurm_array_task_id": null,
+        "sources": {
+          "analysis/learning_rule_inference/__init__.py": "d7a0c5ab3aab17e6d7b85152315fd55908180bb1c60177b8751f2a4d40c3848e",
+          "analysis/learning_rule_inference/core.py": "4f49eb19f6c0591078e6a0ac03a28ab3a8037031115be8b6a0d3a7d195da4ce1",
+          "analysis/learning_rule_inference/diagnostics.py": "5264ed24d571550165ee58ae20b5d5f59dbe4175432fab25b058f0c5d907d2b1",
+          "analysis/learning_rule_inference/operators.py": "19cdbd51825259984c684db960d972b9f1070a7735dfe50550ad43d61bf0da2a",
+          "analysis/learning_rule_inference/provenance.py": "a72556f1dadd720a9d23f1efdb1743b24bf61bd6af5f5f69c7a7952881cf776f",
+          "analysis/learning_rule_inference/reference.py": "0aa8a55a6be1a368f96f08b0fd74c532fcb889509e105897f6048ad654efaf6c",
+          "analysis/learning_rule_inference/run.py": "12e8a42c7e817f4a848723346371d59f41bd7a65908372fd1109ef4ac8ad8040",
+          "analysis/learning_rule_inference/validate.py": "26797d88e6843a531fabd75d437aabdc48171717c707d579b73702fd68391f3b"
+        },
+        "lockfile_sha256": "571f5c658caf8fb232c45e3c275f8195453f9b47e8d1f8bdd8af8f9d001b0ad1",
+        "peak_allocated_bytes": null
+      },
+      "checkpoint_sha256": "49fa988d83fe0ba86d0984b93f33aef2d990f99389234615f8c4d54298484e8e"
+    },
+    {
+      "path": "data/generated/inference/pilot-q8-initial.json",
+      "provenance": {
+        "time_utc": "2026-10-19T19:10:31.294220+00:00",
+        "host": "epyc-4-5",
+        "python": "3.14.0",
+        "torch": "2.11.0+cu128",
+        "cuda_runtime": "12.8",
+        "device": "cpu",
+        "threads": 1,
+        "matmul_precision": "highest",
+        "analysis_commit": "a2c495eded2b17a248479012819116ea3f4ded80",
+        "source_snapshot": "/vast/projects/wharton/phd-students/jrudoler/activity-descent/data/generated/inference/source-9157426",
+        "working_tree_dirty": false,
+        "slurm_job_id": "9157426",
+        "slurm_array_task_id": null,
+        "sources": {
+          "analysis/learning_rule_inference/__init__.py": "d7a0c5ab3aab17e6d7b85152315fd55908180bb1c60177b8751f2a4d40c3848e",
+          "analysis/learning_rule_inference/core.py": "4f49eb19f6c0591078e6a0ac03a28ab3a8037031115be8b6a0d3a7d195da4ce1",
+          "analysis/learning_rule_inference/diagnostics.py": "5264ed24d571550165ee58ae20b5d5f59dbe4175432fab25b058f0c5d907d2b1",
+          "analysis/learning_rule_inference/operators.py": "19cdbd51825259984c684db960d972b9f1070a7735dfe50550ad43d61bf0da2a",
+          "analysis/learning_rule_inference/provenance.py": "a72556f1dadd720a9d23f1efdb1743b24bf61bd6af5f5f69c7a7952881cf776f",
+          "analysis/learning_rule_inference/reference.py": "0aa8a55a6be1a368f96f08b0fd74c532fcb889509e105897f6048ad654efaf6c",
+          "analysis/learning_rule_inference/run.py": "12e8a42c7e817f4a848723346371d59f41bd7a65908372fd1109ef4ac8ad8040",
+          "analysis/learning_rule_inference/validate.py": "26797d88e6843a531fabd75d437aabdc48171717c707d579b73702fd68391f3b"
+        },
+        "lockfile_sha256": "571f5c658caf8fb232c45e3c275f8195453f9b47e8d1f8bdd8af8f9d001b0ad1",
+        "peak_allocated_bytes": null
+      },
+      "checkpoint_sha256": "ce7c6344186a75173ed6ffc11839a41544c9b1d516277bf156cfb8644cf11ad7"
+    },
+    {
+      "path": "data/generated/inference/pilot-q2-trained.json",
+      "provenance": {
+        "time_utc": "2026-10-19T19:10:32.321225+00:00",
+        "host": "epyc-4-5",
+        "python": "3.14.0",
+        "torch": "2.11.0+cu128",
+        "cuda_runtime": "12.8",
+        "device": "cpu",
+        "threads": 1,
+        "matmul_precision": "highest",
+        "analysis_commit": "a2c495eded2b17a248479012819116ea3f4ded80",
+        "source_snapshot": "/vast/projects/wharton/phd-students/jrudoler/activity-descent/data/generated/inference/source-9157428",
+        "working_tree_dirty": false,
+        "slurm_job_id": "9157428",
+        "slurm_array_task_id": null,
+        "sources": {
+          "analysis/learning_rule_inference/__init__.py": "d7a0c5ab3aab17e6d7b85152315fd55908180bb1c60177b8751f2a4d40c3848e",
+          "analysis/learning_rule_inference/core.py": "4f49eb19f6c0591078e6a0ac03a28ab3a8037031115be8b6a0d3a7d195da4ce1",
+          "analysis/learning_rule_inference/diagnostics.py": "5264ed24d571550165ee58ae20b5d5f59dbe4175432fab25b058f0c5d907d2b1",
+          "analysis/learning_rule_inference/operators.py": "19cdbd51825259984c684db960d972b9f1070a7735dfe50550ad43d61bf0da2a",
+          "analysis/learning_rule_inference/provenance.py": "a72556f1dadd720a9d23f1efdb1743b24bf61bd6af5f5f69c7a7952881cf776f",
+          "analysis/learning_rule_inference/reference.py": "0aa8a55a6be1a368f96f08b0fd74c532fcb889509e105897f6048ad654efaf6c",
+          "analysis/learning_rule_inference/run.py": "12e8a42c7e817f4a848723346371d59f41bd7a65908372fd1109ef4ac8ad8040",
+          "analysis/learning_rule_inference/validate.py": "26797d88e6843a531fabd75d437aabdc48171717c707d579b73702fd68391f3b"
+        },
+        "lockfile_sha256": "571f5c658caf8fb232c45e3c275f8195453f9b47e8d1f8bdd8af8f9d001b0ad1",
+        "peak_allocated_bytes": null
+      },
+      "checkpoint_sha256": "47bd154b1daa032bae4541baf777f3eaab40e8efa163d4aae65cc1378c3ff0d8"
+    },
+    {
+      "path": "data/generated/inference/pilot-q8-trained.json",
+      "provenance": {
+        "time_utc": "2026-10-19T19:10:36.478920+00:00",
+        "host": "epyc-1-11",
+        "python": "3.14.0",
+        "torch": "2.11.0+cu128",
+        "cuda_runtime": "12.8",
+        "device": "cpu",
+        "threads": 1,
+        "matmul_precision": "highest",
+        "analysis_commit": "a2c495eded2b17a248479012819116ea3f4ded80",
+        "source_snapshot": "/vast/projects/wharton/phd-students/jrudoler/activity-descent/data/generated/inference/source-9157431",
+        "working_tree_dirty": false,
+        "slurm_job_id": "9157431",
+        "slurm_array_task_id": null,
+        "sources": {
+          "analysis/learning_rule_inference/__init__.py": "d7a0c5ab3aab17e6d7b85152315fd55908180bb1c60177b8751f2a4d40c3848e",
+          "analysis/learning_rule_inference/core.py": "4f49eb19f6c0591078e6a0ac03a28ab3a8037031115be8b6a0d3a7d195da4ce1",
+          "analysis/learning_rule_inference/diagnostics.py": "5264ed24d571550165ee58ae20b5d5f59dbe4175432fab25b058f0c5d907d2b1",
+          "analysis/learning_rule_inference/operators.py": "19cdbd51825259984c684db960d972b9f1070a7735dfe50550ad43d61bf0da2a",
+          "analysis/learning_rule_inference/provenance.py": "a72556f1dadd720a9d23f1efdb1743b24bf61bd6af5f5f69c7a7952881cf776f",
+          "analysis/learning_rule_inference/reference.py": "0aa8a55a6be1a368f96f08b0fd74c532fcb889509e105897f6048ad654efaf6c",
+          "analysis/learning_rule_inference/run.py": "12e8a42c7e817f4a848723346371d59f41bd7a65908372fd1109ef4ac8ad8040",
+          "analysis/learning_rule_inference/validate.py": "26797d88e6843a531fabd75d437aabdc48171717c707d579b73702fd68391f3b"
+        },
+        "lockfile_sha256": "571f5c658caf8fb232c45e3c275f8195453f9b47e8d1f8bdd8af8f9d001b0ad1",
+        "peak_allocated_bytes": null
+      },
+      "checkpoint_sha256": "592bae2b73e08c3fce7d102e8d7fb7438409ae440c0c07e3fcc8f4d8fafe0bd3"
+    }
+  ],
+  "interpretation": "Development pilots; quantiles summarize independent networks and are not confidence intervals."
+}

@@ -80,7 +80,9 @@ def main():
     figure.suptitle("Development pilot: alignment and joint-probe consistency", fontsize=11)
     handles = [plt.Line2D([], [], marker="o", linestyle="", color=c, label=name)
                for name, c in colors.items()]
-    figure.legend(handles=handles, loc="lower center", ncol=4, frameon=False)
+    handles.append(plt.Line2D([], [], marker="s", linestyle="", color="#666666",
+                              label="shared perturbations"))
+    figure.legend(handles=handles, loc="lower center", ncol=5, frameon=False)
     figure.tight_layout(rect=(0, .1, 1, .94))
     args.figure.parent.mkdir(parents=True, exist_ok=True)
     figure.savefig(args.figure, bbox_inches="tight")
