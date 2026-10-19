@@ -4,6 +4,10 @@ A short paper showing that gradient descent on network weights induces **kernel 
 
 **Key result:** Weight gradient descent induces kernel-mediated activity changes. Neuronwise descent is guaranteed when its self-term dominates gradient-weighted interference and finite-step error; matrix diagonal dominance alone is insufficient. See Appendix C of the manuscript.
 
+The [learning rule inference research plan](RESEARCH_PLAN.md) describes the next
+study: calibrated tests using repeated activity probes and comparisons of
+learning rules, with experiments targeting Betty's B200 GPUs.
+
 ## Reproduce the results
 
 Install `uv`, then run the complete dependency graph from the repository root:
@@ -26,6 +30,32 @@ This regenerates seeded simulation outputs, publication-ready figures,
 manuscript assets, and the compiled paper. The Snakemake dependency graph is
 the authoritative provenance record.
 To rebuild one step, use `uv run snakemake --cores 1 --forcerun <rule_name>`.
+
+## Learning rule inference development
+
+The new study uses the optional PyTorch dependency on CPU or CUDA:
+
+```bash
+uv sync --frozen --extra gpu
+uv run --frozen --extra gpu python -m analysis.learning_rule_inference.validate --device cpu
+```
+
+The [operator test derivation](docs/learning_rule_identification.md) states the
+observation assumptions, exact compatibility conditions, and equivalences.
+Submit cluster checks and throughput measurements from the repository root:
+
+```bash
+mkdir -p data/generated/inference
+sbatch cluster/inference_cpu.sbatch preflight
+sbatch cluster/inference_gpu.sbatch preflight
+```
+
+Both scripts save completed validation reports and benchmarks with source,
+runtime, and Slurm provenance. GPU jobs request one B200. Account for the Wharton
+PhD scheduler limit when submitting concurrent GPU jobs; independent CPU shards
+can run alongside them. Large checkpoint/probe arrays and scheduler logs under
+`data/generated/inference/` are local outputs. Final scientific summaries and
+figures belong in `results/`.
 
 ## Repository layout
 

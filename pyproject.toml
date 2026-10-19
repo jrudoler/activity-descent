@@ -8,3 +8,8 @@ dependencies = [
     "numpy>=2.4.6",
     "snakemake>=9.0",
 ]
+
+[project.optional-dependencies]
+gpu = [
+    "torch>=2.9",
+]

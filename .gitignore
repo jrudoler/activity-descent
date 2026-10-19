@@ -1,6 +1,7 @@
 __pycache__/
 .venv/
 .snakemake/
+/data/generated/inference/
 
 # Independent manuscript repository; clone it here before building the paper.
 /paper/
