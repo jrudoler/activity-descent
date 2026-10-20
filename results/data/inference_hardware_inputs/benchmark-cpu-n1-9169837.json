@@ -1,0 +1,145 @@
+{
+  "configuration": {
+    "mode": "benchmark",
+    "device": "cpu",
+    "threads": 1,
+    "width": 64,
+    "depth": 2,
+    "outputs": 8,
+    "networks": 1,
+    "seed_start": 100000,
+    "eta": 0.0001,
+    "etas": [
+      1e-05,
+      0.0001,
+      0.001
+    ],
+    "node_repeats": [
+      1,
+      32,
+      512
+    ],
+    "sigma": 0.001,
+    "train_steps": 0,
+    "train_eta": 0.005,
+    "fit_iterations": 500,
+    "benchmark_repeats": 5,
+    "output": "data/generated/inference/benchmark-cpu-n1-9169837.json"
+  },
+  "seeds": [
+    100000
+  ],
+  "seconds": 0.5316416951827705,
+  "provenance": {
+    "time_utc": "2026-10-20T01:18:44.183401+00:00",
+    "host": "epyc-6-8",
+    "python": "3.14.0",
+    "torch": "2.11.0+cu128",
+    "cuda_runtime": "12.8",
+    "device": "cpu",
+    "threads": 1,
+    "matmul_precision": "highest",
+    "analysis_commit": "2fb4fe74c72b9f254ef5cc43cd5c0763dbd2ee2f",
+    "source_snapshot": "/vast/projects/wharton/phd-students/jrudoler/activity-descent/data/generated/inference/source-9169837",
+    "working_tree_dirty": false,
+    "slurm_job_id": "9169837",
+    "slurm_array_task_id": null,
+    "sources": {
+      "analysis/learning_rule_inference/__init__.py": "d7a0c5ab3aab17e6d7b85152315fd55908180bb1c60177b8751f2a4d40c3848e",
+      "analysis/learning_rule_inference/backend_check.py": "621665fe9679ded8073e585edffb00f3f05062b9e17bf573f9eb3eb98f29b924",
+      "analysis/learning_rule_inference/baseline.py": "99f74a8a86f6d7b87987d3a5b0f7f9a08abd9318bfb90a8195151394b3bce85a",
+      "analysis/learning_rule_inference/campaign.py": "35429d8c838eb09720cc67cbaa7d0342324ac277cdcd50db44d4acd195cf840c",
+      "analysis/learning_rule_inference/core.py": "4f49eb19f6c0591078e6a0ac03a28ab3a8037031115be8b6a0d3a7d195da4ce1",
+      "analysis/learning_rule_inference/diagnostics.py": "5264ed24d571550165ee58ae20b5d5f59dbe4175432fab25b058f0c5d907d2b1",
+      "analysis/learning_rule_inference/evaluate.py": "2e1704bd5fbae6d27fb9304f69c3b91177a74e224ed6bfcd9c9e6607a9dc989e",
+      "analysis/learning_rule_inference/evaluate_gpu.py": "c48c94694e1be89f26fd2cd9467b07e67a202f7016ca9732d61633ff657bdd14",
+      "analysis/learning_rule_inference/evaluate_mean.py": "6f2dcf0699d018af9deae44664ba81ed095afb7793bce76e2df231a2fd92d80c",
+      "analysis/learning_rule_inference/fit_sensitivity.py": "9e3c20d9ca8088d3f90f508997b303c66ec8eaddd77b936edf9cfbe8c4458f65",
+      "analysis/learning_rule_inference/mean_response.py": "9221443ee9fe26a302f0762919b97c74742d006cb7e14b39629069fdcd599ede",
+      "analysis/learning_rule_inference/mechanism_controls.py": "f7696d24b84e0928028ddd2f345207b5c5eebf1f92c9c27d2a9f9261832cab69",
+      "analysis/learning_rule_inference/operators.py": "9b7a51d53236ef8170ffabc994b4de42d9a3258d25142b54e83d0f1354a49b5c",
+      "analysis/learning_rule_inference/provenance.py": "a72556f1dadd720a9d23f1efdb1743b24bf61bd6af5f5f69c7a7952881cf776f",
+      "analysis/learning_rule_inference/publication.py": "7dce7f5d77602c645da3c95d303b18c23e3362df04ebbf24fb8b4bb624437cb5",
+      "analysis/learning_rule_inference/reference.py": "0aa8a55a6be1a368f96f08b0fd74c532fcb889509e105897f6048ad654efaf6c",
+      "analysis/learning_rule_inference/run.py": "12e8a42c7e817f4a848723346371d59f41bd7a65908372fd1109ef4ac8ad8040",
+      "analysis/learning_rule_inference/sensitivity.py": "faffb3d64ff3d8cd19add1fc693bc7ae2e4148036875de2858e37291299b063a",
+      "analysis/learning_rule_inference/validate.py": "ce0bbaadaf05308f67d6bfb81e6e923fe0abdc050332c15c1470fb22660ea941"
+    },
+    "lockfile_sha256": "571f5c658caf8fb232c45e3c275f8195453f9b47e8d1f8bdd8af8f9d001b0ad1",
+    "peak_allocated_bytes": null
+  },
+  "timings": [
+    {
+      "dtype": "torch.float64",
+      "rule": "gd",
+      "perturbation_repeats": 1,
+      "seconds_per_bank": 0.002251788601279259,
+      "networks": 1,
+      "probes_per_network": 32,
+      "network_probes_per_second": 14210.92547578425
+    },
+    {
+      "dtype": "torch.float64",
+      "rule": "feedback",
+      "perturbation_repeats": 1,
+      "seconds_per_bank": 0.002038975991308689,
+      "networks": 1,
+      "probes_per_network": 32,
+      "network_probes_per_second": 15694.152425728778
+    },
+    {
+      "dtype": "torch.float64",
+      "rule": "node",
+      "perturbation_repeats": 32,
+      "seconds_per_bank": 0.00855183256790042,
+      "networks": 1,
+      "probes_per_network": 32,
+      "network_probes_per_second": 3741.888039309029
+    },
+    {
+      "dtype": "torch.float32",
+      "rule": "gd",
+      "perturbation_repeats": 1,
+      "seconds_per_bank": 0.0012723593972623348,
+      "networks": 1,
+      "probes_per_network": 32,
+      "network_probes_per_second": 25150.126661423357,
+      "response_error_vs_float64_median": 0.00042479520207374625,
+      "response_error_vs_float64_max": 0.00042479520207374625
+    },
+    {
+      "dtype": "torch.float32",
+      "rule": "feedback",
+      "perturbation_repeats": 1,
+      "seconds_per_bank": 0.00044963918626308443,
+      "networks": 1,
+      "probes_per_network": 32,
+      "network_probes_per_second": 71168.17434429917,
+      "response_error_vs_float64_median": 0.00022673775989726436,
+      "response_error_vs_float64_max": 0.00022673775989726436
+    },
+    {
+      "dtype": "torch.float32",
+      "rule": "node",
+      "perturbation_repeats": 32,
+      "seconds_per_bank": 0.002864258177578449,
+      "networks": 1,
+      "probes_per_network": 32,
+      "network_probes_per_second": 11172.177232659242
+    }
+  ],
+  "inference_timings": [
+    {
+      "operation": "compatibility",
+      "seconds": 0.0010548429563641548,
+      "networks": 1,
+      "iterations": 500
+    },
+    {
+      "operation": "psd_fit",
+      "seconds": 0.12341377371922135,
+      "networks": 1,
+      "iterations": 500
+    }
+  ]
+}

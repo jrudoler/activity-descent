@@ -1,0 +1,32 @@
+{
+  "timezone": "UTC",
+  "query": "TZ=UTC sacct -X -n -j 9158857,9169837 --format=JobID,Partition,Submit,Eligible,Start,End,ElapsedRaw,AllocCPUS,State,ExitCode,AllocTRES%120 -P",
+  "jobs": {
+    "9158857": {
+      "JobID": "9158857",
+      "Partition": "b200-mig45",
+      "Submit": "2026-10-19T19:41:42+00:00",
+      "Eligible": "2026-10-19T19:41:42+00:00",
+      "Start": "2026-10-19T22:49:49+00:00",
+      "End": "2026-10-19T22:51:17+00:00",
+      "ElapsedRaw": 88,
+      "AllocCPUS": 6,
+      "State": "COMPLETED",
+      "ExitCode": "0:0",
+      "AllocTRES": "billing=250,cpu=6,gres/gpu:45gb=1,gres/gpu=1,mem=48G,node=1"
+    },
+    "9169837": {
+      "JobID": "9169837",
+      "Partition": "genoa-std-mem",
+      "Submit": "2026-10-20T01:18:02+00:00",
+      "Eligible": "2026-10-20T01:18:02+00:00",
+      "Start": "2026-10-20T01:18:31+00:00",
+      "End": "2026-10-20T01:19:15+00:00",
+      "ElapsedRaw": 44,
+      "AllocCPUS": 1,
+      "State": "COMPLETED",
+      "ExitCode": "0:0",
+      "AllocTRES": "billing=10,cpu=1,mem=5.50G,node=1"
+    }
+  }
+}

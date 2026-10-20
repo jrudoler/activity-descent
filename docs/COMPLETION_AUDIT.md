@@ -2,16 +2,17 @@
 
 Audited 2026-10-19 against the active objective, `RESEARCH_PLAN.md`, the user's
 CPU-parallelism authorization, and the clarified limit of three concurrent GPU
-jobs. The goal is **not complete**: actual B200 execution remains unverified.
-A queued request is not evidence of a successful GPU experiment.
+jobs. The goal is **not complete**: exact-checkpoint CUDA agreement and primary
+GPU replication remain unexecuted. B200 MIG job 9158857 has now completed all
+18 checks and timing workloads. A new matched-source CPU preflight (9169837)
+also passed, and the paper includes a verified hardware comparison. A queued
+request remains insufficient evidence of the remaining scientific GPU work.
 
-The final queue recheck confirms live pending preflights 9156748 and 9158857
-(Priority) and replication 9160192 (expected afterok:9158857 dependency), all
-with zero runtime. CUDA report and replication output files remain absent.
-This same allocation blocker has persisted across three consecutive goal turns;
-after completing all independent CPU and manuscript work, further progress
-requires an external scheduler-state change. The goal is blocked while the
-existing jobs remain queued.
+The earlier allocation blocker persisted across three consecutive goal turns,
+and the goal was marked blocked. The replication dependency has since cleared;
+9156748 (full-device preflight) and 9160192 (saved-checkpoint comparison and
+replication) remain pending Priority. No backend comparison or replication
+results are claimed. Existing GPU handles are retained.
 
 The previous goal turn made concrete progress by completing the CPU study and
 compiled draft. This continuation identified and executed omitted development
@@ -44,12 +45,13 @@ that every planned control had been completed.
 | Noise, depth and failed-identification conditions reported | Robustness figure; shared-control false rejection; depth-three power and loss-selection exclusions | Included; no uniform PSD-family or biological-validity claim |
 | Full prior-work and novelty audit | `docs/related_work_audit.md`, primary citations and manuscript background | Complete for the closest stated comparisons; no broad first-inference/kernel/optimizer claim |
 | CPU reference and analytic validation | `validation-final-cpu.json`: 18 checks, unchanged checked modules; independent NumPy reference | Passed on CPU |
-| Actual B200/CUDA scientific validation and precision benchmarks | Live jobs 9156748 (full B200) and 9158857 (MIG45); completed CUDA reports not yet present | **Pending; not achieved** |
+| Actual B200/CUDA scientific validation and precision benchmarks | Completed MIG45 job 9158857: all 18 checks pass, float32/64 timings at n=1/20/64, actual GPU/driver/runtime/memory metadata | Achieved on MIG slice; full-device 9156748 remains pending |
 | Same saved inputs/checkpoints CPU versus CUDA | Prepared `backend_check.py` in dependent job 9160192; no executed result yet | **Pending; not achieved** |
 | Executed B200 comparison with provenance | Prepared resumable primary replication in 9160192 and strict `evaluate_gpu.py` | **Pending; not achieved** |
-| Measured CPU/GPU throughput and scheduling tradeoff | Completed CPU timings; GPU execution/memory/driver/timing reports absent | **Incomplete** |
-| Configurations, immutable jobs, workflow and final assets | `Snakefile`, Slurm modes, locked configs, strict manifests, five figures/four generated TeX assets, provenance-aware collector | CPU workflow and asset/build paths executed; GPU paths await allocation |
-| Compiled manuscript with resolved citations and inspected artifacts | Local Tectonic build, build/source/PDF hashes, rendered PDF previews; supporting appendix refreshed | CPU manuscript built; final GPU paragraph and final audit remain |
+| Measured CPU/GPU throughput and scheduling tradeoff | Matched-source CPU job 9169837 and MIG45 job 9158857, 24 timing conditions, original archived reports and Slurm waits | Achieved for slice benchmark; scope distinguishes generic helper from main fit and timing from training |
+| Claims checked against available evidence | `docs/CLAIM_EVIDENCE.md`, exact primary/noise/depth/mean summary rows, theorem and calibration review | Scope and limitations recorded; GPU scientific conclusions remain pending |
+| Configurations, immutable jobs, workflow and final assets | `Snakefile`, Slurm modes, locked configs, strict manifests, five figures/five generated TeX assets, provenance-aware collector | CPU and measured-MIG asset paths executed; scientific GPU paths await allocation |
+| Compiled manuscript with resolved citations and inspected artifacts | Local Tectonic build, build/source/PDF hashes, rendered PDF previews; supporting and measured-hardware appendices | Updated draft; final scientific GPU paragraph and final audit remain |
 | Preserve archived abstract/COSYNE and separate histories | Independent paper Git repository; archive/COSYNE diff against 85d280b is empty | Verified; local commits in each repository |
 
 The full-device `dgx-b200` preflight and MIG45 fallback are distinct resource

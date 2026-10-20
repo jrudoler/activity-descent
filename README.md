@@ -69,8 +69,10 @@ the progress record before submitting overlapping work.
 The `replicate-primary` GPU mode validates CUDA, compares four deterministic
 probe banks at the exact saved CPU checkpoints, then repeats the primary
 200-network evaluation on CUDA. Device random-number streams differ, so CUDA
-retraining is a distributional replication, not a paired numerical check. GPU
-execution remains pending in the current draft.
+retraining is a distributional replication, not a paired numerical check.
+B200 MIG job 9158857 completed all 18 CUDA scientific checks and timings;
+the saved-checkpoint comparison, primary replication, and full B200 preflight
+remain queued. The draft reports the completed MIG measurements explicitly.
 
 After all ten CUDA replication shards complete, evaluate them with the original
 CPU cutoffs, without recalibration:
@@ -78,6 +80,23 @@ CPU cutoffs, without recalibration:
 ```bash
 PYTHONPATH=. .venv/bin/python -P -m analysis.learning_rule_inference.evaluate_gpu
 ```
+
+The matched CPU/MIG timing comparison has its original small JSON reports and
+Slurm accounting archived in `results/data/inference_hardware_inputs/`. Regenerate
+its 24 timing conditions and manuscript table without requesting more compute:
+
+```bash
+python tools/summarize_inference_hardware.py
+```
+
+The summary verifies source hashes, workloads, seeds, runtime locks, successful
+validation, and completed allocation records before comparing times. At 20
+networks the MIG slice runs float64 update banks about 55--90 times faster than
+one CPU core; the measured auxiliary operator calls favor CPU. Queue waits were
+29 seconds for the matched CPU job and 3h 8m 7s for MIG. These are measurements
+from one allocation per backend, not end-to-end training or typical queue-time
+estimates. See the manuscript hardware appendix and the
+[claim/evidence review](docs/CLAIM_EVIDENCE.md) for the scope of the results.
 
 ## Reproduce summaries, figures, and the manuscript
 

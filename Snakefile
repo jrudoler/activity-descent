@@ -16,7 +16,14 @@ INFERENCE_FIGURE_NAMES = ["fig_inference_primary", "fig_inference_robustness",
 INFERENCE_FIGURES = [f"results/figures/{n}.{s}" for n in INFERENCE_FIGURE_NAMES for s in ("pdf", "png")]
 INFERENCE_TABLES = [f"results/tables/inference_{n}.tex" for n in ("primary", "numbers", "prediction", "regularization")]
 INFERENCE_PAPER_FIGURES = [f"paper/generated/figures/{n}.pdf" for n in INFERENCE_FIGURE_NAMES]
-INFERENCE_PAPER_TABLES = [f"paper/generated/inference_{n}.tex" for n in ("primary", "numbers", "prediction", "regularization")]
+INFERENCE_PAPER_TABLES = [f"paper/generated/inference_{n}.tex" for n in ("primary", "numbers", "prediction", "regularization", "hardware")]
+HARDWARE_CONFIG = json.load(open("configs/inference/hardware_mig45_v1.json"))
+HARDWARE_INPUTS = [f"{HARDWARE_CONFIG['input_directory']}/{name}"
+                  for device in ("cpu", "cuda")
+                  for job in [HARDWARE_CONFIG['cpu_job_id' if device == 'cpu' else 'gpu_job_id']]
+                  for name in ([f"validation-{device}-{job}.json"] +
+                               [f"benchmark-{device}-n{n}-{job}.json" for n in HARDWARE_CONFIG['batch_sizes']])]
+HARDWARE_INPUTS.append(f"{HARDWARE_CONFIG['input_directory']}/{HARDWARE_CONFIG['accounting']}")
 
 MAIN_FIGURE_NAMES = [
     "fig_main_compact",
@@ -271,7 +278,9 @@ rule inference_publication:
 rule collect_inference_assets:
     input:
         figures=[f"results/figures/{n}.pdf" for n in INFERENCE_FIGURE_NAMES],
-        tables=INFERENCE_TABLES,
+        tables=INFERENCE_TABLES + ["results/tables/inference_hardware.tex"],
+        hardware="results/data/inference_hardware_benchmark.provenance.json",
+        hardware_data="results/data/inference_hardware_benchmark.csv",
         collector="tools/collect_inference_assets.py",
     output:
         INFERENCE_PAPER_FIGURES,
@@ -279,6 +288,19 @@ rule collect_inference_assets:
         "paper/generated/analysis_provenance.json",
     shell:
         "python tools/collect_inference_assets.py"
+
+
+rule inference_hardware:
+    input:
+        configuration="configs/inference/hardware_mig45_v1.json",
+        reports=HARDWARE_INPUTS,
+        source="tools/summarize_inference_hardware.py",
+    output:
+        "results/data/inference_hardware_benchmark.csv",
+        "results/data/inference_hardware_benchmark.provenance.json",
+        "results/tables/inference_hardware.tex",
+    shell:
+        "python tools/summarize_inference_hardware.py"
 
 
 rule inference_mechanism_controls:
