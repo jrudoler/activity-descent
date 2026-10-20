@@ -345,7 +345,65 @@ def development_controls():
     return paths
 
 
-def tables_and_macros(rows, paired, mean, accuracy, predictions):
+def gpu_replication_table(cpu_rows):
+    paths = [DATA / name for name in ("inference_gpu_evaluation.csv", "inference_gpu_evaluation.provenance.json",
+             "inference_backend_validation.csv", "inference_backend_validation.provenance.json",
+             "inference_cuda_replication_validation.json")]
+    gpu, backend = read_csv(paths[0].name), read_csv(paths[2].name)
+    manifest, comparison, validation = [json.loads(paths[i].read_text()) for i in (1, 3, 4)]
+    cpu_hash = digest(DATA / "inference_evaluation.csv")
+    science = json.loads((DATA / "inference_evaluation.provenance.json").read_text())["science_sources"]
+    if (manifest["cpu_evaluation_sha256"] != cpu_hash or comparison["cpu_evaluation_sha256"] != cpu_hash
+            or manifest["science_sources"] != science
+            or manifest["configuration_sha256"] != digest("configs/inference/confirmatory_v1.json")
+            or manifest["evaluator_sha256"] != digest(Path(__file__).with_name("evaluate_gpu.py"))):
+        raise ValueError("CUDA evidence does not match the frozen CPU study or evaluator")
+    if len(gpu) != 432 or len(backend) != 12 or len(manifest["completed_shards"]) != 10:
+        raise ValueError("Incomplete CUDA replication or saved-checkpoint comparison")
+    for metadata in (comparison["provenance"], validation["provenance"]):
+        if metadata["device"] != "cuda" or "B200" not in metadata.get("gpu", ""):
+            raise ValueError("Actual B200 execution is required for the CUDA evidence")
+        if any(metadata["sources"][f"analysis/learning_rule_inference/{name}"] != wanted
+               for name, wanted in science.items()):
+            raise ValueError("Saved-checkpoint comparison or validation used changed science sources")
+    if not validation["passed"] or validation["tests"] != 18 or validation["failures"]:
+        raise ValueError("The CUDA replication scientific checks did not pass")
+    for record in (*manifest["completed_shards"], *comparison["parents"]):
+        path = Path(record["path"])
+        if digest(path) != record["sha256"]:
+            raise ValueError(f"CUDA evidence parent changed: {path}")
+        paths.append(path)
+    if any(int(r["networks"]) != 200 or float(r["max_relative_response_error"]) > 1e-7 for r in backend):
+        raise ValueError("Saved-checkpoint CUDA comparison is incomplete or outside its tolerance")
+    table = [r"\begin{tabular}{lrrrr}", r"\hline",
+             r"& \multicolumn{2}{c}{Shared operator} & \multicolumn{2}{c}{Pearson}\\",
+             r"Rule & CPU & CUDA & CPU & CUDA\\", r"\hline"]
+    for rule, label in zip(RULES, LABELS):
+        cells = []
+        for method in ("operator", "pearson"):
+            reference = select(cpu_rows, profile="primary", checkpoint_step=1000,
+                               response_noise="0.0", rule=rule, method=method)
+            result = select(gpu, checkpoint_step=1000, response_noise="0.0", rule=rule, method=method)
+            if (int(result["evaluation_runs"]) != 200 or int(result["undefined_runs"]) != 0
+                    or result["cpu_rejections"] != reference["rejections"]
+                    or float(result["cpu_cutoff"]) != float(reference["cutoff"])):
+                raise ValueError("CUDA table requires complete evaluation with the original CPU cutoffs")
+            cells.extend((reference["rejections"], result["rejections"]))
+        table.append(label.replace("%", r"\%") + " & " + " & ".join(cells) + r"\\")
+    table += [r"\hline", r"\end{tabular}"]
+    (TABLES / "inference_gpu_replication.tex").write_text("\n".join(table)+"\n")
+    macros = {name:select(gpu, checkpoint_step=1000, response_noise="0.0", rule=rule, method=method)["rejections"]
+              for name, rule, method in (("GPUFeedbackRejections", "feedback-0.1", "operator"),
+                  ("GPUPearsonRejections", "feedback-0.1", "pearson"), ("GPUGDRejections", "gd", "operator"),
+                  ("GPUPreconditionedRejections", "preconditioned", "operator"))}
+    macros["GPUDecisionDisagreements"] = str(sum(int(r["decision_disagreements"]) for r in backend))
+    max_error = max(float(r["max_relative_response_error"]) for r in backend)
+    mantissa, exponent = f"{max_error:.2e}".split("e")
+    macros["GPUResponseMaxError"] = f"${mantissa}\\times10^{{{int(exponent)}}}$"
+    return paths, macros
+
+
+def tables_and_macros(rows, paired, mean, accuracy, predictions, gpu_macros):
     TABLES.mkdir(parents=True, exist_ok=True)
     table = [r"\begin{tabular}{lrrr}", r"\hline", r"Update rule & Operator & Pearson & One direction\\", r"\hline"]
     for rule, label in zip(RULES, LABELS):
@@ -382,6 +440,7 @@ def tables_and_macros(rows, paired, mean, accuracy, predictions):
     for rule, name in (("directional-null", "Directional"), ("node", "PhysicalNode")):
         r = select(accuracy, mode="directions-first", samples=8192, rule=rule, metric="relative_error_to_deterministic_mean_step")
         macros[f"{name}LargeError"] = f"{100*float(r['median']):.2f}"
+    macros.update(gpu_macros)
     (TABLES / "inference_numbers.tex").write_text("% Generated from verified completed experiments.\n" +
         "".join(f"\\newcommand{{\\{key}}}{{{value}}}\n" for key,value in macros.items()))
 
@@ -399,7 +458,9 @@ def main():
     mean_figure(mean, accuracy)
     extra_inputs = diagnostics_figure()
     extra_inputs.extend(development_controls())
-    tables_and_macros(rows, paired, mean, accuracy, predictions)
+    gpu_inputs, gpu_macros = gpu_replication_table(rows)
+    extra_inputs.extend(gpu_inputs)
+    tables_and_macros(rows, paired, mean, accuracy, predictions, gpu_macros)
     names = ("fig_inference_primary", "fig_inference_robustness", "fig_inference_mean", "fig_inference_diagnostics", "fig_inference_mechanism_controls")
     inputs = [DATA / name for name in ("inference_evaluation.csv", "inference_paired_comparison.csv", "inference_mean_evaluation.csv", "inference_mean_accuracy.csv", "inference_original_baseline.csv")]
     save_json(DATA / "inference_publication.provenance.json", {

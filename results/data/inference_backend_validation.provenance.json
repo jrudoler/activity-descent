@@ -1,0 +1,103 @@
+{
+  "provenance": {
+    "time_utc": "2026-10-20T02:34:09.016610+00:00",
+    "host": "dgx028",
+    "python": "3.14.0",
+    "torch": "2.11.0+cu128",
+    "cuda_runtime": "12.8",
+    "device": "cuda",
+    "threads": 1,
+    "matmul_precision": "highest",
+    "analysis_commit": "4896ce0f44a20a63ab0792b029ba23835a5094b5",
+    "source_snapshot": "/vast/projects/wharton/phd-students/jrudoler/activity-descent/data/generated/inference/source-9160192",
+    "working_tree_dirty": false,
+    "slurm_job_id": "9160192",
+    "slurm_array_task_id": null,
+    "sources": {
+      "analysis/learning_rule_inference/__init__.py": "d7a0c5ab3aab17e6d7b85152315fd55908180bb1c60177b8751f2a4d40c3848e",
+      "analysis/learning_rule_inference/backend_check.py": "621665fe9679ded8073e585edffb00f3f05062b9e17bf573f9eb3eb98f29b924",
+      "analysis/learning_rule_inference/baseline.py": "99f74a8a86f6d7b87987d3a5b0f7f9a08abd9318bfb90a8195151394b3bce85a",
+      "analysis/learning_rule_inference/campaign.py": "35429d8c838eb09720cc67cbaa7d0342324ac277cdcd50db44d4acd195cf840c",
+      "analysis/learning_rule_inference/core.py": "4f49eb19f6c0591078e6a0ac03a28ab3a8037031115be8b6a0d3a7d195da4ce1",
+      "analysis/learning_rule_inference/diagnostics.py": "5264ed24d571550165ee58ae20b5d5f59dbe4175432fab25b058f0c5d907d2b1",
+      "analysis/learning_rule_inference/evaluate.py": "2e1704bd5fbae6d27fb9304f69c3b91177a74e224ed6bfcd9c9e6607a9dc989e",
+      "analysis/learning_rule_inference/evaluate_gpu.py": "c48c94694e1be89f26fd2cd9467b07e67a202f7016ca9732d61633ff657bdd14",
+      "analysis/learning_rule_inference/evaluate_mean.py": "6f2dcf0699d018af9deae44664ba81ed095afb7793bce76e2df231a2fd92d80c",
+      "analysis/learning_rule_inference/fit_sensitivity.py": "9e3c20d9ca8088d3f90f508997b303c66ec8eaddd77b936edf9cfbe8c4458f65",
+      "analysis/learning_rule_inference/mean_response.py": "9221443ee9fe26a302f0762919b97c74742d006cb7e14b39629069fdcd599ede",
+      "analysis/learning_rule_inference/mechanism_controls.py": "f7696d24b84e0928028ddd2f345207b5c5eebf1f92c9c27d2a9f9261832cab69",
+      "analysis/learning_rule_inference/operators.py": "9b7a51d53236ef8170ffabc994b4de42d9a3258d25142b54e83d0f1354a49b5c",
+      "analysis/learning_rule_inference/provenance.py": "a72556f1dadd720a9d23f1efdb1743b24bf61bd6af5f5f69c7a7952881cf776f",
+      "analysis/learning_rule_inference/publication.py": "7dce7f5d77602c645da3c95d303b18c23e3362df04ebbf24fb8b4bb624437cb5",
+      "analysis/learning_rule_inference/reference.py": "0aa8a55a6be1a368f96f08b0fd74c532fcb889509e105897f6048ad654efaf6c",
+      "analysis/learning_rule_inference/run.py": "12e8a42c7e817f4a848723346371d59f41bd7a65908372fd1109ef4ac8ad8040",
+      "analysis/learning_rule_inference/sensitivity.py": "faffb3d64ff3d8cd19add1fc693bc7ae2e4148036875de2858e37291299b063a",
+      "analysis/learning_rule_inference/validate.py": "ce0bbaadaf05308f67d6bfb81e6e923fe0abdc050332c15c1470fb22660ea941"
+    },
+    "lockfile_sha256": "571f5c658caf8fb232c45e3c275f8195453f9b47e8d1f8bdd8af8f9d001b0ad1",
+    "gpu": "NVIDIA B200 MIG 2g.45gb",
+    "gpu_capability": [
+      10,
+      0
+    ],
+    "gpu_total_memory": 47513075712,
+    "driver": "580.95.05",
+    "peak_allocated_bytes": 0
+  },
+  "seconds": 13.281809522071853,
+  "parents": [
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-evaluation-s00.json",
+      "sha256": "7c483c035853ee61d5d0645eb89c2069118b8a6735adf0043cf6acfee38226f3",
+      "arrays_sha256": "a40cc59be9a1644cf37447408df14162c7ac96e671ea95c7a0ff134cad2f5702"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-evaluation-s01.json",
+      "sha256": "0913c7e50bc6cc8f61ce1688d4bf91e6f6c99a0004aec56db1c3e488b7a1f3fa",
+      "arrays_sha256": "d11fc39278bbb38a94879e55aaa474793189a16949c23be5b2b1a343af029920"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-evaluation-s02.json",
+      "sha256": "bed6b99ecf7eb72162fa479910882d7f85d67c4d3407cda41990ea5fbbbd6b9c",
+      "arrays_sha256": "fd86660d13e99baeb0e9a87f3fe7b2399c6942ea5661fcf8db0ce4ca7fdcd6bb"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-evaluation-s03.json",
+      "sha256": "361b72c02011377b61886021ea2765f8e8c4b2bffe78e3248965b708849393d8",
+      "arrays_sha256": "6235fc825cbe05e32f992e1ed30e0b22feaff0c052fa5531c27391b984acf163"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-evaluation-s04.json",
+      "sha256": "3bee38dbda426b7466a4a7ef6019dddf21494a09d8a0d774636bd18603af9ced",
+      "arrays_sha256": "f463dba486b229bf9847d54f866ae7c541e81355e2f1633816cf25c0cac3bede"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-evaluation-s05.json",
+      "sha256": "2cc86b4d0ad8bfc010c2e210c143ed7a533b5e1e382d4e1878967914b892df51",
+      "arrays_sha256": "d17509d4aacc738ea8043814aea28dadeebed31b01f6ff5378225e425eac9d08"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-evaluation-s06.json",
+      "sha256": "37f95eb2ca23eb86789c190dd5e0f6249077f08bac9a5ff7870310cb30bf3d0a",
+      "arrays_sha256": "79bf9e85be6b67243005d60c478c5a1c1709b6d80af37eadd1c8c3297e328c93"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-evaluation-s07.json",
+      "sha256": "a1c1eab8e5677c50e4961768c30739fc6fcce1de373f851fc193c4714e9c78cf",
+      "arrays_sha256": "daf911ce6c223eaac6483f71ee1491eb38ecded1b3ccb169f46a9053042b43df"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-evaluation-s08.json",
+      "sha256": "71caaf54828aef441fa0b8243bdafd2b700b3a3cb418871a17d62d50a118fd57",
+      "arrays_sha256": "2afc4b3cd76d9de3df04a2b6220e7ec14db283f204cc4bdd0bcd69da1f7a29fe"
+    },
+    {
+      "path": "data/generated/inference/confirmatory-v1/primary-evaluation-s09.json",
+      "sha256": "b9977db7d06efe3fbea5ce01e44892b3fd0db4fde49d72f21fc50283719791d5",
+      "arrays_sha256": "f49be4896f7b84ce9dbc67e8246c33288c468cecbb66a361c34e78e4b5faf7cc"
+    }
+  ],
+  "cpu_evaluation_sha256": "3e8e2b5733e6349780d924a697fc2f4eb2501d74c90d41e49ca3b47320c6611b",
+  "comparison": "Same saved CPU checkpoints, target probes, magnitude bank, and four deterministic update rules; float64",
+  "peak_allocated_bytes": 118656512
+}

@@ -1,0 +1,16 @@
+\begin{tabular}{lrrrr}
+\hline
+& \multicolumn{2}{c}{Shared operator} & \multicolumn{2}{c}{Pearson}\\
+Rule & CPU & CUDA & CPU & CUDA\\
+\hline
+GD & 11 & 12 & 6 & 10\\
+PSD preconditioner & 11 & 10 & 8 & 11\\
+Feedback 10\% & 200 & 200 & 6 & 11\\
+Feedback 100\% & 200 & 200 & 200 & 200\\
+Node R=1 & 200 & 200 & 200 & 200\\
+Node R=32 & 200 & 200 & 152 & 147\\
+Node R=512 & 200 & 200 & 9 & 11\\
+Shared node R=1 & 24 & 23 & 200 & 200\\
+Shared node R=512 & 19 & 16 & 9 & 12\\
+\hline
+\end{tabular}

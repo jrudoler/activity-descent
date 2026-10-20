@@ -1,7 +1,7 @@
 # Manuscript claim and evidence review
 
-Reviewed 2026-10-19 against the frozen CPU summaries and the completed matched
-CPU/B200 MIG preflights. This review checks interpretation and reported values;
+Reviewed 2026-10-20 against the frozen CPU summaries, completed matched
+CPU/B200 MIG preflights, and executed primary CUDA replication. This review checks interpretation and reported values;
 it does not replace the strict raw-shard verification in the scientific evaluators.
 
 ## Main claims
@@ -21,6 +21,8 @@ candidate rules paired at the same state and separate calibration networks.
 | A stochastic bank can violate a common operator while a sampling-aware mean test accepts its limiting control | Independent `node-1/32/512` operator: 200 each; `inference_mean_evaluation.csv`, `mode=responses-first`, `samples=8192`, `method=uncertainty_aware`: directional-null 9, preconditioned-null 11, node 9, feedback-0.1 200 | Different steps and protocols; mean reciprocity is necessary, not a full PSD or unbiasedness certificate |
 | A PSD restriction changes held-out prediction relative to a general linear map | `inference_prediction_summary.csv`, primary `feedback-0.1`: PSD median about 0.0278 versus linear about 8.4e-6 | Mixtures lie inside the fitted gradient span; actual PSD prediction requires an attained optimum and its stated denominator |
 | Measured update simulation benefits from GPU batching | `inference_hardware_benchmark.csv`, float64, n=20: CPU/MIG ratios 54.6 GD, 56.2 feedback, 90.2 node | One B200 MIG 2g.45gb slice versus one CPU core; synchronized bank timings, not end-to-end scientific campaign speedups |
+| The primary detection contrast persists in CUDA retraining | `inference_gpu_evaluation.csv`, step 1000, noise 0: feedback-0.1 operator 200, Pearson 11; operator null counts GD 12, preconditioned 10 | Original CPU cutoffs, no recalibration; same initialization/data identities but different training RNG trajectories, analyzed separately |
+| CUDA agrees numerically at identical saved CPU states | `inference_backend_validation.csv`: maximum relative response error 1.6454434e-12, maximum absolute score difference 1.9504664e-13, zero operator decision disagreements | 200 saved networks, three checkpoints, four deterministic rules; 2400 banks are repeated measures, not independent networks |
 
 ## Mathematical and statistical boundaries
 
@@ -47,10 +49,14 @@ probes; its comparison does not isolate rank from measurement budget under noise
 ## GPU evidence boundary and reproducibility
 
 MIG job 9158857 supplies actual CUDA scientific validation and precision/timing
-measurements. Its 18 reference checks are distinct from the pending comparison
-at all saved CPU checkpoints. Job 9160192 must still execute that comparison
-and the primary CUDA retraining replication; retraining uses a different device
-RNG stream. The original CPU cutoffs remain fixed for its evaluation.
+measurements. Job 9160192 subsequently passed the same 18 checks, executed the
+same-state deterministic comparison, and completed all ten primary CUDA shards.
+The strict evaluator verified all 432 conditions with the original CPU cutoffs.
+The noisy secondary CUDA comparison detects feedback-0.1 in 74/200 and rejects
+node-shared-1 in 177/200, preserving the observed calibration limitation.
+Retraining uses a different device RNG stream; these results are distinct from
+the numerical comparison at saved CPU states. The full-device timing job remains
+queued and supplies no evidence yet. All completed GPU results name the MIG slice.
 
 The first CPU benchmark predates the current operator implementation. New CPU
 job 9169837 removes that source mismatch. The hardware summary verifies matched

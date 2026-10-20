@@ -70,16 +70,25 @@ The `replicate-primary` GPU mode validates CUDA, compares four deterministic
 probe banks at the exact saved CPU checkpoints, then repeats the primary
 200-network evaluation on CUDA. Device random-number streams differ, so CUDA
 retraining is a distributional replication, not a paired numerical check.
-B200 MIG job 9158857 completed all 18 CUDA scientific checks and timings;
-the saved-checkpoint comparison, primary replication, and full B200 preflight
-remain queued. The draft reports the completed MIG measurements explicitly.
+B200 MIG job 9158857 completed all 18 CUDA scientific checks and timings.
+Job 9160192 subsequently completed the exact-checkpoint comparison and all ten
+primary CUDA replication shards, passing the same 18 checks. The full-device
+B200 timing preflight remains queued. The draft reports actual MIG execution.
 
-After all ten CUDA replication shards complete, evaluate them with the original
-CPU cutoffs, without recalibration:
+Evaluate the ten completed CUDA replication shards with the original CPU
+cutoffs, without recalibration:
 
 ```bash
 PYTHONPATH=. .venv/bin/python -P -m analysis.learning_rule_inference.evaluate_gpu
 ```
+
+The verified 432-condition CUDA summary reproduces the primary operator
+detection result (200/200), compared with 11/200 for Pearson. Null rejections
+are 12/200 for GD and 10/200 for the preconditioner. At the same saved CPU states,
+the maximum relative response error is 1.65e-12 and no operator decisions change
+across four deterministic rules and three checkpoints on 200 networks.
+Retrained CPU/CUDA trajectories remain separate samples with shared initialization
+and data identities; they are not pooled as 400 independent networks.
 
 The matched CPU/MIG timing comparison has its original small JSON reports and
 Slurm accounting archived in `results/data/inference_hardware_inputs/`. Regenerate

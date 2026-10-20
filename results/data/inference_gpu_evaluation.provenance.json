@@ -1,0 +1,206 @@
+{
+  "configuration_sha256": "90de1209d858e67bc5f90f54c5b420df0bac84b8c593ed75250d6a0a6af06b8c",
+  "evaluator_sha256": "c48c94694e1be89f26fd2cd9467b07e67a202f7016ca9732d61633ff657bdd14",
+  "cpu_evaluation_sha256": "3e8e2b5733e6349780d924a697fc2f4eb2501d74c90d41e49ca3b47320c6611b",
+  "completed_shards": [
+    {
+      "path": "data/generated/inference/b200-primary-evaluation/primary-evaluation-s00.json",
+      "sha256": "4c8e45af9563949d3de51b3035b33caefa403c3fc4930d3ae836b12a8d825c6d",
+      "arrays_sha256": "6bbc0f330925ee27fddc72333696785c2ee66dbd4bde422c01666f4109167478",
+      "seconds": 6.605176852084696,
+      "job_id": "9160192",
+      "source_revision": "4896ce0f44a20a63ab0792b029ba23835a5094b5"
+    },
+    {
+      "path": "data/generated/inference/b200-primary-evaluation/primary-evaluation-s01.json",
+      "sha256": "ba6e51ebf2729bb80ff0d23ec678999165c363ce7932ee1a2adef76502d4134e",
+      "arrays_sha256": "b2339f410e798a13934f6125fbbd9356430e24ddcb795356f6ab7e70f73c0bf4",
+      "seconds": 6.598653910914436,
+      "job_id": "9160192",
+      "source_revision": "4896ce0f44a20a63ab0792b029ba23835a5094b5"
+    },
+    {
+      "path": "data/generated/inference/b200-primary-evaluation/primary-evaluation-s02.json",
+      "sha256": "d24b33d096ecbcd5a74e12ad009a46bd78f287d650bdce0c886d34837b56d92b",
+      "arrays_sha256": "578018fd848e58a20134ca6222c1b4e2f676d835053385c3b24882dde6a8fab7",
+      "seconds": 6.474731522146612,
+      "job_id": "9160192",
+      "source_revision": "4896ce0f44a20a63ab0792b029ba23835a5094b5"
+    },
+    {
+      "path": "data/generated/inference/b200-primary-evaluation/primary-evaluation-s03.json",
+      "sha256": "f45e6fc5fafda2a4518930c8f4062a6a5b9c72cd7144924d0648a0e495543c7c",
+      "arrays_sha256": "0972033ff76f537733d97a526dfc385c91f425d627e1552fd3cad14d7eca1f64",
+      "seconds": 6.533777229953557,
+      "job_id": "9160192",
+      "source_revision": "4896ce0f44a20a63ab0792b029ba23835a5094b5"
+    },
+    {
+      "path": "data/generated/inference/b200-primary-evaluation/primary-evaluation-s04.json",
+      "sha256": "6cb16981a0765020273f40e4b89050c08868618526d3db2f1d249267bcc86c7e",
+      "arrays_sha256": "022ce389a317102f3ef4c1ede1f095bd6d6afe70bb5b4d06268d549723232224",
+      "seconds": 6.681673136074096,
+      "job_id": "9160192",
+      "source_revision": "4896ce0f44a20a63ab0792b029ba23835a5094b5"
+    },
+    {
+      "path": "data/generated/inference/b200-primary-evaluation/primary-evaluation-s05.json",
+      "sha256": "52fbca10b6bd02e9f12cb9165ff40102ea39d5cd9ef83baf4d367109933c6e78",
+      "arrays_sha256": "7f36ee8b89530932b8f341f3b892e0363dfc033ea2a35629f855b70f1bb1c4b9",
+      "seconds": 6.490036698058248,
+      "job_id": "9160192",
+      "source_revision": "4896ce0f44a20a63ab0792b029ba23835a5094b5"
+    },
+    {
+      "path": "data/generated/inference/b200-primary-evaluation/primary-evaluation-s06.json",
+      "sha256": "1e45904cd8d1776db6fb8cabe88d821dc077c7d027a781e19bdcda2d69781dfb",
+      "arrays_sha256": "72a4811bc1ecb52b826b2dc834cd1347513478d7347ce005f7c81408f3c11207",
+      "seconds": 6.675206199055538,
+      "job_id": "9160192",
+      "source_revision": "4896ce0f44a20a63ab0792b029ba23835a5094b5"
+    },
+    {
+      "path": "data/generated/inference/b200-primary-evaluation/primary-evaluation-s07.json",
+      "sha256": "f4b410d1d5ea951caa792ad384914eda186d51da201a36541a7dff87443146ed",
+      "arrays_sha256": "034e4d6312caefb21a1908852ee8ed39696980c49fd6d7037c6cb7033416650b",
+      "seconds": 6.788506112061441,
+      "job_id": "9160192",
+      "source_revision": "4896ce0f44a20a63ab0792b029ba23835a5094b5"
+    },
+    {
+      "path": "data/generated/inference/b200-primary-evaluation/primary-evaluation-s08.json",
+      "sha256": "56762c770d2bfabb0773b134b0debd43eeff5e9c4b349440d1b28d272b6d0ee5",
+      "arrays_sha256": "3b22c03120a336774058f6eb1ff6eb6c393e30b388e46f9a02f2357d69d5eedd",
+      "seconds": 6.459058721084148,
+      "job_id": "9160192",
+      "source_revision": "4896ce0f44a20a63ab0792b029ba23835a5094b5"
+    },
+    {
+      "path": "data/generated/inference/b200-primary-evaluation/primary-evaluation-s09.json",
+      "sha256": "06303aba0e86f3b7f91c2ec7bec9135090310797968c2bf36cd7a92f0a6ec823",
+      "arrays_sha256": "3cc30a08ac40323015b95ffdbbff2d15182b8a06044c90e316b7c74f386d656c",
+      "seconds": 6.584428216097876,
+      "job_id": "9160192",
+      "source_revision": "4896ce0f44a20a63ab0792b029ba23835a5094b5"
+    }
+  ],
+  "devices": [
+    {
+      "gpu": "NVIDIA B200 MIG 2g.45gb",
+      "gpu_capability": [
+        10,
+        0
+      ],
+      "gpu_total_memory": 47513075712,
+      "driver": "580.95.05",
+      "torch": "2.11.0+cu128",
+      "cuda_runtime": "12.8"
+    },
+    {
+      "gpu": "NVIDIA B200 MIG 2g.45gb",
+      "gpu_capability": [
+        10,
+        0
+      ],
+      "gpu_total_memory": 47513075712,
+      "driver": "580.95.05",
+      "torch": "2.11.0+cu128",
+      "cuda_runtime": "12.8"
+    },
+    {
+      "gpu": "NVIDIA B200 MIG 2g.45gb",
+      "gpu_capability": [
+        10,
+        0
+      ],
+      "gpu_total_memory": 47513075712,
+      "driver": "580.95.05",
+      "torch": "2.11.0+cu128",
+      "cuda_runtime": "12.8"
+    },
+    {
+      "gpu": "NVIDIA B200 MIG 2g.45gb",
+      "gpu_capability": [
+        10,
+        0
+      ],
+      "gpu_total_memory": 47513075712,
+      "driver": "580.95.05",
+      "torch": "2.11.0+cu128",
+      "cuda_runtime": "12.8"
+    },
+    {
+      "gpu": "NVIDIA B200 MIG 2g.45gb",
+      "gpu_capability": [
+        10,
+        0
+      ],
+      "gpu_total_memory": 47513075712,
+      "driver": "580.95.05",
+      "torch": "2.11.0+cu128",
+      "cuda_runtime": "12.8"
+    },
+    {
+      "gpu": "NVIDIA B200 MIG 2g.45gb",
+      "gpu_capability": [
+        10,
+        0
+      ],
+      "gpu_total_memory": 47513075712,
+      "driver": "580.95.05",
+      "torch": "2.11.0+cu128",
+      "cuda_runtime": "12.8"
+    },
+    {
+      "gpu": "NVIDIA B200 MIG 2g.45gb",
+      "gpu_capability": [
+        10,
+        0
+      ],
+      "gpu_total_memory": 47513075712,
+      "driver": "580.95.05",
+      "torch": "2.11.0+cu128",
+      "cuda_runtime": "12.8"
+    },
+    {
+      "gpu": "NVIDIA B200 MIG 2g.45gb",
+      "gpu_capability": [
+        10,
+        0
+      ],
+      "gpu_total_memory": 47513075712,
+      "driver": "580.95.05",
+      "torch": "2.11.0+cu128",
+      "cuda_runtime": "12.8"
+    },
+    {
+      "gpu": "NVIDIA B200 MIG 2g.45gb",
+      "gpu_capability": [
+        10,
+        0
+      ],
+      "gpu_total_memory": 47513075712,
+      "driver": "580.95.05",
+      "torch": "2.11.0+cu128",
+      "cuda_runtime": "12.8"
+    },
+    {
+      "gpu": "NVIDIA B200 MIG 2g.45gb",
+      "gpu_capability": [
+        10,
+        0
+      ],
+      "gpu_total_memory": 47513075712,
+      "driver": "580.95.05",
+      "torch": "2.11.0+cu128",
+      "cuda_runtime": "12.8"
+    }
+  ],
+  "science_sources": {
+    "core.py": "4f49eb19f6c0591078e6a0ac03a28ab3a8037031115be8b6a0d3a7d195da4ce1",
+    "operators.py": "9b7a51d53236ef8170ffabc994b4de42d9a3258d25142b54e83d0f1354a49b5c",
+    "campaign.py": "35429d8c838eb09720cc67cbaa7d0342324ac277cdcd50db44d4acd195cf840c",
+    "diagnostics.py": "5264ed24d571550165ee58ae20b5d5f59dbe4175432fab25b058f0c5d907d2b1"
+  },
+  "interpretation": "CUDA retraining uses a different RNG stream; shared initialization identities do not imply identical trajectories. CPU cutoffs remain fixed."
+}

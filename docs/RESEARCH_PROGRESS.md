@@ -1,10 +1,11 @@
 # Learning rule inference research progress
 
-Updated 2026-10-19, after the successful MIG preflight and matched CPU timing
-run. The goal is incomplete: the exact saved-checkpoint GPU comparison, primary
-CUDA replication, and full-device preflight remain queued. B200 MIG validation
-and benchmarks have completed. The main CPU study, conditional-mean study,
-five publication figures, supporting tables, and revised draft are complete.
+Updated 2026-10-20, after verifying the overnight CUDA replication. The exact
+saved-checkpoint GPU comparison and all ten primary CUDA shards completed in
+job 9160192. B200 MIG validation, timings, and scientific replication are
+verified. The goal remains incomplete while the distinct full-device preflight
+9156748 is queued. The CPU studies, five publication figures, supporting tables,
+and revised draft include the completed GPU evidence.
 No permission or scientific choice is currently required from the user.
 
 ## Completed evidence
@@ -28,12 +29,12 @@ and undefined/tiny-value handling.
 
 | Milestone | Current status |
 | --- | --- |
-| M0 Setup and GPU validation | 18 checks pass on CPU and B200 MIG; matched timings complete; full-device and saved-checkpoint checks pending |
+| M0 Setup and GPU validation | 18 checks pass on CPU and B200 MIG; matched timings and saved-checkpoint comparisons complete; full-device preflight pending |
 | M1 Layerwise diagnostics | Original 20-run classification simulation reproduced; pooled correlations match the untouched original to 1e-12; hidden/output statistics separated |
 | M2 Bounded mechanism checks | Matched-state task/synthetic layer losses, step sizes 1e-5 through 1e-2, parameter freezing, signed coordinate arrays, exact shared PSD, and raw/matched scales executed |
 | M3 Identification | Exact conditions, rank/nullspace audit, empirical cutoffs, held-out prediction, nonattainment, tolerance checks, and ridge sensitivity executed |
-| M4 Rule comparison | 3,200-network main study and 400-network conditional-mean analysis complete on CPU, with independent calibration/evaluation and uncertainty |
-| M5 Paper and workflow | Five figures and five generated TeX assets, measured MIG appendix, and claim/evidence review; scientific GPU replication and final cross-repository audit remain |
+| M4 Rule comparison | 3,200-network main study and 400-network conditional-mean analysis on CPU; primary 200-network CUDA evaluation verified against frozen CPU cutoffs |
+| M5 Paper and workflow | Five figures and six generated TeX assets, measured MIG and CUDA replication appendices, and claim/evidence review; full-device evidence and final audit remain |
 
 ## Main held-out results
 
@@ -171,7 +172,7 @@ became available and completed while B200 requests remained queued.
 | 9169837 | CPU preflight with the same operator implementation as the MIG run | Completed 0:0; queued 29s, ran 44s |
 | 9156748 | Full B200 preflight | Pending; preserve handle |
 | 9158857 | B200 MIG45 preflight, 6 CPUs, 48G, 10 min | Completed 0:0; queued 3h 8m 7s, ran 88s |
-| 9160192 | B200 MIG45 validation, exact-checkpoint comparison, primary CUDA replication | Dependency satisfied; pending Priority; preserve handle |
+| 9160192 | B200 MIG45 validation, exact-checkpoint comparison, primary CUDA replication | Completed 0:0; Oct 19 22:33:55--22:36:28 Eastern, 2m 33s |
 
 9159779 was canceled before starting and replaced by 9160192 to add the explicit
 same-checkpoint CPU/CUDA comparison. A retraining run alone is not that check:
@@ -188,8 +189,8 @@ MIG45 accepts six CPUs and 48G despite the filter's displayed 56G table entry.
 MIG job 9158857 ran on 2026-10-19 from 18:49:49 through 18:51:17 Eastern.
 It passed all 18 scientific CUDA checks using PyTorch 2.11.0+cu128 and CUDA
 12.8 on an NVIDIA B200 MIG 2g.45gb slice. This is actual slice execution;
-it does not establish full-device throughput or the saved-checkpoint agreement
-and scientific replication that job 9160192 will measure.
+it does not establish full-device throughput. Job 9160192 separately executed
+the saved-checkpoint agreement and scientific replication described below.
 
 The original CPU benchmark 9157408 predates the current operator implementation.
 Its simulation code is unchanged, but matched operator timings require the same
@@ -207,9 +208,50 @@ end-to-end training speedup estimate. The GPU float32 response error reaches
 The CPU timing job waited 29s; MIG waited 11287s. These observed queues support
 using available CPU shards concurrently with queued GPU work, without assuming
 these two waits predict future latency. The manuscript adds a hardware appendix
-and retains CPU provenance for all reported learning-rule rejection rates.
+and retains CPU provenance for the original main and conditional-mean studies,
+with the CUDA replication labeled separately.
 `docs/CLAIM_EVIDENCE.md` maps the major claims to exact summary conditions and
 records the scope of the mathematical and statistical conclusions.
+
+## Executed same-state CUDA check and primary replication
+
+Job 9160192 ran on the NVIDIA B200 MIG 2g.45gb slice with an immutable source
+snapshot at analysis revision 4896ce0. It completed successfully on October 19
+from 22:33:55 through 22:36:28 Eastern, passed all 18 scientific checks, and
+produced the exact-state comparison plus ten CUDA evaluation shards. The
+archived validation report is `results/data/inference_cuda_replication_validation.json`.
+
+For identical saved CPU states, inputs, target probes, and magnitude banks,
+the comparison covers 200 networks, steps 0/200/1000, and four deterministic
+rules. Maximum relative response error is 1.6454434e-12; maximum absolute
+operator-score difference is 1.9504664e-13. There are zero operator-decision
+disagreements across the 12 repeated-measure conditions. Results and verified
+parent/cutoff provenance are in `inference_backend_validation.csv` and its
+matching provenance file. These are 200 independent networks, not 2400.
+
+The strict GPU evaluator verifies all ten primary-profile shards, 200 seed
+identities, array hashes, configuration, and frozen scientific sources. It
+produces 432 rule/method/checkpoint/noise conditions with the original CPU
+cutoffs, without recalibration. At 1000 steps without added observation noise:
+
+| Rule | GPU operator | GPU Pearson | CPU operator | CPU Pearson |
+| --- | ---: | ---: | ---: | ---: |
+| GD | 12/200 | 10/200 | 11/200 | 6/200 |
+| Fixed PSD preconditioning | 10/200 | 11/200 | 11/200 | 8/200 |
+| Feedback mixture 0.1 | 200/200 | 11/200 | 200/200 | 6/200 |
+| Feedback mixture 1 | 200/200 | 200/200 | 200/200 | 200/200 |
+| Independent node R=1 | 200/200 | 200/200 | 200/200 | 200/200 |
+| Independent node R=32 | 200/200 | 147/200 | 200/200 | 152/200 |
+| Independent node R=512 | 200/200 | 11/200 | 200/200 | 9/200 |
+| Shared node R=1 | 23/200 | 200/200 | 24/200 | 200/200 |
+| Shared node R=512 | 16/200 | 12/200 | 19/200 | 9/200 |
+
+With 1% GD-RMS noise, CUDA operator feedback-0.1 detection is 74/200 and shared
+R=1 rejection is 177/200, preserving the corresponding CPU calibration
+limitation. All condition-level Wilson intervals are retained in
+`results/data/inference_gpu_evaluation.csv`. CPU and CUDA share initialization
+and data identities but retrain with different RNG streams; these are analyzed
+separately and are not pooled into 400 independent evaluation networks.
 
 ## Artifacts and reproduction
 
@@ -220,8 +262,9 @@ records the scope of the mathematical and statistical conclusions.
 - `results/data/inference_mean_evaluation.csv`, `inference_mean_accuracy.csv`: mean decisions and convergence.
 - `results/data/inference_original_baseline.csv`, `inference_layerwise_summary.csv`: original-task continuity and diagnostics.
 - `results/data/inference_hardware_benchmark.csv` and provenance: matched CPU/MIG timings, archived inputs, precision checks, and actual queue delays.
+- `results/data/inference_backend_validation.csv`, `inference_gpu_evaluation.csv`, and matching provenance: executed saved-state CUDA agreement and primary-profile replication.
 - Matching provenance JSONs retain raw file identities, source hashes, and job metadata.
-- Five `results/figures/fig_inference_*.pdf`/`.png` figures and five `results/tables/inference_*.tex` files supply the manuscript.
+- Five `results/figures/fig_inference_*.pdf`/`.png` figures and six `results/tables/inference_*.tex` files supply the manuscript.
 - `paper/activity_dynamics.tex` is the revised full draft; its PDF compiles using pinned Tectonic 0.17.0 with resolved references. `paper/generated/build_provenance.json` records source/asset/PDF hashes.
 
 The parent `Snakefile` has explicit CPU generation, aggregation, publication,
@@ -231,29 +274,24 @@ frozen-summary artifact rebuild. The nested paper still compiles independently
 using its tracked generated assets. The archive source and COSYNE files retain
 the handoff revision's hashes.
 
-## Remaining work after GPU allocation
+## Remaining full-device preflight and final audit
 
 The original allocation blocker persisted across three consecutive goal turns,
 and the goal was marked blocked. Subsequent checks confirmed completed MIG
-execution and a cleared replication dependency. Jobs 9156748 and 9160192 remain
-pending Priority; no replication shards, saved-checkpoint backend validation
-CSV, or GPU evaluation CSV exist yet. Existing GPU jobs retain their handles.
+execution and completed primary replication. Only 9156748 remains pending
+Priority. Its existing handle is retained. All MIG scientific outputs have now
+been verified and summarized.
 
 1. Review the full-device preflight when 9156748 runs. MIG scientific checks,
    float64/float32 timings at batch sizes 1/20/64, and hardware metadata are
    complete and archived; full-device measurements remain distinct.
-2. Let 9160192 execute. Verify deterministic CUDA responses
-   against the same saved CPU checkpoints; inspect numerical differences and
-   decision disagreements. Evaluate the CUDA retraining replication against the
-   fixed CPU calibration cutoffs, identifying its different RNG trajectory.
-   The prepared entrypoint is `PYTHONPATH=. .venv/bin/python -P -m
-   analysis.learning_rule_inference.evaluate_gpu`; it refuses missing shards,
-   non-CUDA or non-B200 provenance, or changed scientific sources.
-3. Incorporate any further hardware observations without replacing the archived
+2. Saved-checkpoint agreement and primary CUDA replication are complete. Preserve
+   their fixed CPU cutoffs and separate interpretation when extending the hardware
+   measurements; do not replace the scientific sources or reuse evaluation to tune.
+3. Incorporate full-device hardware observations without replacing the archived
    MIG comparison or treating measured queue waits as typical latency.
-4. Update the manuscript's remaining pending-GPU statements with executed
-   saved-checkpoint and replication evidence, refresh the build/provenance,
-   and finish the cross-repository audit.
+4. Update the remaining full-device pending statement from executed evidence,
+   refresh the build/provenance, and finish the cross-repository audit.
 5. Mark the goal complete only after these executed results and final manuscript
    checks succeed. The completed CPU evidence and compiled draft alone do not
    satisfy the goal's actual-GPU requirement.

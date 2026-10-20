@@ -14,9 +14,9 @@ MEAN_REPORTS = [f"data/generated/inference/mean-v1/primary-{split}-s{shard:02}.j
 INFERENCE_FIGURE_NAMES = ["fig_inference_primary", "fig_inference_robustness",
                           "fig_inference_mean", "fig_inference_diagnostics", "fig_inference_mechanism_controls"]
 INFERENCE_FIGURES = [f"results/figures/{n}.{s}" for n in INFERENCE_FIGURE_NAMES for s in ("pdf", "png")]
-INFERENCE_TABLES = [f"results/tables/inference_{n}.tex" for n in ("primary", "numbers", "prediction", "regularization")]
+INFERENCE_TABLES = [f"results/tables/inference_{n}.tex" for n in ("primary", "numbers", "prediction", "regularization", "gpu_replication")]
 INFERENCE_PAPER_FIGURES = [f"paper/generated/figures/{n}.pdf" for n in INFERENCE_FIGURE_NAMES]
-INFERENCE_PAPER_TABLES = [f"paper/generated/inference_{n}.tex" for n in ("primary", "numbers", "prediction", "regularization", "hardware")]
+INFERENCE_PAPER_TABLES = [f"paper/generated/inference_{n}.tex" for n in ("primary", "numbers", "prediction", "regularization", "gpu_replication", "hardware")]
 HARDWARE_CONFIG = json.load(open("configs/inference/hardware_mig45_v1.json"))
 HARDWARE_INPUTS = [f"{HARDWARE_CONFIG['input_directory']}/{name}"
                   for device in ("cpu", "cuda")
@@ -257,6 +257,11 @@ rule inference_publication:
         "results/data/inference_mean_evaluation.csv",
         "results/data/inference_mean_accuracy.csv",
         "results/data/inference_mean_evaluation.provenance.json",
+        "results/data/inference_gpu_evaluation.csv",
+        "results/data/inference_gpu_evaluation.provenance.json",
+        "results/data/inference_backend_validation.csv",
+        "results/data/inference_backend_validation.provenance.json",
+        "results/data/inference_cuda_replication_validation.json",
         "data/generated/inference/pilot-q8-trained.json",
         "data/generated/inference/sensitivity-development.json",
         "data/generated/inference/mechanism-controls-development.json",

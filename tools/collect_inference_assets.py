@@ -41,7 +41,7 @@ def main():
     (paper / "generated/figures").mkdir(parents=True, exist_ok=True)
     for name in publication["figure_hashes"]:
         shutil.copy2(ROOT / name, paper / "generated/figures" / Path(name).name)
-    table_names = ("primary", "numbers", "prediction", "regularization", "hardware")
+    table_names = ("primary", "numbers", "prediction", "regularization", "gpu_replication", "hardware")
     for name in table_names:
         source = ROOT / "results/tables" / f"inference_{name}.tex"
         shutil.copy2(source, paper / "generated" / source.name)
