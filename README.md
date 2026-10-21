@@ -16,15 +16,18 @@ A new analysis checkout needs the independent manuscript repository:
 ```bash
 git clone git@github.com:jrudoler/activity-descent-manuscript.git paper
 uv sync --frozen --extra gpu
-python tools/install_tectonic.py
 python tools/build_paper.py
 ```
 
 `paper/activity_dynamics.tex`, its bibliography, and original figures match the
-handoff at manuscript commit `85d280b`. `paper/manuscript_baseline.json` records
-their hashes. The builder checks them before compiling. With Tectonic, legacy
-watermark units are adjusted in a temporary build copy; canonical files remain
-unchanged. The default workflow builds only this preserved manuscript:
+handoff at manuscript commit `85d280b4c1576dc08564245477bf8cf83fed56de`.
+`paper/manuscript_baseline.json` records their hashes, including the original
+class, style, and build configuration. The builder requires pdfLaTeX and
+latexmk, available on PATH or in `.tools/texlive/bin/x86_64-linux`. It compiles
+an exact source copy with fresh auxiliary files and no source substitutions.
+Tectonic is not a rendering-equivalent replacement for this template. See
+[the restoration check](docs/MANUSCRIPT_RESTORATION.md). The default workflow
+builds only this preserved manuscript:
 
 ```bash
 XDG_CACHE_HOME=/tmp/activity-descent-cache .venv/bin/snakemake --cores 1

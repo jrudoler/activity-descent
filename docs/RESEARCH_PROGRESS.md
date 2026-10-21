@@ -12,6 +12,12 @@ There are no remaining queued experiment jobs. The research scope and workflow
 now preserve the original manuscript and stage new evidence separately.
 No permission or scientific choice is currently required from the user.
 
+The subsequent formatting audit found that the restored source had been built
+with Tectonic instead of the original pdfLaTeX engine. This changed the fonts,
+watermark, and pagination. The builder now uses pdfLaTeX without source changes;
+the 9-page PDF matches an independent clean build of the full handoff commit.
+See `docs/MANUSCRIPT_RESTORATION.md` for the comparison and preserved drafts.
+
 ## Completed evidence
 
 The analysis and manuscript are separate repositories on

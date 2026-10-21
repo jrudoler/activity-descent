@@ -54,7 +54,7 @@ that every planned control had been completed.
 | Claims checked against available evidence | `docs/CLAIM_EVIDENCE.md`, exact primary/noise/depth/mean/CUDA rows, theorem and calibration review | Completed CPU and MIG evidence distinguished; no pooling of device runs or broader null claims |
 | Configurations, immutable jobs, workflow and final assets | `Snakefile`, locked configs, strict manifests, five research figures/seven TeX assets under research staging | Default build is original-only; research collection is explicit and isolated |
 | Preserve the original main manuscript | `manuscript_baseline.json`, exact source/bibliography/five-figure hashes against handoff 85d280b | Restored and guarded; no new main text or references promoted |
-| Compiled original with resolved citations | Source/PDF checksums, Tectonic compatibility recorded for a temporary watermark-unit conversion only | Original compiles; canonical files remain byte-for-byte intact |
+| Compiled original with resolved citations and original formatting | Exact source/template/build-configuration hashes; pdfLaTeX; independent clean-commit rendering comparison in `docs/MANUSCRIPT_RESTORATION.md` | Corrected to 9 pages; all pages match the independent baseline render. Earlier Tectonic rendering was not faithful |
 | New material remains local notes or separate appendices | `docs/RESEARCH_INDEX.md`, concise results note, staged assets; superseded draft archived separately | User chooses any future promotion; completion of experiments is not promotion authority |
 | Preserve archived abstract/COSYNE and separate histories | Independent paper Git repository; archive/COSYNE diff against 85d280b is empty | Verified; local commits in each repository |
 

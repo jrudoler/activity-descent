@@ -13,6 +13,8 @@ chooses that promotion. A completed experiment does not authorize promotion.
 The default manuscript build must compile the preserved original. Research
 generation and collection must use explicit separate targets and write only to
 research staging paths. Preserve the archived abstract and separate COSYNE work.
+Compile the original with its specified pdfLaTeX engine and unchanged template;
+do not substitute Tectonic/XeTeX or rewrite temporary source to make it compile.
 
 Use the current `RESEARCH_PLAN.md` for the revised goal scope. Keep the analysis
 and manuscript histories separate. Do not start sub-agents unless the user
