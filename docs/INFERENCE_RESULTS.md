@@ -3,6 +3,13 @@
 Updated 2026-10-21. This is a local research note, not approved main-paper text.
 The original manuscript remains unchanged at its handoff version.
 
+The [rule-coverage audit](LEARNING_RULE_COVERAGE.md) clarifies the scope: the
+current campaign does not compare all of Nayebi's rule families or establish a
+general gradient/global versus nongradient/local distinction. SGDM, Adam,
+information alignment, and task-independent local rules are absent. Every
+implemented family uses task loss or output error; node perturbation estimates
+the gradient in the stated small-perturbation limit.
+
 ## Question and observation model
 
 Can controlled activity responses distinguish update-rule classes when the

@@ -6,6 +6,7 @@ approved for promotion into its title, abstract, body, bibliography, or figures.
 Start with [the concise results note](INFERENCE_RESULTS.md). Supporting notes:
 
 - [Observation model and PSD compatibility](learning_rule_identification.md).
+- [Learning-rule coverage and the global/local distinction](LEARNING_RULE_COVERAGE.md).
 - [Locked primary protocol](CONFIRMATORY_PROTOCOL.md).
 - [Conditional means and stochastic updates](MEAN_RESPONSE_PROTOCOL.md).
 - [Bounded development controls](DEVELOPMENT_CONTROLS.md).

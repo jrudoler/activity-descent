@@ -6,6 +6,11 @@ operator, accompanied by equivalences and limits of inference. Kernel
 representations, activity-based rule discrimination, known-decoder experiments,
 and PSD least-squares fitting all have substantial prior work.
 
+The subsequent [implementation coverage audit](LEARNING_RULE_COVERAGE.md)
+compares the actual candidate rules and optimizers with these papers. The
+completed campaign does not implement the full Nayebi suite and does not
+establish a general global/local or gradient/nongradient classifier.
+
 ## Neural observables across learning trajectories
 
 [Nayebi et al. 2020, Sections 3 to 6 and Appendix B](https://arxiv.org/html/2010.11765v2)

@@ -8,6 +8,12 @@ These are staged research claims. The original main manuscript has been restored
 to its handoff version; no new claim, figure, or reference is promoted without
 the user's editorial decision. Start with `RESEARCH_INDEX.md` for the shorter notes.
 
+The [rule-coverage audit](LEARNING_RULE_COVERAGE.md) bounds these claims further:
+the campaign omits SGDM, Adam, information alignment, and task-independent local
+rules. All implemented update families use the task loss or output error.
+The results do not establish a general gradient/global versus nongradient/local
+classification, and calibration does not cover arbitrary gradient optimizers.
+
 ## Main claims
 
 Unless specified otherwise, primary rows in `results/data/inference_evaluation.csv`

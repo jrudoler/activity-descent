@@ -10,6 +10,13 @@ timing reports are present. The user's manuscript correction changes the
 deliverable to a preserved original plus staged local research notes and
 separate appendix assets. Main-paper promotion is not authorized automatically.
 
+The later [learning-rule coverage audit](LEARNING_RULE_COVERAGE.md) clarifies
+that completion of this configured study does not establish a general
+gradient/global versus nongradient/local classifier. SGDM, Adam, information
+alignment, and task-independent local-rule comparisons are absent. Those
+extensions and their required null models are not covered by the completion
+claims below.
+
 The earlier allocation blocker persisted across three consecutive goal turns,
 and the goal was marked blocked. The replication subsequently completed on
 October 19 from 22:33:55 to 22:36:28 Eastern. Full B200 job 9156748 subsequently

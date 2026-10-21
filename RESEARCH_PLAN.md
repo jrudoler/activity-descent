@@ -24,6 +24,13 @@ Completion for this revised research phase means a verified staged research
 package and a preserved, compilable original. It does not require promotion
 into the main paper before the user has made that editorial choice.
 
+The October 21 follow-up [rule-coverage audit](docs/LEARNING_RULE_COVERAGE.md)
+clarifies that the completed protocol does not cover the full Nayebi suite or
+establish a general gradient/global versus nongradient/local distinction. SGDM,
+Adam, information alignment, and task-independent local rules remain untested.
+The audit records the null-model changes needed for such an extension; these
+are future work, not results of the completed campaign or automatic new jobs.
+
 The intended paper asks which classes of synaptic update rules can be
 distinguished through controlled changes in neural activity, with measured false
 rejection rates, detection power, and explicit observational equivalences. A
