@@ -15,8 +15,9 @@ INFERENCE_FIGURE_NAMES = ["fig_inference_primary", "fig_inference_robustness",
                           "fig_inference_mean", "fig_inference_diagnostics", "fig_inference_mechanism_controls"]
 INFERENCE_FIGURES = [f"results/figures/{n}.{s}" for n in INFERENCE_FIGURE_NAMES for s in ("pdf", "png")]
 INFERENCE_TABLES = [f"results/tables/inference_{n}.tex" for n in ("primary", "numbers", "prediction", "regularization", "gpu_replication")]
-INFERENCE_PAPER_FIGURES = [f"paper/generated/figures/{n}.pdf" for n in INFERENCE_FIGURE_NAMES]
-INFERENCE_PAPER_TABLES = [f"paper/generated/inference_{n}.tex" for n in ("primary", "numbers", "prediction", "regularization", "gpu_replication", "hardware")]
+INFERENCE_STAGING = "paper/research/learning_rule_inference/generated"
+INFERENCE_PAPER_FIGURES = [f"{INFERENCE_STAGING}/figures/{n}.pdf" for n in INFERENCE_FIGURE_NAMES]
+INFERENCE_PAPER_TABLES = [f"{INFERENCE_STAGING}/inference_{n}.tex" for n in ("primary", "numbers", "prediction", "regularization", "gpu_replication", "hardware", "hardware_b200")]
 HARDWARE_CONFIG = json.load(open("configs/inference/hardware_mig45_v1.json"))
 HARDWARE_INPUTS = [f"{HARDWARE_CONFIG['input_directory']}/{name}"
                   for device in ("cpu", "cuda")
@@ -24,6 +25,11 @@ HARDWARE_INPUTS = [f"{HARDWARE_CONFIG['input_directory']}/{name}"
                   for name in ([f"validation-{device}-{job}.json"] +
                                [f"benchmark-{device}-n{n}-{job}.json" for n in HARDWARE_CONFIG['batch_sizes']])]
 HARDWARE_INPUTS.append(f"{HARDWARE_CONFIG['input_directory']}/{HARDWARE_CONFIG['accounting']}")
+HARDWARE_B200_CONFIG = json.load(open("configs/inference/hardware_b200_v1.json"))
+HARDWARE_INPUTS += [f"{HARDWARE_B200_CONFIG['input_directory']}/{name}" for name in
+                   ["validation-cuda-9156748.json", "benchmark-cuda-n1-9156748.json",
+                    "benchmark-cuda-n20-9156748.json", "benchmark-cuda-n64-9156748.json",
+                    HARDWARE_B200_CONFIG['accounting']]]
 
 MAIN_FIGURE_NAMES = [
     "fig_main_compact",
@@ -39,6 +45,7 @@ MAIN_FIGURES = [
 PAPER_FIGURES = [
     f"paper/generated/figures/{name}.pdf" for name in MAIN_FIGURE_NAMES
 ]
+LEGACY_RESEARCH_FIGURES = [f"paper/research/legacy_figures/{name}.pdf" for name in MAIN_FIGURE_NAMES]
 DROPOUT_FIGURES = [
     f"results/figures/{name}.{suffix}"
     for name in ("fig_dropout_sweep", "fig_dropout_phi_heatmaps")
@@ -46,10 +53,14 @@ DROPOUT_FIGURES = [
 ]
 rule all:
     input:
+        "paper/activity_dynamics.pdf",
+
+
+rule inference_research:
+    input:
         INFERENCE_FIGURES,
         INFERENCE_PAPER_FIGURES,
         INFERENCE_PAPER_TABLES,
-        "paper/activity_dynamics.pdf",
 
 
 rule legacy_figures:
@@ -58,7 +69,7 @@ rule legacy_figures:
         DROPOUT_FIGURES,
         "data/generated/dropout_results.json",
         "results/data/dropout_summary.csv",
-        PAPER_FIGURES,
+        LEGACY_RESEARCH_FIGURES,
 
 
 rule generate_main_figures:
@@ -92,11 +103,11 @@ rule collect_paper_assets:
     input:
         figures=[f"results/figures/{name}.pdf" for name in MAIN_FIGURE_NAMES],
     output:
-        figures=PAPER_FIGURES,
+        figures=LEGACY_RESEARCH_FIGURES,
     shell:
         """
-        mkdir -p paper/generated/figures
-        cp {input.figures} paper/generated/figures/
+        mkdir -p paper/research/legacy_figures
+        cp {input.figures} paper/research/legacy_figures/
         """
 
 
@@ -105,9 +116,8 @@ rule compile_paper:
         manuscript="paper/activity_dynamics.tex",
         references="paper/activity_dynamics.bib",
         latexmk_config="paper/latexmkrc",
-        figures=INFERENCE_PAPER_FIGURES,
-        tables=INFERENCE_PAPER_TABLES,
-        analysis_provenance="paper/generated/analysis_provenance.json",
+        figures=PAPER_FIGURES + ["paper/generated/figures/fig_ntk.pdf"],
+        baseline="paper/manuscript_baseline.json",
         builder="tools/build_paper.py",
         template=["paper/jmlr.cls", "paper/jmlrutils.sty"],
     output:
@@ -283,14 +293,16 @@ rule inference_publication:
 rule collect_inference_assets:
     input:
         figures=[f"results/figures/{n}.pdf" for n in INFERENCE_FIGURE_NAMES],
-        tables=INFERENCE_TABLES + ["results/tables/inference_hardware.tex"],
+        tables=INFERENCE_TABLES + ["results/tables/inference_hardware.tex", "results/tables/inference_hardware_b200.tex"],
         hardware="results/data/inference_hardware_benchmark.provenance.json",
         hardware_data="results/data/inference_hardware_benchmark.csv",
+        full_hardware="results/data/inference_hardware_b200.provenance.json",
+        full_hardware_data="results/data/inference_hardware_b200.csv",
         collector="tools/collect_inference_assets.py",
     output:
         INFERENCE_PAPER_FIGURES,
         INFERENCE_PAPER_TABLES,
-        "paper/generated/analysis_provenance.json",
+        f"{INFERENCE_STAGING}/analysis_provenance.json",
     shell:
         "python tools/collect_inference_assets.py"
 
@@ -298,14 +310,21 @@ rule collect_inference_assets:
 rule inference_hardware:
     input:
         configuration="configs/inference/hardware_mig45_v1.json",
+        full_configuration="configs/inference/hardware_b200_v1.json",
         reports=HARDWARE_INPUTS,
         source="tools/summarize_inference_hardware.py",
     output:
         "results/data/inference_hardware_benchmark.csv",
         "results/data/inference_hardware_benchmark.provenance.json",
         "results/tables/inference_hardware.tex",
+        "results/data/inference_hardware_b200.csv",
+        "results/data/inference_hardware_b200.provenance.json",
+        "results/tables/inference_hardware_b200.tex",
     shell:
-        "python tools/summarize_inference_hardware.py"
+        """
+        python tools/summarize_inference_hardware.py
+        python tools/summarize_inference_hardware.py --configuration configs/inference/hardware_b200_v1.json --output results/data/inference_hardware_b200.csv --table results/tables/inference_hardware_b200.tex
+        """
 
 
 rule inference_mechanism_controls:

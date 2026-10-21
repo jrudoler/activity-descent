@@ -1,10 +1,28 @@
 # Learning rule inference research plan
 
-Updated 2026-10-19. This is the implementation plan selected after the research
+Updated 2026-10-21. This is the implementation plan selected after the research
 handoff. Diagnostics and a small set of mechanism checks support the main work:
 designing an identification protocol and comparing learning rules. See
 `docs/RESEARCH_PROGRESS.md` for execution status and completed results; the
 sections below retain the original study plan.
+
+## Current manuscript constraint
+
+The user requires preservation of the original manuscript. Restore and retain
+the handoff main text, bibliography, and original figures at manuscript commit
+`85d280b`. New findings belong in local Markdown notes or separate appendix
+material. The expanded inference draft is a superseded archival snapshot;
+it must not remain the main paper.
+
+Continue the scientific goal and complete the GPU evidence, reproducibility,
+and uncertainty audits. Stage clear, bounded notes for review. Promotion into
+the title, abstract, main text, bibliography, or original figures happens only
+after the user chooses what should become main-paper material. There is no
+automatic promotion when experiments finish. The default workflow builds the
+original manuscript; research assets use explicit separate targets.
+Completion for this revised research phase means a verified staged research
+package and a preserved, compilable original. It does not require promotion
+into the main paper before the user has made that editorial choice.
 
 The intended paper asks which classes of synaptic update rules can be
 distinguished through controlled changes in neural activity, with measured false
@@ -52,7 +70,7 @@ in scope.
 | M2 Limited mechanism checks | Learning-rate and parameter-freezing experiments | First-order interference is distinguished from finite-step error over a documented usable step range |
 | M3 Identification pilot | Shared-operator tests, rank audit, and held-out prediction | Known null controls are calibrated and identification limits are measured before scaling |
 | M4 Rule comparison | Locked evaluation of GD, PSD-preconditioned GD, feedback alignment, and node perturbation | False rejection, power, baseline comparisons, and stochastic averaging results have uncertainty estimates |
-| M5 Paper and reproducibility | Figures, tables, methods, theory, manuscript, and execution instructions | Claims match completed experiments and the workflow reproduces the reported artifacts |
+| M5 Research staging and reproducibility | Local results notes, separate appendix assets, preserved original manuscript, and execution instructions | Notes match executed evidence; the original main source and assets remain intact; research collection cannot overwrite them |
 
 M1 and M2 are bounded prerequisites. M3 and M4 receive the main experimental
 effort. After the small baseline checks, run M3 promptly rather than completing
@@ -301,9 +319,10 @@ completed experiment. Record analysis revision and configuration with every
 result; collect and inspect Slurm exit status and output completeness.
 
 Pull collaborators' manuscript changes before editing or collecting assets.
-Copy publication figures into `paper/generated/figures/` and record analysis
-provenance there. Keep analysis and manuscript Git histories separate. Compile
-and inspect the final manuscript with citations and references resolved; the
+Copy new research figures into `paper/research/learning_rule_inference/generated/figures/`
+and record analysis provenance in that staging area. Keep analysis and manuscript
+Git histories separate. Compile and inspect the preserved original manuscript
+with citations and references resolved; the
 current login environment does not expose `latexmk`, so provision an appropriate
 build environment or supported compiler during execution.
 
@@ -319,9 +338,11 @@ build environment or supported compiler during execution.
   alignment baselines, stochastic single updates, and mean responses.
 - False rejection and detection power have independent-run uncertainty, and
   equivalences or failures of identification are reported explicitly.
-- Reproducible artifacts and a revised, compiled manuscript support every
-  empirical claim. A scientifically honest bounded or negative result satisfies
-  the goal; preparing code or launching pending jobs alone does not.
+- Reproducible artifacts and local research notes support every new empirical
+  claim. The original manuscript compiles with its handoff source, bibliography,
+  and figure hashes preserved. New material remains staged for the user's
+  promotion decision. A scientifically honest bounded or negative result
+  satisfies the scientific goal; code or queued jobs alone do not.
 
 ## Starting references
 

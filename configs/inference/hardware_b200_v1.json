@@ -1,0 +1,33 @@
+{
+  "description": "Matched single-thread CPU and full NVIDIA B200 timing evidence; research staging only.",
+  "input_directory": "results/data/inference_hardware_inputs",
+  "cpu_job_id": "9169837",
+  "gpu_job_id": "9156748",
+  "gpu_name": "NVIDIA B200",
+  "batch_sizes": [
+    1,
+    20,
+    64
+  ],
+  "workload": {
+    "threads": 1,
+    "width": 64,
+    "depth": 2,
+    "outputs": 8,
+    "eta": 0.0001,
+    "sigma": 0.001,
+    "fit_iterations": 500,
+    "benchmark_repeats": 5,
+    "seed_start": 100000
+  },
+  "required_sources": [
+    "core",
+    "diagnostics",
+    "operators",
+    "provenance",
+    "run",
+    "validate"
+  ],
+  "accounting": "slurm_accounting_b200.json",
+  "gpu_label": "B200"
+}

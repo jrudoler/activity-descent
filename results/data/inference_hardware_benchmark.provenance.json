@@ -1,6 +1,6 @@
 {
   "configuration_sha256": "0c5a6bed108a46edb8a14b0ed381700410803945e5060fbed64515438ff228ee",
-  "script_sha256": "5e6b6d38e025678fa31be32052f02e98648b56699eaaad661a92fd5af6b8abdd",
+  "script_sha256": "708604e2ab14e19453c75297cf70808f9a143ba347a76e018117e7feeb892870",
   "inputs": {
     "results/data/inference_hardware_inputs/validation-cpu-9169837.json": "84becdb2a2829e5e17df8762267f79f1e7221f859a89ccab06cb1f8660ea9ad6",
     "results/data/inference_hardware_inputs/validation-cuda-9158857.json": "718e3f4eb93ba53623c6c63e4b2151f0cff17d279a6b4407cf99f87d0c702109",
@@ -84,5 +84,5 @@
   },
   "output_sha256": "e6ce93f335197e915254165b855bbd935b8685dd8e500d60c85c57abbd5a74a9",
   "table_sha256": "46b06b78d4e8d70b72f7cdb4af014cc516b4b58dd442deecd6b26b14a0bb43a8",
-  "interpretation": "One allocation per backend. Probe times average five warmed repetitions; operator times are single calls. The generic 500-iteration fit is not the main study's analytic span fit. Queue waits describe these jobs only. CUDA validation is distinct from the pending saved-checkpoint backend comparison and scientific replication."
+  "interpretation": "One allocation per backend. Probe times average five warmed repetitions; operator times are single calls. The generic 500-iteration fit is not the main study's analytic span fit. Queue waits describe these jobs only. Timing and validation are distinct from the separately recorded saved-checkpoint comparison and scientific replication. Research staging only."
 }

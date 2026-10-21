@@ -85,7 +85,7 @@ def main():
                     "Benchmark settings differ from the archived hardware protocol")
             if device == "cuda":
                 require(provenance.get("gpu") == config["gpu_name"],
-                        "The report does not describe the configured B200 MIG slice")
+                        "The report does not describe the configured B200 allocation")
             devices[device] = {k: provenance.get(k) for k in
                 ("host", "python", "torch", "cuda_runtime", "threads", "gpu",
                  "gpu_capability", "gpu_total_memory", "driver", "slurm_job_id")}
@@ -153,8 +153,9 @@ def main():
         writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
         writer.writeheader()
         writer.writerows(rows)
+    label = config.get("gpu_label", "MIG")
     lines = [r"\begin{tabular}{lr rrr}", r"\hline",
-             r"Operation & Networks & CPU (ms) & MIG (ms) & CPU/MIG \\", r"\hline"]
+             f"Operation & Networks & CPU (ms) & {label} (ms) & CPU/{label} " + r"\\", r"\hline"]
     names = {"gd": "GD bank", "feedback": "Feedback bank", "node": "Node bank ($R=32$)",
              "compatibility": "Compatibility call", "psd_fit": "Generic PSD fit (500 iter.)"}
     for row in rows:
@@ -171,9 +172,9 @@ def main():
                "inputs": inputs, "matched_sources": signature, "devices": devices,
                "allocation_timezone": accounting["timezone"], "allocations": allocations,
                "output_sha256": digest(output), "table_sha256": digest(table),
-               "interpretation": "One allocation per backend. Probe times average five warmed repetitions; operator times are single calls. The generic 500-iteration fit is not the main study's analytic span fit. Queue waits describe these jobs only. CUDA validation is distinct from the pending saved-checkpoint backend comparison and scientific replication."}
+               "interpretation": "One allocation per backend. Probe times average five warmed repetitions; operator times are single calls. The generic 500-iteration fit is not the main study's analytic span fit. Queue waits describe these jobs only. Timing and validation are distinct from the separately recorded saved-checkpoint comparison and scientific replication. Research staging only."}
     output.with_suffix(".provenance.json").write_text(json.dumps(payload, indent=2) + "\n")
-    print(f"Verified matched CPU/MIG preflights; wrote {len(rows)} timing conditions and {table}")
+    print(f"Verified matched CPU/{label} preflights; wrote {len(rows)} timing conditions and {table}")
 
 
 if __name__ == "__main__":

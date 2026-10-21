@@ -1,11 +1,15 @@
 # Learning rule inference research progress
 
-Updated 2026-10-20, after verifying the overnight CUDA replication. The exact
+Updated 2026-10-21, after full-device completion and the user's manuscript
+correction. The main manuscript and bibliography are restored byte-for-byte to
+handoff commit 85d280b, including the original figures. New work is staged in
+local Markdown notes and separate appendix assets; only the user may promote it.
+The expanded draft is a superseded archive, not the main paper. The exact
 saved-checkpoint GPU comparison and all ten primary CUDA shards completed in
 job 9160192. B200 MIG validation, timings, and scientific replication are
-verified. The goal remains incomplete while the distinct full-device preflight
-9156748 is queued. The CPU studies, five publication figures, supporting tables,
-and revised draft include the completed GPU evidence.
+verified. Full-device preflight 9156748 completed successfully on October 20.
+There are no remaining queued experiment jobs. The research scope and workflow
+now preserve the original manuscript and stage new evidence separately.
 No permission or scientific choice is currently required from the user.
 
 ## Completed evidence
@@ -29,12 +33,12 @@ and undefined/tiny-value handling.
 
 | Milestone | Current status |
 | --- | --- |
-| M0 Setup and GPU validation | 18 checks pass on CPU and B200 MIG; matched timings and saved-checkpoint comparisons complete; full-device preflight pending |
+| M0 Setup and GPU validation | All 18 checks pass on CPU, B200 MIG, and full B200; matched timings and saved-checkpoint comparisons complete |
 | M1 Layerwise diagnostics | Original 20-run classification simulation reproduced; pooled correlations match the untouched original to 1e-12; hidden/output statistics separated |
 | M2 Bounded mechanism checks | Matched-state task/synthetic layer losses, step sizes 1e-5 through 1e-2, parameter freezing, signed coordinate arrays, exact shared PSD, and raw/matched scales executed |
 | M3 Identification | Exact conditions, rank/nullspace audit, empirical cutoffs, held-out prediction, nonattainment, tolerance checks, and ridge sensitivity executed |
 | M4 Rule comparison | 3,200-network main study and 400-network conditional-mean analysis on CPU; primary 200-network CUDA evaluation verified against frozen CPU cutoffs |
-| M5 Paper and workflow | Five figures and six generated TeX assets, measured MIG and CUDA replication appendices, and claim/evidence review; full-device evidence and final audit remain |
+| M5 Research staging and workflow | Original source/bibliography/figures preserved and hash-guarded; local notes, five research figures and seven generated TeX assets staged separately |
 
 ## Main held-out results
 
@@ -170,7 +174,7 @@ became available and completed while B200 requests remained queued.
 | 9161103 | Development task/synthetic losses and same-draw raw/matched banks | Completed 0:0 in 31s |
 | 9161259 | Development PSD tolerance/ridge sensitivity and analytic solver checks | Completed 0:0 in 11s |
 | 9169837 | CPU preflight with the same operator implementation as the MIG run | Completed 0:0; queued 29s, ran 44s |
-| 9156748 | Full B200 preflight | Pending; preserve handle |
+| 9156748 | Full B200 preflight | Completed 0:0; Oct 20 14:40:53--14:42:07 Eastern; 74s runtime, 23h 42m 38s from submission to start |
 | 9158857 | B200 MIG45 preflight, 6 CPUs, 48G, 10 min | Completed 0:0; queued 3h 8m 7s, ran 88s |
 | 9160192 | B200 MIG45 validation, exact-checkpoint comparison, primary CUDA replication | Completed 0:0; Oct 19 22:33:55--22:36:28 Eastern, 2m 33s |
 
@@ -207,9 +211,10 @@ end-to-end training speedup estimate. The GPU float32 response error reaches
 
 The CPU timing job waited 29s; MIG waited 11287s. These observed queues support
 using available CPU shards concurrently with queued GPU work, without assuming
-these two waits predict future latency. The manuscript adds a hardware appendix
-and retains CPU provenance for the original main and conditional-mean studies,
-with the CUDA replication labeled separately.
+these two waits predict future latency. Local notes retain CPU provenance for
+the primary and conditional-mean studies, with CUDA replication labeled
+separately. These descriptions and assets are research staging only; the main
+manuscript is preserved.
 `docs/CLAIM_EVIDENCE.md` maps the major claims to exact summary conditions and
 records the scope of the mathematical and statistical conclusions.
 
@@ -264,34 +269,26 @@ separately and are not pooled into 400 independent evaluation networks.
 - `results/data/inference_hardware_benchmark.csv` and provenance: matched CPU/MIG timings, archived inputs, precision checks, and actual queue delays.
 - `results/data/inference_backend_validation.csv`, `inference_gpu_evaluation.csv`, and matching provenance: executed saved-state CUDA agreement and primary-profile replication.
 - Matching provenance JSONs retain raw file identities, source hashes, and job metadata.
-- Five `results/figures/fig_inference_*.pdf`/`.png` figures and six `results/tables/inference_*.tex` files supply the manuscript.
-- `paper/activity_dynamics.tex` is the revised full draft; its PDF compiles using pinned Tectonic 0.17.0 with resolved references. `paper/generated/build_provenance.json` records source/asset/PDF hashes.
+- Five `results/figures/fig_inference_*.pdf`/`.png` figures and seven `results/tables/inference_*.tex` files supply separate research staging under `paper/research/learning_rule_inference/generated/`.
+- `paper/activity_dynamics.tex` is the original handoff manuscript. Its source, bibliography, and original figure hashes are enforced by `paper/manuscript_baseline.json`; its PDF and build provenance concern that original only.
 
-The parent `Snakefile` has explicit CPU generation, aggregation, publication,
-asset-copy, and compilation rules; the original figures remain under
-`legacy_figures`. See the root README for allocation-aware execution and the
-frozen-summary artifact rebuild. The nested paper still compiles independently
-using its tracked generated assets. The archive source and COSYNE files retain
-the handoff revision's hashes.
+The default `Snakefile` target builds the preserved original. Research generation
+and collection require explicit separate targets; refreshed assets go to research
+staging. Regenerated legacy figures also use a separate staging directory. The
+archived abstract and COSYNE files retain the handoff revision's hashes.
 
-## Remaining full-device preflight and final audit
+## Full-device completion and manuscript boundary
 
-The original allocation blocker persisted across three consecutive goal turns,
-and the goal was marked blocked. Subsequent checks confirmed completed MIG
-execution and completed primary replication. Only 9156748 remains pending
-Priority. Its existing handle is retained. All MIG scientific outputs have now
-been verified and summarized.
+Full B200 job 9156748 completed all 18 checks and float32/64 timings at batch
+sizes 1/20/64. Original reports and Slurm accounting are archived alongside
+the earlier CPU/MIG evidence. The verified full-device summary is
+`results/data/inference_hardware_b200.csv` with its matching provenance. All
+six benchmark/validation implementation hashes match the CPU reference run.
 
-1. Review the full-device preflight when 9156748 runs. MIG scientific checks,
-   float64/float32 timings at batch sizes 1/20/64, and hardware metadata are
-   complete and archived; full-device measurements remain distinct.
-2. Saved-checkpoint agreement and primary CUDA replication are complete. Preserve
-   their fixed CPU cutoffs and separate interpretation when extending the hardware
-   measurements; do not replace the scientific sources or reuse evaluation to tune.
-3. Incorporate full-device hardware observations without replacing the archived
-   MIG comparison or treating measured queue waits as typical latency.
-4. Update the remaining full-device pending statement from executed evidence,
-   refresh the build/provenance, and finish the cross-repository audit.
-5. Mark the goal complete only after these executed results and final manuscript
-   checks succeed. The completed CPU evidence and compiled draft alone do not
-   satisfy the goal's actual-GPU requirement.
+The user's October 21 correction supersedes the previous full-main-paper plan.
+The original main text, bibliography, and five figure assets match handoff
+85d280b. The expanded 19-page draft is saved separately for recovery. New
+explanations live in `docs/INFERENCE_RESULTS.md` and linked local notes, and
+new figures/tables are separate appendix assets. The default build does not
+depend on inference generation or collection. Main-paper promotion requires
+the user's choice; it is not an automatic completion step for this research phase.

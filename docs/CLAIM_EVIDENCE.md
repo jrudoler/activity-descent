@@ -1,8 +1,12 @@
-# Manuscript claim and evidence review
+# Staged research claim and evidence review
 
-Reviewed 2026-10-20 against the frozen CPU summaries, completed matched
+Reviewed 2026-10-21 against the frozen CPU summaries, completed matched
 CPU/B200 MIG preflights, and executed primary CUDA replication. This review checks interpretation and reported values;
 it does not replace the strict raw-shard verification in the scientific evaluators.
+
+These are staged research claims. The original main manuscript has been restored
+to its handoff version; no new claim, figure, or reference is promoted without
+the user's editorial decision. Start with `RESEARCH_INDEX.md` for the shorter notes.
 
 ## Main claims
 
@@ -37,7 +41,7 @@ The continuous primary score tests necessary constraints. It does not robustly
 implement the discontinuous exact nullspace condition. An arbitrarily small
 PSD fitting residual can approach an unattained infimum. Fit nonattainment,
 undefined predictions, and numerical failures cannot be added to the rejection
-count. The manuscript theorem and PSD-fitting appendix make these distinctions.
+count. The theory and PSD-fitting notes make these distinctions.
 
 With 200 finite calibration values, the 95% conformal order is 191. The maximum
 of the two null cutoffs retains marginal coverage for either specified null;
@@ -55,8 +59,11 @@ The strict evaluator verified all 432 conditions with the original CPU cutoffs.
 The noisy secondary CUDA comparison detects feedback-0.1 in 74/200 and rejects
 node-shared-1 in 177/200, preserving the observed calibration limitation.
 Retraining uses a different device RNG stream; these results are distinct from
-the numerical comparison at saved CPU states. The full-device timing job remains
-queued and supplies no evidence yet. All completed GPU results name the MIG slice.
+the numerical comparison at saved CPU states. Full-device job 9156748 also
+completed all 18 checks and all timing workloads on October 20. Its reports
+name the full NVIDIA B200; the scientific retraining replication remains
+explicitly a MIG result. Neither hardware measurement promotes material into
+the preserved main manuscript.
 
 The first CPU benchmark predates the current operator implementation. New CPU
 job 9169837 removes that source mismatch. The hardware summary verifies matched

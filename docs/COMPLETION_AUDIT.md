@@ -1,17 +1,20 @@
 # Learning-rule inference goal audit
 
-Audited 2026-10-20 against the active objective, `RESEARCH_PLAN.md`, the user's
+Audited 2026-10-21 against the revised objective in `RESEARCH_PLAN.md`, the user's
 CPU-parallelism authorization, and the clarified limit of three concurrent GPU
 jobs. B200 MIG job 9160192 completed all 18 checks, exact-checkpoint numerical
 agreement, and the primary CUDA retraining replication. The strict evaluator
-verified ten shards and 432 conditions with the original CPU cutoffs. The goal
-is **not complete** while the separate full-device timing preflight 9156748
-remains queued and the corresponding final hardware audit is outstanding.
+verified ten shards and 432 conditions with the original CPU cutoffs. Full-device
+preflight 9156748 also completed: all 18 checks passed and all
+timing reports are present. The user's manuscript correction changes the
+deliverable to a preserved original plus staged local research notes and
+separate appendix assets. Main-paper promotion is not authorized automatically.
 
 The earlier allocation blocker persisted across three consecutive goal turns,
 and the goal was marked blocked. The replication subsequently completed on
-October 19 from 22:33:55 to 22:36:28 Eastern. Only 9156748 remains pending
-Priority. Its existing handle is retained; no full-device execution is claimed.
+October 19 from 22:33:55 to 22:36:28 Eastern. Full B200 job 9156748 subsequently
+completed on October 20, 14:40:53--14:42:07 Eastern, in 74 seconds. There are no
+remaining queued experiment jobs.
 
 The previous goal turn made concrete progress by completing the CPU study and
 compiled draft. This continuation identified and executed omitted development
@@ -20,7 +23,7 @@ that every planned control had been completed.
 
 | Requirement | Authoritative evidence in this checkout | Audit result |
 | --- | --- | --- |
-| Focus on inference classes, with diagnostics and bounded mechanisms | Main manuscript sections 3--6, protocol/configuration files, separate supporting appendix | CPU evidence complete; final hardware evidence pending |
+| Focus on inference classes, with diagnostics and bounded mechanisms | Local results/theory/protocol notes and separately staged assets | Completed evidence is staged for review; original main manuscript preserved |
 | Known loss/readout, complete layer, restored states | `campaign.py` functional updates and saved checkpoints/probe banks; `core.py` frozen decoder | Implemented and exercised |
 | Inference receives G and V without upstream kernels | `campaign.score_observation` and `operators.py` inputs; kernels confined to simulator diagnostics | Verified by source scope and analytic checks |
 | Shared PSD compatibility, linearity, rank/nullspace and observational limits | `docs/learning_rule_identification.md`; CPU scientific checks; manuscript theorem and singular counterexample | Verified in stated first-order noiseless scope |
@@ -44,13 +47,15 @@ that every planned control had been completed.
 | Noise, depth and failed-identification conditions reported | Robustness figure; shared-control false rejection; depth-three power and loss-selection exclusions | Included; no uniform PSD-family or biological-validity claim |
 | Full prior-work and novelty audit | `docs/related_work_audit.md`, primary citations and manuscript background | Complete for the closest stated comparisons; no broad first-inference/kernel/optimizer claim |
 | CPU reference and analytic validation | `validation-final-cpu.json`: 18 checks, unchanged checked modules; independent NumPy reference | Passed on CPU |
-| Actual B200/CUDA scientific validation and precision benchmarks | Completed MIG45 job 9158857: all 18 checks pass, float32/64 timings at n=1/20/64, actual GPU/driver/runtime/memory metadata | Achieved on MIG slice; full-device 9156748 remains pending |
+| Actual B200/CUDA scientific validation and precision benchmarks | Completed MIG45 9158857 and full B200 9156748: all 18 checks pass; matched float32/64 timings at n=1/20/64 and hardware metadata | Achieved on both resource shapes; original small reports archived |
 | Same saved inputs/checkpoints CPU versus CUDA | Executed 9160192, `inference_backend_validation.csv`, 200 saved networks x 3 stages x 4 deterministic rules | Achieved; max relative response error 1.65e-12, zero operator decision disagreements |
 | Executed B200 comparison with provenance | Completed 9160192 and verified `inference_gpu_evaluation.csv`, all ten shards and 432 conditions | Achieved on B200 MIG; primary operator 200/200 versus Pearson 11/200; null counts 12/200 and 10/200 |
-| Measured CPU/GPU throughput and scheduling tradeoff | Matched-source CPU job 9169837 and MIG45 job 9158857, 24 timing conditions, original archived reports and Slurm waits | Achieved for slice benchmark; scope distinguishes generic helper from main fit and timing from training |
+| Measured CPU/GPU throughput and scheduling tradeoff | Matched CPU 9169837, MIG45 9158857, full B200 9156748; two 24-condition summaries and exact Slurm waits | Achieved; generic helper and training timings distinguished; one allocation per backend |
 | Claims checked against available evidence | `docs/CLAIM_EVIDENCE.md`, exact primary/noise/depth/mean/CUDA rows, theorem and calibration review | Completed CPU and MIG evidence distinguished; no pooling of device runs or broader null claims |
-| Configurations, immutable jobs, workflow and final assets | `Snakefile`, Slurm modes, locked configs, strict manifests, five figures/six generated TeX assets, provenance-aware collector | CPU and scientific MIG outputs incorporated; full-device timing preflight pending |
-| Compiled manuscript with resolved citations and inspected artifacts | Tectonic build and source/PDF hashes, supporting/hardware/CUDA appendices | Draft incorporates executed CUDA replication; final full-device statement and audit remain |
+| Configurations, immutable jobs, workflow and final assets | `Snakefile`, locked configs, strict manifests, five research figures/seven TeX assets under research staging | Default build is original-only; research collection is explicit and isolated |
+| Preserve the original main manuscript | `manuscript_baseline.json`, exact source/bibliography/five-figure hashes against handoff 85d280b | Restored and guarded; no new main text or references promoted |
+| Compiled original with resolved citations | Source/PDF checksums, Tectonic compatibility recorded for a temporary watermark-unit conversion only | Original compiles; canonical files remain byte-for-byte intact |
+| New material remains local notes or separate appendices | `docs/RESEARCH_INDEX.md`, concise results note, staged assets; superseded draft archived separately | User chooses any future promotion; completion of experiments is not promotion authority |
 | Preserve archived abstract/COSYNE and separate histories | Independent paper Git repository; archive/COSYNE diff against 85d280b is empty | Verified; local commits in each repository |
 
 The full-device `dgx-b200` preflight and MIG45 fallback are distinct resource
@@ -61,7 +66,7 @@ The CUDA replication uses the already fixed CPU cutoffs, without tuning from
 its evaluation outcomes. Its seed identities overlap the CPU evaluation, so
 the two device samples are not pooled as 400 independent networks.
 
-The remaining completion work is the executed full-device timing preflight,
-its measured hardware statement in the manuscript, and the final cross-repository
-audit. Keep its existing queue handle; do not restart work merely because a queue
-estimate or observation timeout changes.
+The scientific experiments and validated research artifacts are complete under
+the revised staging scope. The default manuscript build preserves the original;
+the expanded draft is a superseded recovery snapshot. The user's future choice
+of material to promote is a separate editorial step.

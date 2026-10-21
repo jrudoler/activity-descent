@@ -1,0 +1,88 @@
+{
+  "configuration_sha256": "afaef3a30f305330d766a21ec0d67b685c166492e0ef9f32c442b9a40243bd19",
+  "script_sha256": "708604e2ab14e19453c75297cf70808f9a143ba347a76e018117e7feeb892870",
+  "inputs": {
+    "results/data/inference_hardware_inputs/validation-cpu-9169837.json": "84becdb2a2829e5e17df8762267f79f1e7221f859a89ccab06cb1f8660ea9ad6",
+    "results/data/inference_hardware_inputs/validation-cuda-9156748.json": "19dd32412445633b2af076a2d414d4e13ad9e59c95094451c661cceb666f6819",
+    "results/data/inference_hardware_inputs/benchmark-cpu-n1-9169837.json": "fdd4faa9ff361fdb097fc664303dde39e2aa7f622b29c668975e409a65d2b394",
+    "results/data/inference_hardware_inputs/benchmark-cuda-n1-9156748.json": "5bea9ec502aeb037b96fb921287e7c9574f2f1c2bd3e0307e3b5cd304cca336a",
+    "results/data/inference_hardware_inputs/benchmark-cpu-n20-9169837.json": "37dbde4c0d7271f869988926c0860840f5db811a10a8c1f5f94a98e077bfcd0c",
+    "results/data/inference_hardware_inputs/benchmark-cuda-n20-9156748.json": "1fea5acbabb16705cb859587fa34417196777f303ecc8d5ec19b2607bd261a2b",
+    "results/data/inference_hardware_inputs/benchmark-cpu-n64-9169837.json": "5079aa5ceebfcb03b1404c10bceca67d30b38750e4dd3a5c890ac067315e6eaf",
+    "results/data/inference_hardware_inputs/benchmark-cuda-n64-9156748.json": "4e93887de8d2a209b966c3743e8fe71b0ecd19a5b627f4426d11e773b0ef37db",
+    "results/data/inference_hardware_inputs/slurm_accounting_b200.json": "48344567966a6c1b4ba216156c9b9902e667246932b4634cc1cfc3c42208f2c5"
+  },
+  "matched_sources": {
+    "core": "4f49eb19f6c0591078e6a0ac03a28ab3a8037031115be8b6a0d3a7d195da4ce1",
+    "diagnostics": "5264ed24d571550165ee58ae20b5d5f59dbe4175432fab25b058f0c5d907d2b1",
+    "operators": "9b7a51d53236ef8170ffabc994b4de42d9a3258d25142b54e83d0f1354a49b5c",
+    "provenance": "a72556f1dadd720a9d23f1efdb1743b24bf61bd6af5f5f69c7a7952881cf776f",
+    "run": "12e8a42c7e817f4a848723346371d59f41bd7a65908372fd1109ef4ac8ad8040",
+    "validate": "ce0bbaadaf05308f67d6bfb81e6e923fe0abdc050332c15c1470fb22660ea941"
+  },
+  "devices": {
+    "cpu": {
+      "host": "epyc-6-8",
+      "python": "3.14.0",
+      "torch": "2.11.0+cu128",
+      "cuda_runtime": "12.8",
+      "threads": 1,
+      "gpu": null,
+      "gpu_capability": null,
+      "gpu_total_memory": null,
+      "driver": null,
+      "slurm_job_id": "9169837"
+    },
+    "cuda": {
+      "host": "dgx009",
+      "python": "3.14.0",
+      "torch": "2.11.0+cu128",
+      "cuda_runtime": "12.8",
+      "threads": 1,
+      "gpu": "NVIDIA B200",
+      "gpu_capability": [
+        10,
+        0
+      ],
+      "gpu_total_memory": 191503138816,
+      "driver": "580.95.05",
+      "slurm_job_id": "9156748"
+    }
+  },
+  "allocation_timezone": "UTC",
+  "allocations": {
+    "9169837": {
+      "JobID": "9169837",
+      "Partition": "genoa-std-mem",
+      "Submit": "2026-10-20T01:18:02+00:00",
+      "Eligible": "2026-10-20T01:18:02+00:00",
+      "Start": "2026-10-20T01:18:31+00:00",
+      "End": "2026-10-20T01:19:15+00:00",
+      "ElapsedRaw": 44,
+      "AllocCPUS": 1,
+      "State": "COMPLETED",
+      "ExitCode": "0:0",
+      "AllocTRES": "billing=10,cpu=1,mem=5.50G,node=1",
+      "submit_to_start_seconds": 29.0,
+      "eligible_to_start_seconds": 29.0
+    },
+    "9156748": {
+      "JobID": "9156748",
+      "Partition": "dgx-b200",
+      "Submit": "2026-10-19T18:58:15+00:00",
+      "Eligible": "2026-10-19T19:09:51+00:00",
+      "Start": "2026-10-20T18:40:53+00:00",
+      "End": "2026-10-20T18:42:07+00:00",
+      "ElapsedRaw": 74,
+      "AllocCPUS": 28,
+      "State": "COMPLETED",
+      "ExitCode": "0:0",
+      "AllocTRES": "billing=1000,cpu=28,gres/gpu=1,mem=224G,node=1",
+      "submit_to_start_seconds": 85358.0,
+      "eligible_to_start_seconds": 84662.0
+    }
+  },
+  "output_sha256": "e5d3ca08886b6e6ad10dad648a1c3d3631443732a30d76a4c8326451ae0a46df",
+  "table_sha256": "df00097a5fe88b9e4fcd94ca8cdfb219ed208ecc6df401e51808276925f91f20",
+  "interpretation": "One allocation per backend. Probe times average five warmed repetitions; operator times are single calls. The generic 500-iteration fit is not the main study's analytic span fit. Queue waits describe these jobs only. Timing and validation are distinct from the separately recorded saved-checkpoint comparison and scientific replication. Research staging only."
+}

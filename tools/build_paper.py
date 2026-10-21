@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -23,6 +24,12 @@ def main():
     parser.add_argument("--cache-directory", type=Path, default=Path("/tmp/activity-descent-tex-cache"))
     args = parser.parse_args()
     paper = args.paper.resolve()
+    baseline_path = paper / "manuscript_baseline.json"
+    if baseline_path.exists():
+        baseline = json.loads(baseline_path.read_text())
+        for name, wanted in baseline["protected_files"].items():
+            if sha(paper / name) != wanted:
+                raise RuntimeError(f"Preserved manuscript changed: {name}. Research belongs in notes or separate appendices until the user approves promotion.")
     tectonic = str(ROOT / ".tools/tectonic") if (ROOT / ".tools/tectonic").is_file() else shutil.which("tectonic")
     choice = args.compiler
     if choice == "auto":
@@ -38,20 +45,42 @@ def main():
     else:
         version = subprocess.check_output(["latexmk", "--version"], text=True).strip()
         command = ["latexmk", "-pdf", "-interaction=nonstopmode", "-halt-on-error", "activity_dynamics.tex"]
-    subprocess.run(command, cwd=paper, env=env, check=True)
+    compatibility = []
+    original_source = (paper / "activity_dynamics.tex").read_text()
+    watermark = "hpos=300px,vpos=70px"
+    if choice == "tectonic" and watermark in original_source:
+        # XeTeX does not accept pdfTeX's px unit. Preserve the canonical source;
+        # apply this formatting-only compatibility change in a temporary tree.
+        with tempfile.TemporaryDirectory(prefix="activity-descent-original-") as temporary:
+            staged = Path(temporary)
+            compiled_source = original_source.replace(watermark, "hpos=300bp,vpos=70bp")
+            (staged / "activity_dynamics.tex").write_text(compiled_source)
+            for source in [paper / "activity_dynamics.bib", paper / "generated",
+                           *paper.glob("*.cls"), *paper.glob("*.sty")]:
+                (staged / source.name).symlink_to(source, target_is_directory=source.is_dir())
+            subprocess.run(command, cwd=staged, env=env, check=True)
+            for result in staged.glob("activity_dynamics.*"):
+                if result.suffix not in (".tex", ".bib") and not result.is_symlink():
+                    shutil.copy2(result, paper / result.name)
+            compatibility.append({"operation": "legacy watermark px units replaced by bp in a temporary XeTeX input only",
+                                  "canonical_source_sha256": sha(paper / "activity_dynamics.tex"),
+                                  "compiled_source_sha256": hashlib.sha256(compiled_source.encode()).hexdigest()})
+    else:
+        subprocess.run(command, cwd=paper, env=env, check=True)
     log = (paper / "activity_dynamics.log").read_text(errors="replace")
     unresolved = [line for line in log.splitlines() if "undefined" in line.lower() and
                   ("citation" in line.lower() or "reference" in line.lower())]
     if unresolved:
         raise RuntimeError("Unresolved references after compilation: " + "; ".join(unresolved))
     sources = [paper / "activity_dynamics.tex", paper / "activity_dynamics.bib", paper / "jmlr.cls", paper / "jmlrutils.sty"]
-    sources += list((paper / "generated").glob("inference_*.tex"))
-    sources += list((paper / "generated/figures").glob("fig_inference_*.pdf"))
-    if (paper / "generated/analysis_provenance.json").exists():
-        sources.append(paper / "generated/analysis_provenance.json")
+    sources += list((paper / "generated").glob("*.tex"))
+    sources += list((paper / "generated/figures").glob("*.pdf"))
+    if baseline_path.exists():
+        sources.append(baseline_path)
     payload = {"built_utc": datetime.now(timezone.utc).isoformat(), "compiler": version,
                "build_script_sha256": sha(Path(__file__)),
                "source_date_epoch": env["SOURCE_DATE_EPOCH"],
+               "build_compatibility": compatibility,
                "sources": {str(p.relative_to(paper)):sha(p) for p in sorted(sources)},
                "pdf_sha256": sha(paper / "activity_dynamics.pdf"),
                "unresolved_references": unresolved}
